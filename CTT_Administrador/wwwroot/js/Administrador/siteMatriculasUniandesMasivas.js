@@ -1,0 +1,179 @@
+﻿const baseUrl = `${_route}MatriculasUniandesMasivas/`;
+let listaEstudiantes = [];
+window.addEventListener("load", async function () {
+    activarValidadores(frmDatos)
+    llenarTabla();
+    loader.hidden = false;
+    await comboPeriodos();
+    loader.hidden = true;
+    content.hidden = false;
+});
+let formatosPermitidos = [
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+];
+
+async function comboPeriodos() {
+    try {
+        const url = `${baseUrl}comboPeriodos`;
+        const res = (await axios.get(url)).data;
+        let html = "<option value=''>Seleccione</option>";
+        res.forEach(item => {
+            html += `<option value='${item.idPeriodo}'>${item.detalle}</option>`
+        });
+        idPeriodo.innerHTML = html;
+    } catch (e) {
+        handleError(e);
+    }
+}
+
+async function comboTiposCursos() {
+    try {
+        if (idPeriodo.value == "") {
+            idTipoCurso.innerHTML = `<option value="">Seleccione un periodo</option>`;
+            idGrupoCurso.innerHTML = `<option value="">Seleccione un tipo de curso</option>`;
+            return;
+        }
+
+        const url = `${baseUrl}comboTiposCursos`;
+        const data = new FormData(frmDatos);
+        const res = (await axios.post(url, data)).data;
+        let html = "<option value=''>Seleccione</option>";
+        res.forEach(item => {
+            html += `<option value='${item.idTipoCurso}'>${item.tipoCurso}</option>`
+        });
+        idTipoCurso.innerHTML = html;
+    } catch (e) {
+        handleError(e);
+    }
+}
+archivo.addEventListener("change", function () {
+    if (this.value == "") return;
+    if (!formatosPermitidos.includes(this.files[0].type)) {
+        toastWarning("Formato de archivo no admitido");
+        this.value = "";
+        this.classList.add("is-invalid");
+        return;
+    }
+    cargarDatos();
+});
+async function comboCursos() {
+    try {
+        if (idTipoCurso.value == "") {
+            idGrupoCurso.innerHTML = `<option value="">Seleccione un tipo de curso</option>`;
+            return;
+        }
+
+        const url = `${baseUrl}comboCursos`;
+        const data = new FormData(frmDatos);
+        const res = (await axios.post(url, data)).data;
+        let html = "<option value=''>Seleccione</option>";
+        res.forEach(item => {
+            html += `<option value='${item.idGrupoCurso}'>${item.curso}</option>`
+        });
+        idGrupoCurso.innerHTML = html;
+    } catch (e) {
+        handleError(e);
+    }
+}
+
+async function cargarDatos(_press) {
+    try {
+        if (archivo.value == "" && _press == true) throw new Error("Debe seleccionar un archivo");
+        listaEstudiantes = [];
+        btnGenerar.hidden = true;
+        const url = `${baseUrl}cargarDatos`;
+        const data = new FormData(frmDatos);
+        const res = (await axios.post(url, data)).data;
+        if (res.listaEstudiantes.length == 0) throw new Error("No se ha encontrado ningún estudiante en el documento");
+        btnGenerar.hidden = false;
+        listaEstudiantes = res.listaEstudiantes;
+        if (res.novedades != "") {
+            toastHtml(`
+
+            <div class='fw-bold fs-xxs text-justify-all m-0 p-0'><i class='bi-exclamation-triangle text-warning me-2'></i>Se ha procesado el archivo con algunas novedades.</div>
+            <ul class='w-100 text-justify-all ul-novedades'>
+            ${res.novedades}
+            </ul>
+            `);
+        }
+
+    } catch (e) {
+        handleError(e);
+        btnGenerar.hidden = true;
+    } finally {
+        llenarTabla();
+    }
+}
+
+function llenarTabla() {
+    tableDatos.innerHTML = "";
+    $(tableDatos).DataTable({
+        bDestroy: true,
+        data: listaEstudiantes,
+        columns: [
+            { title: "Cédula", class: "", data: "documentoIdentidad" },
+            { title: "Primer Nombre", class: "", data: "primerNombre" },
+            { title: "Segundo Nombre", class: "", data: "segundoNombre" },
+            { title: "Primer Apellido", class: "", data: "primerApellido" },
+            { title: "Segundo Apellido", class: "", data: "segundoApellido" },
+
+        ]
+    })
+}
+
+async function generarMatriculas() {
+    try {
+        if (!await validarTodo(frmDatos)) throw new Error("Verifique los campos requeridos");
+        if (!await toastPreguntar(`
+            <div class='text-justify-all fs-xxs my-2'>
+                Está seguro que desea generar <b>${listaEstudiantes.length}</b> ${listaEstudiantes.length==1?"matricula":"matriculas"} para: 
+            </div>
+            <div class='text-justify-all fs-xxs'>
+            <b>Periodo Académico: </b></br>${idPeriodo.options[idPeriodo.selectedIndex].text}
+            </div>
+            <div class='text-justify-all fs-xxs'>
+            <b>Tipo de curso: </b></br>${idTipoCurso.options[idTipoCurso.selectedIndex].text}
+            </div>
+            <div class='text-justify-all fs-xxs'>
+            <b>Curso: </b></br>${idGrupoCurso.options[idGrupoCurso.selectedIndex].text}
+            </div>
+            <div class='text-justify-all fs-xxs'>
+            <b>Paralelo: </b></br>${paralelo.value}
+            </div>
+            <div class='mt-2 text-center text-danger fs-xxs'>
+                <i class='bi-exclamation-triangle me-1'></i> Esta acción generará todas las matriculas y no se puede deshacer
+            </div>
+        `)) return;
+        bloquearBotones();
+        const url = `${baseUrl}generarMatriculas`;
+        const data = new FormData(frmDatos);
+        listaEstudiantes = [...listaEstudiantes].map(x => {
+            x.nombre = `${x.primerApellido} ${x.segundoApellido} ${x.primerNombre} ${x.segundoNombre}`;
+            x.documento = x.documentoIdentidad;
+            return x;
+        });
+        data.append("_alumnos",JSON.stringify(listaEstudiantes));
+        data.append("_alumnosCedulas",await generarSubconsulta());
+        const res = (await axios.post(url, data)).data;
+    } catch (e) {
+        handleError(e);
+    }finally{
+        desbloquearBotones();
+    }
+}
+
+function generarSubconsulta(){
+    let subconsulta=`'D3F@UL7'`;
+    return new Promise(resolve=>{
+        try {
+            if(listaEstudiantes.length==0) throw new Error("Sin datos");
+            listaEstudiantes.forEach((item,index)=>{
+                subconsulta+=`,'${item.documentoIdentidad}'`;
+                if(index==listaEstudiantes.length-1) resolve(subconsulta);
+            });
+        } catch (e) {
+            resolve(subconsulta);
+        }
+    })
+}

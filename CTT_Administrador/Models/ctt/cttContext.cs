@@ -336,6 +336,7 @@ public partial class cttContext : DbContext
         {
             entity.HasKey(e => e.idTipoCurso).HasName("PRIMARY");
 
+            entity.Property(e => e.activo).HasDefaultValueSql("'1'");
             entity.Property(e => e.esCurso).HasDefaultValueSql("'0'");
             entity.Property(e => e.esDiplomado).HasDefaultValueSql("'0'");
             entity.Property(e => e.tipoCurso).HasMaxLength(60);

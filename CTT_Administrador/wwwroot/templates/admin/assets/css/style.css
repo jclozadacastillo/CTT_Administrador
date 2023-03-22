@@ -1,3 +1,127 @@
+/*ESTILO DEL SCROLLBAR*/
+
+*:not(.not-custom-scrollbar)::-webkit-scrollbar {
+  width: 11.99px;
+  height: 11.99px;
+}
+
+.td-overflow-x::-webkit-scrollbar {
+  width: 7.3px;
+  height: 7.3px;
+}
+
+html {
+  scrollbar-color: rgb(190, 190, 190) rgba(217, 217, 217, 1);
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(190, 190, 190);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(172, 172, 172);
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(217, 217, 217, 1);
+}
+
+::-webkit-scrollbar-button:single-button {
+  background-color: rgb(255, 255, 255);
+  display: block;
+  background-size: 10px;
+  background-repeat: no-repeat;
+}
+
+/* Up */
+::-webkit-scrollbar-button:single-button:vertical:decrement {
+  height: 12px;
+  width: 6px;
+  background-position: center 3px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(96, 96, 96)'><polygon points='50,00 0,50 100,50'/></svg>");
+}
+
+::-webkit-scrollbar-button:single-button:vertical:decrement:hover {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(2, 167, 136)'><polygon points='50,00 0,50 100,50'/></svg>");
+}
+
+::-webkit-scrollbar-button:single-button:vertical:decrement:active {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(128, 128, 128)'><polygon points='50,00 0,50 100,50'/></svg>");
+}
+
+/* Down */
+::-webkit-scrollbar-button:single-button:vertical:increment {
+  height: 12px;
+  width: 6px;
+  background-position: center 4px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(96, 96, 96)'><polygon points='0,0 100,0 50,50'/></svg>");
+}
+
+::-webkit-scrollbar-button:single-button:vertical:increment:hover {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(2, 167, 136)'><polygon points='0,0 100,0 50,50'/></svg>");
+}
+
+::-webkit-scrollbar-button:single-button:vertical:increment:active {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(128, 128, 128)'><polygon points='0,0 100,0 50,50'/></svg>");
+}
+
+/* Left */
+::-webkit-scrollbar-button:single-button:horizontal:decrement {
+  height: 6px;
+  width: 12px;
+  background-position: 3px 0px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(96, 96, 96)'><polygon points='0,50 50,100 50,0'/></svg>");
+}
+
+/* Left */
+.td-overflow-x::-webkit-scrollbar-button:single-button:horizontal:decrement {
+  height: 6px;
+  width: 12px;
+  background-position: 5.5px 0px;
+  background-size: contain;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(96, 96, 96)'><polygon points='0,50 50,100 50,0'/></svg>");
+}
+
+.td-overflow-x::-webkit-scrollbar-button:single-button:horizontal:decrement:hover {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(2, 167, 136)'><polygon points='0,50 50,100 50,0'/></svg>");
+}
+
+::-webkit-scrollbar-button:single-button:horizontal:decrement:hover {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(2, 167, 136)'><polygon points='0,50 50,100 50,0'/></svg>");
+}
+
+::-webkit-scrollbar-button:single-button:horizontal:decrement:active {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(128, 128, 128)'><polygon points='0,50 50,100 50,0'/></svg>");
+}
+
+/* Right */
+::-webkit-scrollbar-button:single-button:horizontal:increment {
+  height: 6px;
+  width: 12px;
+  background-position: 3px 0px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(96, 96, 96)'><polygon points='0,0 0,100 50,50'/></svg>");
+}
+
+/* Right */
+.td-overflow-x::-webkit-scrollbar-button:single-button:horizontal:increment {
+  height: 6px !important;
+  width: 12px !important;
+  background-position: 2px 0px;
+  background-size: contain;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(96, 96, 96)'><polygon points='0,0 0,100 50,50'/></svg>");
+}
+
+::-webkit-scrollbar-button:single-button:horizontal:increment:hover {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(112, 112, 112)'><polygon points='0,0 0,100 50,50'/></svg>");
+}
+
+::-webkit-scrollbar-button:single-button:horizontal:increment:active {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(128, 128, 128)'><polygon points='0,0 0,100 50,50'/></svg>");
+}
+
+/*FIN ESTILO SCROLLBAR*/
+
 :root {
   scroll-behavior: smooth;
   --fs-md: 15px;
@@ -1246,6 +1370,7 @@ h6 {
 .fs-sm {
   font-size: var(--fs-sm);
 }
+
 .fs-xxs {
   font-size: var(--fs-xxs);
 }
@@ -1458,35 +1583,37 @@ td .btn-group ul li a.dropdown-item:active {
   background-color: #EEF2FA;
 }
 
-input,textarea,select{
+input,
+textarea,
+select {
   font-size: var(--fs-sm) !important;
 }
 
-.form-control:focus{
+.form-control:focus {
   box-shadow: none;
-  border-color: rgba(var(--primary-rgb),0.46);
+  border-color: rgba(var(--primary-rgb), 0.46);
 }
 
-.loader span.spinner-border{
-    width: 2rem;
-    height: 2rem;
-    border-width: 0.1em !important;
-    opacity: 0.28;
+.loader span.spinner-border {
+  width: 2rem;
+  height: 2rem;
+  border-width: 0.1em !important;
+  opacity: 0.28;
 }
 
-.loader{
+.loader {
   text-align: center;
   min-height: calc(100vh - 118px);
   padding-top: 7.3vh;
 }
 
-.main-container:has(.portada){
+.main-container:has(.portada) {
   background: url(../../../../lib/utilities/toast/img/bg-admin.jpg);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  padding:0 !important;
+  padding: 0 !important;
 }
 
 .main-container .portada {
@@ -1500,6 +1627,27 @@ input,textarea,select{
   z-index: 2;
 }
 
-form label.fs-sm{
+form label.fs-sm {
   font-weight: 600;
+}
+
+.text-justify-all {
+  text-align: justify !important;
+  hyphens: auto !important;
+  -webkit-hyphens: auto !important;
+  word-spacing: -0.05em !important;
+}
+
+ul.ul-novedades {
+  margin: 0 !important;
+  font-size: var(--fs-xxs);
+  /* padding-left: 0 !important; */
+  list-style-type: decimal;
+  padding-left: 19px;
+  margin-top: 10px !important;
+}
+
+ul.ul-novedades li {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
 }

@@ -13,5 +13,7 @@ public partial class tiposcursos
 
     public sbyte? esCurso { get; set; }
 
+    public sbyte? activo { get; set; }
+
     public virtual ICollection<cursos> cursos { get; } = new List<cursos>();
 }

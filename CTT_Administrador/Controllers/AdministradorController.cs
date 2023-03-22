@@ -45,6 +45,11 @@ namespace CTT_Administrador.Controllers
             if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
             return View();
         }
+        public IActionResult MatriculasUniandesMasivas()
+        {
+            if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
+            return View();
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> authorization(TokenTools.userData _data)

@@ -1,0 +1,1 @@
+﻿Scaffold-DbContext "server=localhost;user=root;password=123;database=cec_ctt;SslMode=none" MySql.EntityFrameworkCore -OutputDir Models/ctt -f -UseDatabaseNames -NoPluralize -Context cttContext

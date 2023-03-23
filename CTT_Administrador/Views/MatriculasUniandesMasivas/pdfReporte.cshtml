@@ -1,0 +1,72 @@
+﻿
+@{
+    Layout = null;
+    var curso = Model.datosCurso;
+    var matriculados = Model.listaMatriculados;
+    var error = Model.error;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>CTT DE LOS ANDES: Reporte de matriculas masivas</title>
+    <link href="~/reportes/reportecargasmasivas.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
+    <link href="~/lib/utilities/toast/img/icon.png" rel="icon">
+</head>
+<body>
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <p style="color:red">@error</p>
+    }
+    else
+    {
+        <div class="">
+            <img src="~/lib/utilities/toast/img/logo-azul910.png" width="190" />
+        </div>
+        <table class="table-info">
+            <tr>
+                <td>Curso</td>
+                <td>@curso.curso</td>
+            </tr>
+            <tr>
+                <td>Paralelo</td>
+                <td>@curso.paralelo</td>
+            </tr>
+            <tr>
+                <td>Periodo</td>
+                <td>@curso.detalle</td>
+            </tr>
+            <tr>
+                <td>Total procesados</td>
+                <td>@Enumerable.Count(matriculados)</td>
+            </tr>
+        </table>
+    }
+    <table class="table-datos">
+        <thead>
+            <tr>
+                <th>Cédula</th>
+                <th>Estudiante</th>
+                <th>Estado</th>
+                <th>Registrado</th>
+                <th>Registrado por</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(dynamic item in matriculados)
+            {
+                <tr class="no-break">
+                    <td>@item.documentoIdentidad</td>
+                    <td>@item.primerApellido @item.segundoApellido @item.primerNombre @item.segundoNombre</td>
+                    <td class="text-@(string.IsNullOrEmpty(item.idCentro)?"danger":"success")">@(string.IsNullOrEmpty(item.idCentro) ? "No matriculado" : "Ok")</td>
+                    <td>@item.fechaRegistro</td>
+                    <td>@item.usuarioRegistro</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</body>
+</html>

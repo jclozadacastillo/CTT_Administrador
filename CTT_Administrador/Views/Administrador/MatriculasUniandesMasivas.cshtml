@@ -70,5 +70,29 @@
             table-light table-hover table-custom" id="tableDatos"></table>
     </div>
 </div>
+
+
+<div class="modal fade" id="espere" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content" style="min-width:330px">
+            <div class="modal-body" style="width:325px">
+                <div>
+                    <img src="~/lib/utilities/toast/img/logo-azul370.png" width="91" />
+                </div>
+                <div class="text-center fs-sm mt-2" style="font-size:13px">
+                    Espere por favor...
+                </div>
+                <div class="text-center my-3">
+                    <div class="spinner-border text-primary text-center"></div>
+                </div>
+                <div class="text-center fs-xxs text-danger fw-bold" style="font-size:11px">
+                    <i class="bi-exclamation-triangle-fill me-1"></i> No cierre la ventana ni cancele el proceso
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <script defer src="~/js/administrador/siteMatriculasUniandesMasivas.js?v=@DateTime.Now.Ticks"></script>
 

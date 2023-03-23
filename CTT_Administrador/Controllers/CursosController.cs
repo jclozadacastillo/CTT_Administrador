@@ -20,17 +20,17 @@ namespace CTT_Administrador.Controllers
         [HttpGet]
         public async Task<IActionResult> listar()
         {
-            var dapper=new MySqlConnection(_context.Database.GetConnectionString());
+            var dapper = new MySqlConnection(_context.Database.GetConnectionString());
             try
             {
-                string sql=@"SELECT c.*,tipoCurso,categoria 
-                            FROM cursos c 
+                string sql = @"SELECT c.*,tipoCurso,categoria
+                            FROM cursos c
                             INNER JOIN categorias ca on ca.idCategoria=c.idCategoria
                             INNER JOIN tiposcursos t on t.idTipoCurso=c.idTipoCurso
-                            WHERE c.idCurso in(select cm.idCurso 
-                            from cursos_mallas cm 
+                            WHERE c.idCurso in(select cm.idCurso
+                            from cursos_mallas cm
                             where cm.idCursoAsociado=c.idCurso
-                            ) or 
+                            ) or
                             c.idCurso not in(
                             select cm.idCursoAsociado
                             from cursos_mallas cm
@@ -41,7 +41,9 @@ namespace CTT_Administrador.Controllers
             catch (Exception ex)
             {
                 return Problem(ex.Message);
-            }finally{
+            }
+            finally
+            {
                 dapper?.Dispose();
             }
         }

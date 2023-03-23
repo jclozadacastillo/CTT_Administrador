@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewData["Title"] = "pdfDemo";
+    Layout = null;
+    var data = Model;
+}
+<!DOCTYPE html>
+<html lang="es-ec">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/templates/admin/assets/vendor/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <title>Document</title>
+</head>
+<body>
+    <div class="card">
+        <div class="card-body bg-primary">
+            <h1>pdfDemo</h1>
+
+            <h5>Soy un mensaje</h5>
+            @data.nombre @data.apellido
+            <table class="table table-bordered" cellpadding="0">
+                @foreach (var item in data.lista)
+                {
+                    <tr>
+                        <td>@item.datoLista</td>
+                    </tr>
+                }
+            </table>
+        </div>   
+
+    </div>
+
+</body>
+</html>
+    

@@ -1,7 +1,9 @@
 ﻿using CTT_Administrador.Auth.Administrador;
 using CTT_Administrador.Models.ctt;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 
 namespace CTT_Administrador.Controllers
 {
@@ -74,6 +76,29 @@ namespace CTT_Administrador.Controllers
             {
                 return Problem(ex.Message);
             }
+        }
+
+        [AllowAnonymous]
+        public IActionResult pdfDemo()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        public IActionResult pdf()
+        {
+            var datos = new
+            {
+                nombre = "Juan Carlos",
+                apellido = "Lozada Castillo",
+                lista = new List<dynamic>()
+                {
+                 new { datoLista = "1" },
+                 new { datoLista = "2" },
+                 new { datoLista = "3" }
+                }
+            };
+            return new ViewAsPdf("pdfDemo", datos);
         }
     }
 }

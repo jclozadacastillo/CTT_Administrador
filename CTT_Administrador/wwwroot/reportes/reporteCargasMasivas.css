@@ -1,0 +1,53 @@
+﻿.text-center{
+    text-align:center;
+}
+
+.no-break {
+    page-break-inside: avoid !important;
+    -webkit-column-break-inside: avoid;
+    -webkit-region-break-inside: avoid;
+    break-inside: avoid;
+}
+
+table.table-info {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 37px;
+    text-transform:uppercase;
+    font-size:12px;
+}
+    table.table-info tr td {
+        text-align: left;
+        padding: 1px 5px;
+        font-size: 12px;
+    }
+
+    table.table-info tr td:first-child{
+        font-weight:700;
+    }
+
+table.table-datos{
+    border-collapse:collapse;
+    width:100%;
+    margin-top:28px;
+}
+
+    table.table-datos thead tr th,
+    table.table-datos tbody tr td {
+        border: 1px solid gray;
+        text-align:left;
+        padding:1px 5px; 
+        font-size:12px;
+        text-transform:uppercase;
+    }
+
+    .fw-bold{
+        font-weight:700;
+    }
+
+    .text-danger{
+        color:red;
+    }
+    .text-success{
+        color:limegreen;
+    }

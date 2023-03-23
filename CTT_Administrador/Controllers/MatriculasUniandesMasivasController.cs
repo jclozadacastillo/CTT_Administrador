@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Rotativa.AspNetCore;
 
 namespace CTT_Administrador.Controllers
 {
@@ -16,7 +17,7 @@ namespace CTT_Administrador.Controllers
         private readonly cttContext _context;
         private readonly IAuthorizeAdministradorTools _auth;
 
-        public MatriculasUniandesMasivasController(cttContext context,IAuthorizeAdministradorTools auth)
+        public MatriculasUniandesMasivasController(cttContext context, IAuthorizeAdministradorTools auth)
         {
             _context = context;
             _auth = auth;
@@ -217,17 +218,17 @@ namespace CTT_Administrador.Controllers
                         listaEstudiantes.Add(new
                         {
                             idTipoDocumento = validarCedula(item.GetCell(0).ToString()) ? "C" : "P",
-                            documentoIdentidad = item.GetCell(0).ToString(),
-                            primerNombre = item.GetCell(1).ToString(),
-                            segundoNombre = item.GetCell(2).ToString(),
-                            primerApellido = item.GetCell(3).ToString(),
-                            segundoApellido = item.GetCell(4).ToString(),
-                            centro_detalle = item.GetCell(5).ToString(),
-                            direccion= item.GetCell(5).ToString(),
-                            listaCentros.Where(x => x.centro_detalle == item.GetCell(5).ToString()).FirstOrDefault()?.idcentro,
-                            carrera = item.GetCell(6).ToString(),
-                            listaCarreras.Where(x => x.carrera == item.GetCell(6).ToString()).FirstOrDefault()?.codigo_carrera,
-                            activo=1
+                            documentoIdentidad = string.IsNullOrEmpty(item.GetCell(0)?.ToString()) ? "" : item.GetCell(0)?.ToString(),
+                            primerNombre = string.IsNullOrEmpty(item.GetCell(1)?.ToString()) ? "" : item.GetCell(1)?.ToString(),
+                            segundoNombre = string.IsNullOrEmpty(item.GetCell(2)?.ToString()) ? "" : item.GetCell(2)?.ToString(),
+                            primerApellido = string.IsNullOrEmpty(item.GetCell(3)?.ToString()) ? "" : item.GetCell(3)?.ToString(),
+                            segundoApellido = string.IsNullOrEmpty(item.GetCell(4)?.ToString()) ? "" : item.GetCell(4)?.ToString(),
+                            centro_detalle = string.IsNullOrEmpty(item.GetCell(5)?.ToString()) ? "" : item.GetCell(5)?.ToString(),
+                            direccion = string.IsNullOrEmpty(item.GetCell(5)?.ToString()) ? "" : item.GetCell(5)?.ToString(),
+                            listaCentros.Where(x => x.centro_detalle == item.GetCell(5)?.ToString()).FirstOrDefault()?.idcentro,
+                            carrera = string.IsNullOrEmpty(item.GetCell(6)?.ToString()) ? "" : item.GetCell(6)?.ToString(),
+                            listaCarreras.Where(x => x.carrera == item.GetCell(6)?.ToString()).FirstOrDefault()?.codigo_carrera,
+                            activo = 1
                         });
                     }
                 }
@@ -250,31 +251,32 @@ namespace CTT_Administrador.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> generarMatriculas(string _alumnos, matriculas _data,string _alumnosCedulas)
+        public async Task<IActionResult> generarMatriculas(string _alumnos, matriculas _data, string _alumnosCedulas)
         {
             var dapper = new MySqlConnection(_context.Database.GetConnectionString());
             try
             {
+                var usuario = _auth.getUser();
                 var listaAlumnosMigracion = JsonConvert.DeserializeObject<List<alumnosMigracion>>(_alumnos.ToUpper());
                 var listaEstudiantes = JsonConvert.DeserializeObject<List<estudiantes>>(_alumnos.ToUpper());
                 var listaClientes = JsonConvert.DeserializeObject<List<clientesfacturas>>(_alumnos.ToUpper());
 
                 string sql = $@"
-                               SELECT documentoIdentidad 
-                               FROM estudiantes 
+                               SELECT documentoIdentidad
+                               FROM estudiantes
                                WHERE documentoIdentidad in({_alumnosCedulas});
                               ";
                 var existentesEstudiantes = await dapper.QueryAsync<string>(sql);
-                listaEstudiantes=listaEstudiantes.Where(x=>!(existentesEstudiantes.ToList().Contains(x.documentoIdentidad))).ToList();
+                listaEstudiantes = listaEstudiantes.Where(x => !(existentesEstudiantes.ToList().Contains(x.documentoIdentidad))).ToList();
                 if (listaEstudiantes.Count > 0)
                 {
                     _context.estudiantes.AddRange(listaEstudiantes);
                     await _context.SaveChangesAsync();
                 }
 
-                 sql = $@"
-                               SELECT documento 
-                               FROM clientesfacturas 
+                sql = $@"
+                               SELECT documento
+                               FROM clientesfacturas
                                WHERE documento in({_alumnosCedulas});
                               ";
                 var existentesClientes = await dapper.QueryAsync<string>(sql);
@@ -287,22 +289,60 @@ namespace CTT_Administrador.Controllers
 
                 sql = $@"
                         INSERT INTO matriculas
-                        (idEstudiante, idCliente, idGrupoCurso, idTipoDescuento, paralelo, 
+                        (idEstudiante, idCliente, idGrupoCurso, idTipoDescuento, paralelo,
                         fechaRegistro, esUniandes, idCarrera, idCentro, usuarioRegistro)
                         select distinct(e.idEstudiante),
-                        (select cf.idCliente FROM clientesfacturas cf 
+                        (select cf.idCliente FROM clientesfacturas cf
                         WHERE  cf.documento=e.documentoIdentidad limit 1) as idCliente,
                         @idGrupoCurso,1 as idTipoDescuento,@paralelo,
                         current_timestamp(),1,null,null,@usuario
-                        from estudiantes e 
+                        from estudiantes e
                         where e.documentoIdentidad in({_alumnosCedulas})
                         and e.idEstudiante not in(select m.idEstudiante
-                        from matriculas m 
-                        inner join gruposcursos g on g.idGrupoCurso = @idGrupoCurso
-                        )
+                        from matriculas m
+                        inner join gruposcursos g on m.idGrupoCurso = @idGrupoCurso
+                        );
                         ";
-                await dapper.ExecuteAsync(sql, new {_data.idGrupoCurso,usuario=_auth.getUser(),_data.paralelo });
-                return Ok();
+                await dapper.ExecuteAsync(sql, new { _data.idGrupoCurso, usuario, _data.paralelo });
+                sql = "";
+                dapper.Close();
+                dapper.Open();
+                foreach (var item in listaAlumnosMigracion)
+                {
+                    sql += $@"
+                                update matriculas m
+                                inner join estudiantes e on e.idEstudiante =m.idEstudiante
+                                set m.idCarrera='{item.codigo_carrera}',m.idCentro='{item.idcentro}'
+                                where idGrupoCurso = {_data.idGrupoCurso} and e.documentoIdentidad ='{item.documentoIdentidad}';
+                        ";
+                }
+                await dapper.QueryMultipleAsync(sql);
+                dapper.Close();
+                dapper.Open();
+                sql = @"
+                        insert into calificaciones (idMatricula,idGrupoCurso,idCurso)
+                        select
+                        idMatricula,g.idGrupoCurso,cm.idCursoAsociado
+                        from matriculas m
+                        inner join gruposcursos g on g.idGrupoCurso = m.idGrupoCurso
+                        inner join estudiantes e on e.idEstudiante = m.idEstudiante
+                        inner join cursos c on c.idCurso=g.idCurso
+                        inner join tiposcursos t on t.idTipoCurso = c.idTipoCurso
+                        inner join cursos_mallas cm on cm.idCurso = g.idCurso
+                        where c.activo = 1
+                        and concat(cast(m.idMatricula as char),'_',
+                        cast(m.idGrupoCurso as char),'_',cast(cm.idCursoAsociado as char))
+                        not in(
+                        select concat(cast(idMatricula as char),'_',
+                        cast(idGrupoCurso as char),'_',cast(idCurso as char))
+                        from calificaciones ca where ca.idMatricula=m.idMatricula
+                        ) and m.idGrupoCurso = @idGrupoCurso
+                        and m.usuarioRegistro=@usuario
+                        and m.paralelo=@paralelo
+                    ";
+                await dapper.ExecuteAsync(sql, new { _data.idGrupoCurso, usuario, _data.paralelo });
+                dapper.Close();
+                return generarPdfReporte(_data, _alumnosCedulas,usuario);
             }
             catch (Exception ex)
             {
@@ -312,6 +352,70 @@ namespace CTT_Administrador.Controllers
             {
                 dapper.Dispose();
             }
+        }
+
+        public IActionResult generarPdfReporte(matriculas _data, string _alumnosCedulas,string usuario)
+        {
+            var dapper = new MySqlConnection(_context.Database.GetConnectionString());
+            try
+            {
+                string sql = $@"SELECT c.curso,tp.tipoCurso, 
+                                p.detalle,'{_data.paralelo}' as paralelo,
+                                current_timestamp() as fechaRegistro
+                                FROM gruposcursos g
+                                INNER JOIN cursos c on c.idCurso=g.idCurso
+                                INNER JOIN tiposcursos tp on tp.idTipoCurso=c.idTipoCurso
+                                INNER JOIN periodos p on p.idPeriodo=g.idPeriodo
+                                WHERE g.idGrupoCurso=@idGrupoCurso
+                              ";
+                var datosCurso = dapper.QueryFirstOrDefault(sql, _data);
+                 sql = $@"SELECT e.documentoIdentidad,e.primerApellido,
+                         e.segundoApellido,e.primerNombre,e.segundoNombre,
+                         m.idCarrera,m.idCentro,m.fechaRegistro,m.usuarioRegistro
+                         FROM estudiantes e
+                         LEFT JOIN matriculas m on e.idEstudiante=m.idEstudiante AND m.idGrupoCurso=@idGrupoCurso 
+                         AND usuarioRegistro=@usuario AND  m.paralelo=@paralelo
+                         WHERE e.documentoIdentidad in({_alumnosCedulas})                         
+                        ";
+                var listaMatriculados = dapper.Query(sql, new { _data.idGrupoCurso, usuario, _data.paralelo });
+                var data = new {datosCurso,listaMatriculados,error=""};
+                return new ViewAsPdf("pdfReporte", data)
+                {
+                    FileName = "reporte.pdf",
+                    PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                    CustomSwitches = "--disable-smart-shrinking",
+                    PageMargins = { Top = 5, Right = 5, Bottom = 5, Left = 5 }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                var data = new {
+                    error=ex.Message,
+                    listaMatriculados= new List<dynamic>(),
+                    datosCurso = new {}
+                };
+                return new ViewAsPdf("pdfReporte", data)
+                {
+                    FileName = "reporte.pdf",
+                    PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                    CustomSwitches = "--disable-smart-shrinking",
+                    PageMargins = { Top = 5, Right = 5, Bottom = 5, Left = 5 }
+                };
+            }
+            finally
+            {
+                dapper.Dispose();
+            }
+
+            
+        }
+
+        public IActionResult pdfReporte()
+        {
+            return View();
         }
 
         private bool validarCedula(string ced)

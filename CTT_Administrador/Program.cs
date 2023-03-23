@@ -4,6 +4,7 @@ using CTT_Administrador.Models.ctt;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -38,5 +39,5 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Administrador}/{action=Index}/{id?}");
-
+RotativaConfiguration.Setup(app.Environment.WebRootPath);
 app.Run();

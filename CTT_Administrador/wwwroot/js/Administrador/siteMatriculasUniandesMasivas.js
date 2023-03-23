@@ -1,4 +1,8 @@
 ﻿const baseUrl = `${_route}MatriculasUniandesMasivas/`;
+const modalEspere = new bootstrap.Modal(espere, {
+    keyboard: false,
+    backdrop:'static'
+})
 let listaEstudiantes = [];
 window.addEventListener("load", async function () {
     activarValidadores(frmDatos)
@@ -141,25 +145,38 @@ async function generarMatriculas() {
             <div class='text-justify-all fs-xxs'>
             <b>Paralelo: </b></br>${paralelo.value}
             </div>
-            <div class='mt-2 text-center text-danger fs-xxs'>
-                <i class='bi-exclamation-triangle me-1'></i> Esta acción generará todas las matriculas y no se puede deshacer
+            <div class='mt-2 text-center text-danger fw-bold' style='font-size:11px'>
+                <i class='bi-exclamation-triangle-fill me-1'></i> Esta acción generará todas las matriculas y no se puede deshacer
             </div>
         `)) return;
         bloquearBotones();
+        modalEspere.show();
         const url = `${baseUrl}generarMatriculas`;
         const data = new FormData(frmDatos);
         listaEstudiantes = [...listaEstudiantes].map(x => {
             x.nombre = `${x.primerApellido} ${x.segundoApellido} ${x.primerNombre} ${x.segundoNombre}`;
-            x.documento = x.documentoIdentidad;
+            x.documentoIdentidad = x.documentoIdentidad.trim();
+            x.documento = x.documentoIdentidad.trim();
             return x;
         });
         data.append("_alumnos",JSON.stringify(listaEstudiantes));
         data.append("_alumnosCedulas",await generarSubconsulta());
-        const res = (await axios.post(url, data)).data;
+        const res = await axios({
+            method: "POST",
+            url,
+            data,
+            responseType: "arraybuffer"
+        });
+        await downloadArchivo(res.data);
+        toastSuccess("Matriculas generadas exitosamente");
+        await new Promise(resolve => setTimeout(()=>resolve(true), 1900));
+        //top.location.reload();
     } catch (e) {
         handleError(e);
+        setTimeout(() =>modalEspere.hide(), 190);
     }finally{
         desbloquearBotones();
+        modalEspere.hide();
     }
 }
 
@@ -170,10 +187,30 @@ function generarSubconsulta(){
             if(listaEstudiantes.length==0) throw new Error("Sin datos");
             listaEstudiantes.forEach((item,index)=>{
                 subconsulta+=`,'${item.documentoIdentidad}'`;
-                if(index==listaEstudiantes.length-1) resolve(subconsulta);
+                if(index==listaEstudiantes.length-1) resolve(subconsulta.trim().replaceAll(" ",""));
             });
         } catch (e) {
             resolve(subconsulta);
         }
     })
+}
+
+
+async function downloadArchivo(res) {
+    try {
+        return new Promise(async (resolve) => {
+            const blob = new Blob([res], { type: 'application/pdf' });
+            const urlObject = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = urlObject;
+            link.download = `${"Reporte descarga"}_${new Date().toISOString()}.pdf`;
+            link.click();
+            window.URL.revokeObjectURL(urlObject);
+            link.remove();
+            resolve(true);
+        });
+    } catch (e) {
+        console.error(`${e.message}`);
+        resolve(false);
+    }
 }

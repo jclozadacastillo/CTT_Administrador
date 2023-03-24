@@ -52,6 +52,8 @@ async function comboTiposCursos() {
     }
 }
 archivo.addEventListener("change", function () {
+    listaEstudiantes = [];
+    llenarTabla();
     if (this.value == "") return;
     if (!formatosPermitidos.includes(this.files[0].type)) {
         toastWarning("Formato de archivo no admitido");

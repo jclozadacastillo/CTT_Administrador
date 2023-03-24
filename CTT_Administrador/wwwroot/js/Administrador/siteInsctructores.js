@@ -1,38 +1,48 @@
-﻿const baseUrl = `${_route}Cursos/`;
+﻿const baseUrl = `${_route}Instructores/`;
 const modal = new bootstrap.Modal(modalDatos, {
     keyboard: false,
     backdrop: "static"
 })
-let idCurso = 0;
+let idInstructor = 0;
 let activo = 1;
 window.addEventListener("load", async function () {
-    loader.hidden=false;
-    $(idCategoria).select2({ dropdownParent: $('#modalDatos') });
-    $(idTipoCurso).select2({ dropdownParent: $('#modalDatos') });
-    $(idCursoPrecedencia).select2({ dropdownParent: $('#modalDatos') });
     activarValidadores(frmDatos);
-    await comboCategorias();
-    await comboTiposCursos();
+    loader.hidden = false;
+    await comboTiposDocumentos();
     await listar();
-    loader.hidden=true;
-    content.hidden=false;
+    loader.hidden = true;
+    content.hidden = false;
 });
+
+async function comboTiposDocumentos() {
+    try {
+        const url = `${baseUrl}comboTiposDocumentos`;
+        const res = (await axios.get(url)).data;
+        let html = ``;
+        res.forEach(item => {
+            html += `<option value='${item.idTipoDocumento}' data-cedula='${item.esCedula}'>${item.tipo}</option>`;
+        });
+        tipoDocumento.innerHTML = html;
+    } catch (e) {
+        handleError(e);
+    }
+}
+
 async function listar() {
     try {
         const url = `${baseUrl}listar`;
         const res = (await axios.get(url)).data;
-        comboCursos(res);
         await $(tableDatos).DataTable({
             bDestroy: true,
             data: res,
             columns: [
                 {
-                    data: "idCurso",
+                    data: "idInstructor",
                     class: "text-center td-switch",
                     render: (data, type, row) => {
                         const eliminar = row.eliminable == true ?
                             `<li>
-                                <a class="dropdown-item" 
+                                <a class="dropdown-item"
                                 onclick="eliminar('${data}')">
                                 <i class='bi-trash-fill me-1 text-gray'></i>
                                 <small>ELIMINAR</small>
@@ -66,17 +76,19 @@ async function listar() {
                         return `
                                 <label class="switch">
                                        <input type="checkbox"
-                                            id="check${row.idCurso}" ${(row.activo == true) ? "checked" : ""}
-                                            onchange="activar('${row.idCurso}',this)"
+                                            id="check${row.idInstructor}" ${(row.activo == true) ? "checked" : ""}
+                                            onchange="activar('${row.idInstructor}',this)"
                                             />
                                         <span class="slider"></span>
                                 </label>
                                 `;
                     }
                 },
-                {title: "Curso",data: "curso",class: "w-50"},
-                {title: "Categoría",data: "categoria",class: "w-25"},
-                {title: "Tipo",data: "tipoCurso",class: "w-25"},
+                { title: "Documento", data: "documentoIdentidad", class: "w-cedula" },
+                { title: "Primer Nombre", data: "primerNombre", class: "" },
+                { title: "Segundo Nombre", data: "segundoNombre", class: "" },
+                { title: "Primer Apellido", data: "primerApellido", class: "" },
+                { title: "Segundo Apellido", data: "segundoApellido", class: "" },
 
             ],
             columnDefs: [
@@ -89,56 +101,13 @@ async function listar() {
     }
 }
 
-function comboCursos(_cursos) {
-    try {
-        let html = "<option value=''>Seleccione</option>";
-        _cursos.forEach(item => {
-            html += `<option value='${item.idCurso}'>${item.curso}</option>`;
-        });
-        idCursoPrecedencia.innerHTML = html;
-    } catch (e) {
-        handleError(e);
-    }
-}
-
-async function nuevo() {
-    idCurso = 0;
+function nuevo() {
+    idInstructor = 0;
     activo = true;
     limpiarForm(frmDatos);
     modal.show();
     modalDatosLabel.innerHTML = "Nuevo registro";
-    handleAsistencia();
-    handlePrecedencia();
 }
-
-async function comboCategorias(){
-    try {
-        const url=`${baseUrl}comboCategorias`;
-        const res=(await axios.get(url)).data;
-        let html="<option value=''>Seleccione</option>";
-        res.forEach(item => {
-            html+=`<option value='${item.idCategoria}'>${item.categoria}</option>`;
-        });
-        idCategoria.innerHTML=html;
-    } catch (e) {
-        handleError(e);
-    }
-}
-
-async function comboTiposCursos(){
-    try {
-        const url=`${baseUrl}comboTiposCursos`;
-        const res=(await axios.get(url)).data;
-        let html="<option value=''>Seleccione</option>";
-        res.forEach(item => {
-            html+=`<option value='${item.idTipoCurso}'>${item.tipoCurso}</option>`;
-        });
-        idTipoCurso.innerHTML=html;
-    } catch (e) {
-        handleError(e);
-    }
-}
-
 
 async function guardar() {
     try {
@@ -146,7 +115,7 @@ async function guardar() {
         bloquearBotones();
         const url = `${baseUrl}guardar`;
         const data = new FormData(frmDatos);
-        data.append("idCurso", idCurso);
+        data.append("idInstructor", idInstructor);
         data.append("activo", activo);
         await axios.post(url, data);
         toastSuccess("<b>Guardado</b> con éxito");
@@ -154,58 +123,48 @@ async function guardar() {
         listar();
     } catch (e) {
         handleError(e);
-    }finally{
+    } finally {
         desbloquearBotones();
     }
 }
 
-async function editar(_idCurso) {
+async function editar(_idInstructor) {
     try {
         const url = `${baseUrl}unDato`;
         const data = new FormData();
-        data.append("idCurso", _idCurso);
+        data.append("idInstructor", _idInstructor);
         const res = (await axios.post(url, data)).data;
         if (!res) throw new Error("No se han encontrado los datos del elemento seleccionado.");
         modalDatosLabel.innerHTML = "Editar registro";
-        console.log(res);
-        idCurso = res.idCurso;
+        idInstructor = res.idInstructor;
         activo = res.activo == 1 || res.activo == true ? 1 : 0;
         cargarFormularioInForm(frmDatos, res);
-        handleAsistencia(true);
-        handlePrecedencia(true);
+        handleTipoDocumento();
         modal.show();
     } catch (e) {
         handleError(e);
     }
 }
 
-async function activar(_idCurso,_switch){
+async function activar(_idInstructor, _switch) {
     try {
-        const url=`${baseUrl}activar`;
-        const data=new FormData();
-        data.append("idCurso",_idCurso);
-        await axios.post(url,data);
-        toastSuccess(`<b>${_switch.checked?"Activado":"Desactivado"}</b> con éxito`);
+        const url = `${baseUrl}activar`;
+        const data = new FormData();
+        data.append("idInstructor", _idInstructor);
+        await axios.post(url, data);
+        toastSuccess(`<b>${_switch.checked ? "Activado" : "Desactivado"}</b> con éxito`);
     } catch (e) {
         handleError(e.message);
-        _switch.checked=!_switch.checked;
+        _switch.checked = !_switch.checked;
     }
 }
 
-function handlePrecedencia(_edita) {
-    
-    idCursoPrecedencia.setAttribute("data-validate", "no-validate")
-    divPrecedencia.hidden = !tienePrecedencia.checked;
-    if(!_edita)limpiarForm(divPrecedencia);
-    if (tienePrecedencia.checked) idCursoPrecedencia.removeAttribute("data-validate");;
-    activarValidadores(frmDatos);
-}
-
-function handleAsistencia(_edita) {
-
-    asistenciaMinima.setAttribute("data-validate", "no-validate")
-    divAsistencia.hidden = !calificaAsistencia.checked;
-    if (!_edita)limpiarForm(divAsistencia);
-    if (calificaAsistencia.checked) asistenciaMinima.removeAttribute("data-validate");;
+function handleTipoDocumento() {
+    documentoIdentidad.removeAttribute("data-validate");
+    limpiarValidadores(documentoIdentidad.closest("div"));
+    if (tipoDocumento.options[tipoDocumento.selectedIndex].dataset.cedula == "1") {
+        documentoIdentidad.setAttribute("data-validate", "cedula");
+        validarCedula(documentoIdentidad);
+    }
     activarValidadores(frmDatos);
 }

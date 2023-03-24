@@ -51,10 +51,97 @@
                                 <input type="text" class="form-control form-control-sm" id="curso" name="curso"
                                     maxlength="200">
                             </div>
-                            <div class="col-sm-12">
-                                <label class="fs-sm">Curso</label>
-                                <input type="text" class="form-control form-control-sm" id="curso" name="curso"
-                                    maxlength="200">
+                            <div class="col-sm-12" hidden> 
+                                <label class="fs-sm">Objetivo Principal</label>
+                                <textarea class="form-control form-control-sm" id="objetivoPrincipal" name="objetivoPrincipal" data-validate="no-validate" maxlength="100"></textarea>
+                            </div>
+                            <div class="col-sm-12" hidden>
+                                <label class="fs-sm">Objetivo Secundario</label>
+                                <textarea class="form-control form-control-sm" id="objetivoSecuncdario" name="objetivoSecuncdario" data-validate="no-validate" maxlength="10000"></textarea>
+                            </div>
+                            <div class="col-sm-2">
+                                <label class="fs-sm">Total Horas</label>
+                                <input type="text" class="form-control form-control-sm text-end" data-validate="decimal" id="horasCurso" name="horasCurso"
+                                       maxlength="7">
+                                <div class="invalid-feedback">
+                                    *Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <label class="fs-sm">Número notas</label>
+                                <input type="text" class="form-control form-control-sm text-end" data-validate="numeros-no-cero" id="numeroNotas" name="numeroNotas"
+                                       maxlength="7">
+                                <div class="invalid-feedback">
+                                    *Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <label class="fs-sm">Puntaje Máximo</label>
+                                <input type="text" class="form-control form-control-sm text-end" value="10" data-value="10" data-validate="decimal" id="puntajeMinimo" name="puntajeMinimo"
+                                       maxlength="7">
+                                <div class="invalid-feedback">
+                                    *Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <label class="fs-sm">Puntaje Mínimo</label>
+                                <input type="text" class="form-control form-control-sm text-end" value="7" data-value="7" data-validate="decimal" id="puntajeMaximo" name="puntajeMaximo"
+                                       maxlength="7">
+                                <div class="invalid-feedback">
+                                    *Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-2 ms-auto">
+                                <label class="fs-sm">Precio</label>
+                                <input type="text" class="form-control form-control-sm text-end" data-validate="decimal" id="precioCurso" name="precioCurso"
+                                       maxlength="7">
+                                <div class="invalid-feedback">
+                                    *Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-3 mt-2 ">
+                                <label class="pointer fw-600 me-1 fs-sm" for="procesoUniandes">Proceso Uniandes</label>
+                                <label class="switch">
+                                    <input type="checkbox"
+                                           id="procesoUniandes" name="procesoUniandes" value="1"/>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="col-sm-12 mt-2">
+                                <label class="pointer fw-600 me-1 fs-sm" for="tienePrecedencia">Tiene precedencia</label>
+                                <label class="switch">
+                                    <input type="checkbox"
+                                           value="1"
+                                           id="tienePrecedencia" name="tienePrecedencia" onchange="handlePrecedencia()" />
+                                    <span class="slider"></span>
+                                </label>
+                                <div class="row" id="divPrecedencia" hidden>
+                                    <div class="col-sm-6 mt-1">
+                                        <label class="fs-sm text-primary">Curso Precendencia</label>
+                                        <select class="form-select form-select-sm" data-validate="no-validate" name="idCursoPrecedencia" id="idCursoPrecedencia">
+                                            <option value="">Seleccione</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mt-2">
+                                <label class="pointer fw-600 me-1 fs-sm" for="tienePrecedencia">Califica Asistencia</label>
+                                <label class="switch">
+                                    <input type="checkbox"
+                                           value="1"
+                                           id="calificaAsistencia" name="calificaAsistencia" onchange="handleAsistencia()" />
+                                    <span class="slider"></span>
+                                </label>
+                                <div class="row" id="divAsistencia" hidden>
+                                    <div class="col-sm-3 mt-1">
+                                        <label class="fs-sm text-primary">Asistencia Mínima</label>
+                                        <input type="text" class="form-control form-control-sm text-end" data-validate="numeros-no-cero" id="asistenciaMinima" name="asistenciaMinima"
+                                               maxlength="7">
+                                        <div class="invalid-feedback">
+                                            *Campo requerido
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </form>

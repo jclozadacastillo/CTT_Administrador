@@ -5274,7 +5274,7 @@ textarea.form-control-lg {
   --bs-modal-width: 500px;
   --bs-modal-padding: 1rem;
   --bs-modal-margin: 0.5rem;
-  --bs-modal-color: ;
+/*  --bs-modal-color: ;*/
   --bs-modal-bg: #fff;
   --bs-modal-border-color: var(--bs-border-color-translucent);
   --bs-modal-border-width: 1px;
@@ -5430,11 +5430,13 @@ textarea.form-control-lg {
   .modal-sm {
     --bs-modal-width: 300px;
   }
+
 }
+
 @media (min-width: 992px) {
   .modal-lg,
 .modal-xl {
-    --bs-modal-width: 800px;
+    --bs-modal-width: 950px;
   }
 }
 @media (min-width: 1200px) {

@@ -6188,6 +6188,16 @@ fieldset:disabled .btn {
     }
 }
 
+
+@media (min-width: 576px) and (max-width : 992px) {
+    .modal-xl {
+        --bs-modal-width: 100% !important;
+        max-width: none;
+        margin-left:0.5em;
+        margin-right:0.5em;
+    }
+}
+
 @media (min-width:992px) {
 
     .modal-lg,

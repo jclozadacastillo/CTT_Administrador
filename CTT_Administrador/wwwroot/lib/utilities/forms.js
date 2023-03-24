@@ -18,6 +18,9 @@
             } else {
                 item.value = "";
                 item.classList.remove("is-invalid");
+                if (!!item.dataset.value) {
+                    item.value=item.dataset.value
+                }
             }
         });
 };
@@ -381,6 +384,8 @@ const validarVacio = async (item) => {
 
 const parseToDecimal = (e) => {
     e.value = e.value.replace(/(?!^[\-\d\,.])[^\d\\d\,.]/g, '');
+    e.value = e.value.replaceAll("d", "");
+    e.value = e.value.replaceAll("D", "");
     e.value = e.value.replaceAll(".", ",");
     if (e.value.split(",").length > 2)
         e.value = e.value.substring(0, e.value.length - 1);
@@ -998,4 +1003,19 @@ function handleError(e) {
         console.log(e);
         console.error("Error");
     }
+}
+
+function limpiarValidadores(form){
+    if (!!form)
+        form.querySelectorAll("input,select,textarea").forEach((item) => {
+            if (item.tagName.toUpperCase() == "SELECT") {
+                item.classList.remove("is-invalid");
+                if ($(item).data('select2')) {
+                    item.parentElement.querySelector("span.is-invalid")?.classList.remove("is-invalid");
+                    return;
+                }
+            } else {
+                item.classList.remove("is-invalid");
+            }
+        });
 }

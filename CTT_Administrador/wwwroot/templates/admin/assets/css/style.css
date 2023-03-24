@@ -123,12 +123,14 @@ html {
 /*FIN ESTILO SCROLLBAR*/
 
 :root {
-  scroll-behavior: smooth;
-  --fs-md: 15px;
-  --fs-xxs: 13px;
-  --fs-sm: 14px;
-  --primary-rgb: 2, 167, 136;
-  --primary-hover-rgb: 60, 114, 110;
+    scroll-behavior: smooth;
+    --fs-md: 14px;
+    --fs-xxs: 12px;
+    --fs-xxxs: 11px;
+    --fs-xxxxs: 9px;
+    --fs-sm: 13px;
+    --primary-rgb: 2, 167, 136;
+    --primary-hover-rgb: 60, 114, 110;
 }
 
 body {
@@ -605,6 +607,7 @@ h6 {
 
 .header-nav .nav-profile img {
   max-height: 36px;
+
 }
 
 .header-nav .nav-profile span {
@@ -809,9 +812,9 @@ h6 {
   display: flex;
   align-items: center;
   font-size: var(--fs-sm);
-  font-weight: 600;
+  font-weight: 500;
   color: black;
-  transition: 0.3s;
+  transition: 0.19s;
   padding: 7px 15px;
   border-radius: 0px 15px 15px 0px;
 }
@@ -829,6 +832,16 @@ h6 {
 
 .sidebar-nav .nav-link.collapsed i {
   color: #595A5D;
+}
+/*.sidebar .nav-link[data-bs-target] +ul:has(a[data-menu].active),
+.sidebar .nav-link[data-bs-target] +ul:has(a[data-menu].active) i {
+    color: black !important;
+    font-weight: 600;
+}*/
+li.nav-item:has(a[data-menu].active) a[data-bs-toggle],
+li.nav-item:has(a[data-menu].active) a[data-bs-toggle] i{
+    color: black !important;
+    font-weight: 600;
 }
 
 .sidebar-nav .nav-link:hover {
@@ -859,11 +872,11 @@ h6 {
   display: flex;
   align-items: center;
   font-size: var(--fs-sm);
-  font-weight: 600;
+  font-weight: 500;
   color: #595A5D;
-  transition: 0.3;
+  transition: 0.19s;
   padding: 7px 15px 7px 21.7px;
-  transition: 0.3s;
+  transition: 0.19s;
   border-radius: 0px 15px 15px 0px;
 }
 
@@ -882,6 +895,7 @@ h6 {
 .sidebar-nav .nav-content a.active {
   background-color: rgba(var(--primary-rgb), 0.10);
   color: black;
+  font-weight:600;
 }
 
 .sidebar-nav .nav-content a.active i {
@@ -1616,6 +1630,17 @@ select {
   padding: 0 !important;
 }
 
+.bg-login {
+    /*    background: rgba(var(--primary-rgb), .91) !important;
+    background: url(../../../../lib/utilities/toast/img/bg-admin.jpg);*/
+    background-image: linear-gradient(to bottom, rgba(var(--primary-rgb), 0.91), rgba(var(--primary-rgb), 0.91)), url('../../../../lib/utilities/toast/img/bg-admin.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    padding: 0 !important;
+}
+
 .main-container .portada {
   min-height: calc(100vh - 80px) !important;
   background: rgba(var(--primary-rgb), .91);
@@ -1650,4 +1675,40 @@ ul.ul-novedades {
 ul.ul-novedades li {
   padding-left: 0 !important;
   margin-left: 0 !important;
+}
+
+.fs-xxxs{
+    font-size:var(--fs-xxxs);
+}
+
+.fs-xxxxs {
+    font-size: var(--fs-xxxxs);
+}
+
+.pointer{
+    cursor:pointer;
+}
+
+.fw-600{
+    font-weight:600;
+}
+
+.nav-profile:hover a{
+    color:black !important;
+
+}
+
+.nav-profile:hover {
+    background-color: rgba(0,0,0,0.037);
+    border-radius:16px 16px 16px 16px;
+}
+
+.invalid-feedback{
+    font-size:var(--fs-xxxxs);
+    font-weight:600;
+    margin:0
+}
+
+.w-cedula{
+    width:50px !important;
 }

@@ -12,11 +12,11 @@
     --sweetalert-font-size: 11px;
     --sweetalert-padding-bottons: 3px 7px;
     --sweetalert-loader-color: #02A788;
-    --sweetalert-font-weight:normal;
+    --sweetalert-font-weight: normal;
 }
 
 .notify {
-    --notify-error: #f41127 ;
+    --notify-error: #f41127;
     --notify-error-progress: #d10b1e;
     --notify-success: #2CCB80;
     --notify-success-progress: #22AC6B;
@@ -445,14 +445,13 @@ button.swal2-styled:focus {
     margin-bottom: 12.7px;
 }
 
-button.swal2-confirm[style*="background-color: red"]{
+button.swal2-confirm[style*="background-color: red"] {
     background-color: #f41127 !important;
     border-color: #f41127 !important;
 }
 
-button.swal2-confirm[style*="background-color: red"]:hover,
-button.swal2-confirm[style*="background-color: red"]:focus
-{
-    background-color: #d10b1e !important;
-    border-color: #d10b1e !important;
-}
+    button.swal2-confirm[style*="background-color: red"]:hover,
+    button.swal2-confirm[style*="background-color: red"]:focus {
+        background-color: #d10b1e !important;
+        border-color: #d10b1e !important;
+    }

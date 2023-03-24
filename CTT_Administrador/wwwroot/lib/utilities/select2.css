@@ -638,10 +638,7 @@ input.select2-search__field {
     outline: none !important;
 }
 
-/* select.is-invalid> .select2-selection--single,
-select.is-invalid > [data-select2-id] 
- {
-    border: 1px solid red !important;
-    font-size: 500px !important;
-    background-color: red !important;
-} */
+select.is-invalid + span.select2 span.selection span.select2-selection--single {
+    color: red !important;
+    border-color: #dc3545 !important;
+}

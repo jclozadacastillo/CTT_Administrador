@@ -1712,3 +1712,64 @@ ul.ul-novedades li {
 .w-cedula{
     width:50px !important;
 }
+
+th.td-wid{
+  width: 25px !important;
+  max-width: 25px !important;
+}
+
+div.row.mx-alert{
+    margin-left:1px;
+    margin-right:1px;
+}
+
+form.to-uppercase input:not([data-validate="email"]):not([password]):not([no-uppercase]),
+form.to-uppercase select,
+form.to-uppercase textarea{
+    text-transform:uppercase !important;
+}
+
+[data-menu-solo].active * {
+    color: black !important;
+    font-weight: 600;
+}
+[data-menu-solo].active {
+    background-color: rgba(var(--primary-rgb), 0.10);
+}
+
+.input-nota{
+    padding:1px 2px;
+    border-radius:0;
+    text-align:right;
+    width:46px;
+}
+
+.input-nota {
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+    .input-nota:focus {
+        outline: none;
+        -webkit-appearance: none;
+        border:1px solid rgb(var(--primary-rgb));
+    }
+
+.span-nota {
+    width: 46px;
+    height: 23px;
+    text-align: right;
+    padding: 1px 3px;
+    background-color: white;
+    cursor:not-allowed;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}

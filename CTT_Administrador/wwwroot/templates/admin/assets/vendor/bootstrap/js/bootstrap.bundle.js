@@ -1761,7 +1761,7 @@
 
 
     toggle() {
-      if (this._isShown()) {
+        if (this._isShown()) {
         this.hide();
       } else {
         this.show();
@@ -4727,7 +4727,6 @@
       if (!this._isShown || this._isTransitioning) {
         return;
       }
-
       const hideEvent = EventHandler.trigger(this._element, EVENT_HIDE$4);
 
       if (hideEvent.defaultPrevented) {
@@ -6926,7 +6925,6 @@
       if (!this.isShown()) {
         return;
       }
-
       const hideEvent = EventHandler.trigger(this._element, EVENT_HIDE);
 
       if (hideEvent.defaultPrevented) {

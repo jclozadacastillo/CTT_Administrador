@@ -19,7 +19,7 @@
                 item.value = "";
                 item.classList.remove("is-invalid");
                 if (!!item.dataset.value) {
-                    item.value=item.dataset.value
+                    item.value = item.dataset.value
                 }
             }
         });
@@ -510,18 +510,18 @@ const decimal = async (e) => {
         e.classList.remove("is-invalid");
         const msg = e.parentElement.querySelector(".invalid-feedback");
         let valido = true;
-        msg.innerText = "* Campo requerido";
+        if(!!msg)msg.innerText = "* Campo requerido";
         if (e.value.trim() == "") {
             e.classList.add("is-invalid");
             valido = false;
         }
         if (e.value.split(",")[1] == "") {
-            msg.innerText = "* Valor inválido";
+        if (!!msg) msg.innerText = "* Valor inválido";
             e.classList.add("is-invalid");
             valido = false;
         }
         if (parseFloat(e.value.replaceAll(",", ".")) < 0.01) {
-            msg.innerText = "* Mínimo 0,01";
+        if (!!msg) msg.innerText = "* Mínimo 0,01";
             e.classList.add("is-invalid");
             valido = false;
         }
@@ -936,7 +936,7 @@ function bloquearBotones() {
     document.querySelectorAll("button,a").forEach(item => {
         if (item.dataset.guardar) item.innerHTML = "Espere...";
         item.classList.add("no-event");
-        item.disabled = true;
+        item.setAttribute("disabled", "true");
     })
 }
 
@@ -962,7 +962,6 @@ function limpiarSelect2(item) {
     } catch (e) {
         console.warn(e.message);
     }
-
 }
 
 function addAntiForgeryToken(_formData) {
@@ -978,21 +977,21 @@ function addAntiForgeryToken(_formData) {
 function handleError(e) {
     try {
         console.log(e);
-        if(e?.response?.status==404){
+        if (e?.response?.status == 404) {
             toastError(`<b>404:</b> ${e.response.request.responseURL}`);
             return;
         }
-        if(!e.response?.data.detail && !!e.message){
-            if(!!e.response?.status){
+        if (!e.response?.data.detail && !!e.message) {
+            if (!!e.response?.status) {
                 toastError(`<b>${e.response?.status}:</b> ${e.response.request.response || e.code}`);
-            }else{
+            } else {
                 toastError(`${e.message}`);
             }
             return;
         }
-        const error = `${e.response  ? `<b>${e.response?.status}:</b> ${e.response.data.detail}` : `${e.message}`}`;
-        if(!e.message && !e.response.data.detail){
-            error="nepe";
+        const error = `${e.response ? `<b>${e.response?.status}:</b> ${e.response.data.detail}` : `${e.message}`}`;
+        if (!e.message && !e.response.data.detail) {
+            error = "nepe";
         }
         if (!!(typeof toastError)) {
             toastError(error)
@@ -1005,7 +1004,7 @@ function handleError(e) {
     }
 }
 
-function limpiarValidadores(form){
+function limpiarValidadores(form) {
     if (!!form)
         form.querySelectorAll("input,select,textarea").forEach((item) => {
             if (item.tagName.toUpperCase() == "SELECT") {
@@ -1018,4 +1017,11 @@ function limpiarValidadores(form){
                 item.classList.remove("is-invalid");
             }
         });
+}
+
+function formToUpperCase(form) {
+    if (!!form) form.querySelectorAll("input,select,textarea").forEach((item) => {
+        if (!(item.dataset?.validate == "email" || item.hasAttribute("password")) || item.hasAttribute("no-uppercase"))item.value = item.value.toUpperCase()
+
+    }); 
 }

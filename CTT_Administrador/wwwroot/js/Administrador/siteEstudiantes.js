@@ -1,9 +1,9 @@
-﻿const baseUrl = `${_route}Instructores/`;
+﻿const baseUrl = `${_route}Estudiantes/`;
 const modal = new bootstrap.Modal(modalDatos, {
     keyboard: false,
     backdrop: "static"
 })
-let idInstructor = 0;
+let idEstudiante = 0;
 let activo = 1;
 const mayusculas = true;
 window.addEventListener("load", async function () {
@@ -24,7 +24,7 @@ async function comboTiposDocumentos() {
         res.forEach(item => {
             html += `<option value='${item.idTipoDocumento}' data-cedula='${item.esCedula}'>${item.tipo}</option>`;
         });
-        tipoDocumento.innerHTML = html;
+        idTipoDocumento.innerHTML = html;
     } catch (e) {
         handleError(e);
     }
@@ -39,7 +39,7 @@ async function listar() {
             data: res,
             columns: [
                 {
-                    data: "idInstructor",
+                    data: "idEstudiante",
                     class: "text-center w-id",
                     render: (data, type, row) => {
                         const eliminar = row.eliminable == true ?
@@ -78,8 +78,8 @@ async function listar() {
                         return `
                                 <label class="switch">
                                        <input type="checkbox"
-                                            id="check${row.idInstructor}" ${(row.activo == true) ? "checked" : ""}
-                                            onchange="activar('${row.idInstructor}',this)"
+                                            id="check${row.idEstudiante}" ${(row.activo == true) ? "checked" : ""}
+                                            onchange="activar('${row.idEstudiante}',this)"
                                             />
                                         <span class="slider"></span>
                                 </label>
@@ -104,7 +104,7 @@ async function listar() {
 }
 
 function nuevo() {
-    idInstructor = 0;
+    idEstudiante = 0;
     activo = true;
     limpiarForm(frmDatos);
     modal.show();
@@ -118,7 +118,7 @@ async function guardar() {
         const url = `${baseUrl}guardar`;
         if (mayusculas) formToUpperCase(frmDatos);
         const data = new FormData(frmDatos);
-        data.append("idInstructor", idInstructor);
+        data.append("idEstudiante", idEstudiante);
         data.append("activo", activo);
         await axios.post(url, data);
         toastSuccess("<b>Guardado</b> con éxito");
@@ -131,29 +131,29 @@ async function guardar() {
     }
 }
 
-async function editar(_idInstructor) {
+async function editar(_idEstudiante) {
     try {
         const url = `${baseUrl}unDato`;
         const data = new FormData();
-        data.append("idInstructor", _idInstructor);
+        data.append("idEstudiante", _idEstudiante);
         const res = (await axios.post(url, data)).data;
         if (!res) throw new Error("No se han encontrado los datos del elemento seleccionado.");
         modalDatosLabel.innerHTML = "Editar registro";
-        idInstructor = res.idInstructor;
+        idEstudiante = res.idEstudiante;
         activo = res.activo == 1 || res.activo == true ? 1 : 0;
         cargarFormularioInForm(frmDatos, res);
-        handleTipoDocumento();
+        handleidTipoDocumento();
         modal.show();
     } catch (e) {
         handleError(e);
     }
 }
 
-async function activar(_idInstructor, _switch) {
+async function activar(_idEstudiante, _switch) {
     try {
         const url = `${baseUrl}activar`;
         const data = new FormData();
-        data.append("idInstructor", _idInstructor);
+        data.append("idEstudiante", _idEstudiante);
         await axios.post(url, data);
         toastSuccess(`<b>${_switch.checked ? "Activado" : "Desactivado"}</b> con éxito`);
     } catch (e) {
@@ -162,10 +162,10 @@ async function activar(_idInstructor, _switch) {
     }
 }
 
-function handleTipoDocumento() {
+function handleidTipoDocumento() {
     documentoIdentidad.removeAttribute("data-validate");
     limpiarValidadores(documentoIdentidad.closest("div"));
-    if (tipoDocumento.options[tipoDocumento.selectedIndex].dataset.cedula == "1") {
+    if (idTipoDocumento.options[idTipoDocumento.selectedIndex]?.dataset.cedula == "1") {
         documentoIdentidad.setAttribute("data-validate", "cedula");
         validarCedula(documentoIdentidad);
     }

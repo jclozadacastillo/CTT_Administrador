@@ -35,7 +35,7 @@
   <script defer src="~/lib/utilities/jquery-3.6.4.min.js"></script>
   <script defer src="~/lib/utilities/toast/toast.all.min.js"></script>
   <script defer src="~/lib/utilities/datatables/datatables.b5.es.min.js"></script>
-  <script defer src="~/templates/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script defer src="~/templates/admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js@_v"></script>
   <script defer src="~/templates/admin/assets/js/main.js@_v"></script>
   <script defer src="~/lib/utilities/select2.js@_v"></script>
   <script defer src="~/lib/utilities/axios/axios.min.js"></script>
@@ -64,7 +64,6 @@
 
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
-
         @*<li class="nav-item d-block d-lg-none" >
           <a class="nav-link nav-icon search-bar-toggle " href="#">
             <i class="bi bi-search"></i>
@@ -222,12 +221,12 @@
             <span class="d-none d-md-block dropdown-toggle ps-2 text-dark">@_auth.getName()</span>
           </a><!-- End Profile Iamge Icon -->
 
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile" style="font-size:13px">
             <li class="dropdown-header ">
             <div class="text-center mb-3">
                 <img src="~/templates/admin/assets/img/user-icon.jpg" width="64" class="rounded-circle"/>
             </div>
-              <h6>@_auth.getName()</h6>
+              <h6 style="font-size:14px">@_auth.getName()</h6>
               <span>Administrador</span>
             </li>
             <li>
@@ -316,6 +315,11 @@
                             <i class="bi bi-circle"></i><span>Instructores</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="~/Administrador/Estudiantes" data-menu>
+                            <i class="bi bi-circle"></i><span>Estudiantes</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
 
@@ -332,7 +336,18 @@
           </li>
         </ul>
       </li>
-
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#navDistributivo" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-person-video3"></i><span>Distributivo</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="navDistributivo" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="~/Administrador/AsignacionInstructores" data-menu>
+                            <i class="bi bi-circle"></i><span>Asignar Instructores</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
     </ul>
 
   </aside>

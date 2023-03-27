@@ -5,7 +5,9 @@ const modal = new bootstrap.Modal(modalDatos, {
 })
 let idCategoria = 0;
 let activo = 1;
-window.addEventListener("load", async function(){
+const mayusculas = true;
+window.addEventListener("load", async function () {
+    if (mayusculas) frmDatos.classList.add("to-uppercase");
     loader.hidden=false;
     await listar();
     loader.hidden=true;
@@ -96,6 +98,7 @@ async function guardar() {
         if (!await validarTodo(frmDatos)) throw new Error("Verifique los campos requeridos");
         bloquearBotones();
         const url = `${baseUrl}guardar`;
+        if (mayusculas) formToUpperCase(frmDatos);
         const data = new FormData(frmDatos);
         data.append("idCategoria", idCategoria);
         data.append("activo", activo);

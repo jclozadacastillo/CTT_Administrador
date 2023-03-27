@@ -5,7 +5,9 @@ const modal = new bootstrap.Modal(modalDatos, {
 })
 let idCurso = 0;
 let activo = 1;
+const mayusculas = true;
 window.addEventListener("load", async function () {
+    if (mayusculas) frmDatos.classList.add("to-uppercase");
     loader.hidden=false;
     $(idCategoria).select2({ dropdownParent: $('#modalDatos') });
     $(idTipoCurso).select2({ dropdownParent: $('#modalDatos') });
@@ -145,6 +147,7 @@ async function guardar() {
         if (!await validarTodo(frmDatos)) throw new Error("Verifique los campos requeridos");
         bloquearBotones();
         const url = `${baseUrl}guardar`;
+        if (mayusculas) formToUpperCase(frmDatos);
         const data = new FormData(frmDatos);
         data.append("idCurso", idCurso);
         data.append("activo", activo);

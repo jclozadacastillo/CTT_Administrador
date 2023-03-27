@@ -58,6 +58,17 @@ namespace CTT_Administrador.Controllers
             if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
             return View();
         }
+        public IActionResult Estudiantes()
+        {
+            if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
+            return View();
+        }
+
+        public IActionResult AsignacionInstructores()
+        {
+            if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
+            return View();
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

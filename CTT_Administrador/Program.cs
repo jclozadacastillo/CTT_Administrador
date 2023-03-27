@@ -1,5 +1,6 @@
 using CTT_Administrador.Auth;
 using CTT_Administrador.Auth.Administrador;
+using CTT_Administrador.Auth.Docente;
 using CTT_Administrador.Models.ctt;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.SlidingExpiration = true;
     });
 builder.Services.TryAddScoped<IAuthorizeAdministradorTools, AuthorizeAdministradorTools>();
+builder.Services.TryAddScoped<IAuthorizeDocenteTools, AuthorizeDocenteTools>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

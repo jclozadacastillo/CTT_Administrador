@@ -342,7 +342,7 @@ namespace CTT_Administrador.Controllers
                     ";
                 await dapper.ExecuteAsync(sql, new { _data.idGrupoCurso, usuario, _data.paralelo });
                 dapper.Close();
-                return generarPdfReporte(_data, _alumnosCedulas,usuario);
+                return generarPdfReporte(_data, _alumnosCedulas, usuario);
             }
             catch (Exception ex)
             {
@@ -354,12 +354,12 @@ namespace CTT_Administrador.Controllers
             }
         }
 
-        public IActionResult generarPdfReporte(matriculas _data, string _alumnosCedulas,string usuario)
+        public IActionResult generarPdfReporte(matriculas _data, string _alumnosCedulas, string usuario)
         {
             var dapper = new MySqlConnection(_context.Database.GetConnectionString());
             try
             {
-                string sql = $@"SELECT c.curso,tp.tipoCurso, 
+                string sql = $@"SELECT c.curso,tp.tipoCurso,
                                 p.detalle,'{_data.paralelo}' as paralelo,
                                 current_timestamp() as fechaRegistro
                                 FROM gruposcursos g
@@ -369,16 +369,16 @@ namespace CTT_Administrador.Controllers
                                 WHERE g.idGrupoCurso=@idGrupoCurso
                               ";
                 var datosCurso = dapper.QueryFirstOrDefault(sql, _data);
-                 sql = $@"SELECT e.documentoIdentidad,e.primerApellido,
+                sql = $@"SELECT e.documentoIdentidad,e.primerApellido,
                          e.segundoApellido,e.primerNombre,e.segundoNombre,
                          m.idCarrera,m.idCentro,m.fechaRegistro,m.usuarioRegistro
                          FROM estudiantes e
-                         LEFT JOIN matriculas m on e.idEstudiante=m.idEstudiante AND m.idGrupoCurso=@idGrupoCurso 
+                         LEFT JOIN matriculas m on e.idEstudiante=m.idEstudiante AND m.idGrupoCurso=@idGrupoCurso
                          AND usuarioRegistro=@usuario AND  m.paralelo=@paralelo
-                         WHERE e.documentoIdentidad in({_alumnosCedulas})                         
+                         WHERE e.documentoIdentidad in({_alumnosCedulas})
                         ";
                 var listaMatriculados = dapper.Query(sql, new { _data.idGrupoCurso, usuario, _data.paralelo });
-                var data = new {datosCurso,listaMatriculados,error=""};
+                var data = new { datosCurso, listaMatriculados, error = "" };
                 return new ViewAsPdf("pdfReporte", data)
                 {
                     FileName = "reporte.pdf",
@@ -390,11 +390,11 @@ namespace CTT_Administrador.Controllers
             }
             catch (Exception ex)
             {
-
-                var data = new {
-                    error=ex.Message,
-                    listaMatriculados= new List<dynamic>(),
-                    datosCurso = new {}
+                var data = new
+                {
+                    error = ex.Message,
+                    listaMatriculados = new List<dynamic>(),
+                    datosCurso = new { }
                 };
                 return new ViewAsPdf("pdfReporte", data)
                 {
@@ -409,8 +409,6 @@ namespace CTT_Administrador.Controllers
             {
                 dapper.Dispose();
             }
-
-            
         }
 
         public IActionResult pdfReporte()

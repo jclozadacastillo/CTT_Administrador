@@ -1,10 +1,7 @@
 ﻿using CTT_Administrador.Auth.Administrador;
 using CTT_Administrador.Models.ctt;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NPOI.OpenXmlFormats.Dml.Chart;
-using Rotativa.AspNetCore;
 
 namespace CTT_Administrador.Controllers
 {
@@ -30,17 +27,20 @@ namespace CTT_Administrador.Controllers
                 return Problem(ex.Message);
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> comboTiposDocumentos()
         {
             try
             {
                 return Ok(await _context.tiposdocumentos.ToListAsync());
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return Problem(ex.Message);
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> unDato(int idInstructor)
         {
@@ -88,29 +88,6 @@ namespace CTT_Administrador.Controllers
             {
                 return Problem(ex.Message);
             }
-        }
-
-        [AllowAnonymous]
-        public IActionResult pdfDemo()
-        {
-            return View();
-        }
-
-        [AllowAnonymous]
-        public IActionResult pdf()
-        {
-            var datos = new
-            {
-                nombre = "Juan Carlos",
-                apellido = "Lozada Castillo",
-                lista = new List<dynamic>()
-                {
-                 new { datoLista = "1" },
-                 new { datoLista = "2" },
-                 new { datoLista = "3" }
-                }
-            };
-            return new ViewAsPdf("pdfDemo", datos);
         }
     }
 }

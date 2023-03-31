@@ -1,4 +1,5 @@
-﻿using CTT_Administrador.Auth.Docente;
+﻿using System.Reflection;
+using CTT_Administrador.Auth.Docente;
 using CTT_Administrador.Models.ctt;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
@@ -192,11 +193,23 @@ namespace CTT_Administrador.Controllers
             var dapper = new MySqlConnection(_context.Database.GetConnectionString());
             try
             {
-                _data.promedioFinal=(_data.nota1+_data.nota2+_data.nota3)/3;
-                string sql = @"
+                string sql=@"SELECT numeroNotas,puntajeMinimo,asistenciaMinima from cursos WHERE idCurso=@idCurso";;
+                var parametros=await dapper.QueryFirstOrDefaultAsync<cursos>(sql,_data);
+                int? notas = parametros.numeroNotas;
+                int? puntajeMinimo = parametros.puntajeMinimo;
+                double acumulador=0;
+                for (var i = 1; i <= notas; i++){
+                   Type type=_data.GetType();
+                    PropertyInfo info=type.GetProperty($"nota{i}");
+                    acumulador+=info.GetValue(_data)==null?0:Convert.ToDouble(info.GetValue(_data));
+                } 
+                _data.promedioFinal=Convert.ToDecimal(acumulador/notas);
+                _data.aprobado = Convert.ToSByte(_data.promedioFinal >= Convert.ToDecimal(puntajeMinimo) && _data.faltas<=parametros.asistenciaMinima);
+                sql = @"
                                 UPDATE calificaciones
-                                SET nota1=@nota1, nota2=@nota2, nota3=@nota3, faltas=@faltas,
-                                promedioFinal=@promedioFinal
+                                SET nota1=@nota1, nota2=@nota2, nota3=@nota3,nota4=@nota4,nota5=@nota5,
+                                faltas=@faltas,
+                                promedioFinal=@promedioFinal,aprobado=@aprobado
                                 WHERE idMatricula=@idMatricula 
                                 AND idGrupoCurso=@idGrupoCurso 
                                 AND idCurso=@idCurso;
@@ -221,9 +234,22 @@ namespace CTT_Administrador.Controllers
             var dapper = new MySqlConnection(_context.Database.GetConnectionString());
             try
             {
+                string sql = @"SELECT numeroNotas,puntajeMinimo,asistenciaMinima from cursos WHERE idCurso=@idCurso"; ;
+                var parametros = await dapper.QueryFirstOrDefaultAsync<cursos>(sql, _data.FirstOrDefault());
+                int? notas = parametros.numeroNotas;
+                int? puntajeMinimo = parametros.puntajeMinimo;
+
                 foreach (var item in _data)
                 {
-                    item.promedioFinal = (item.nota1 + item.nota2 + item.nota3) / 3;
+                    double acumulador = 0;
+                    for (var i = 1; i <= notas; i++)
+                    {
+                        Type type = item.GetType();
+                        PropertyInfo info = type.GetProperty($"nota{i}");
+                        acumulador += info.GetValue(item) == null ? 0 : Convert.ToDouble(info.GetValue(item));
+                    }
+                    item.promedioFinal = Convert.ToDecimal(acumulador / notas);
+                    item.aprobado = Convert.ToSByte(item.promedioFinal >= Convert.ToDecimal(puntajeMinimo) && item.faltas < parametros.asistenciaMinima);
                     _context.calificaciones.Update(item);
                 }
                 await _context.SaveChangesAsync();

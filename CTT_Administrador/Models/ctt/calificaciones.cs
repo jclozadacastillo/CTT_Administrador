@@ -28,4 +28,8 @@ public partial class calificaciones
     public sbyte? esExcento { get; set; }
 
     public string? observacion { get; set; }
+
+    public decimal? nota4 { get; set; }
+
+    public decimal? nota5 { get; set; }
 }

@@ -9,8 +9,8 @@ window.addEventListener("load", async function () {
     $(idGrupoCurso).select2();
     $(idCurso).select2();
     await comboPeriodos();
-    loader.hidden=true;
-    content.hidden=false;
+    loader.hidden = true;
+    content.hidden = false;
 });
 
 async function comboPeriodos() {
@@ -116,23 +116,50 @@ async function listar() {
 
 function llenarTabla() {
     let html = "";
+    let htmlHeader = "";
     const body = tableDatos.querySelector("tbody");
+    const header = tableDatos.querySelector("thead");
+    header.innerHTML = htmlHeader;
     body.innerHTML = html;
-    listaCalificaciones.forEach((item, index) => {
-        const allow = (item.tiempoLimite >= 0 || item.tipoLimiteAtraso >= 0);
-        editable = allow;
-        html += `<tr>
-                       <td>${index+1}</td>
-                       <td>${item.documentoIdentidad}</td>
-                       <td>${item.estudiante}</td>
-                       <td>${allow ? `<input maxlength="4" data-ref="nota1" class='input-nota'  data-validate="decimal" value='${item.nota1.toString().replaceAll(".", ",")}'/>` : `<div class='span-nota'>${item.nota1.toString().replaceAll(".", ",") }</div>`}</td>
-                       <td>${allow ? `<input maxlength="4" data-ref="nota2" class='input-nota' data-validate="decimal" value='${item.nota2.toString().replaceAll(".", ",")}'/>` : `<div class='span-nota'>${item.nota2.toString().replaceAll(".", ",") }</div>`}</td>
-                       <td>${allow ? `<input maxlength="4" data-ref="nota3" class='input-nota' data-validate="decimal" value='${item.nota3.toString().replaceAll(".", ",")}'/>` : `<div class='span-nota'>${item.nota3.toString().replaceAll(".", ",") }</div>`}</td>
-                       <td>${allow && parametros.calificaAsistencia==1 ? `<input maxlength="4" data-ref="faltas" class='input-nota' data-validate="numeros" value='${item.faltas.toString().replaceAll(".", ",")}'/>` : `<div class='span-nota'>${item.faltas.toString().replaceAll(".", ",") }</div>`}</td>
-                </tr>`;
+    if (listaCalificaciones.length == 0){
+        body.innerHTML=`<tr><td colspan="11" class="text-center">Lista vacia</td></tr>`;
+        return;
+    }
+    htmlHeader = `
+                        <tr>
+                        <th>#</th>
+                        <th>Documento</th>
+                        <th>Estudiante</th>
+                    
+    `;
+    const listaNotas = Object.keys(listaCalificaciones[0]).filter(x => x.indexOf("nota") == 0).slice(0, parametros.numeroNotas);
+    listaNotas.forEach(item => {
+        htmlHeader += `<th>Nota ${item.split("nota")[1]}</th>
+        `
     });
-    body.innerHTML = html || `<tr><td colspan="7" class="text-center">Lista vacia</td></tr>`;   
-    if (editable && listaCalificaciones.length>0) btnGuardarTodo.removeAttribute("hidden");
+    htmlHeader += `<th>Promedio</th>
+                 <th>Faltas</th>
+                 <th>Estado</th>
+                 </tr>`;
+    header.innerHTML = htmlHeader;
+    listaCalificaciones.forEach((item, index) => {
+        const allow = (item.tiempoLimite >= 0 || item.tiempoLimiteAtraso >= 0);
+        editable = allow;
+
+        html += `<tr>
+                       <td>${index + 1}</td>
+                       <td>${item.documentoIdentidad}</td>
+                       <td>${item.estudiante}</td>`;
+        listaNotas.forEach(nota => {
+            html += `<td>${allow ? `<input maxlength="4" data-ref="${nota}" class='input-nota'  data-validate="decimal" value='${item[nota].toString().replaceAll(".", ",")}'/>` : `<div class='span-nota'>${item[nota].toString().replaceAll(".", ",")}</div>`}</td>`;
+        });
+        html += `<td data-promedio><div class='span-nota'>${item.promedioFinal.toString().replaceAll(".", ",")}</div></td>
+        <td>${allow && parametros.calificaAsistencia == 1 ? `<input maxlength="4" data-ref="faltas" class='input-nota' data-validate="numeros" value='${item.faltas.toString().replaceAll(".", ",")}'/>` : `<div class='span-nota'>${item.faltas.toString().replaceAll(".", ",")}</div>`}</td>
+        <td data-estado><span class='badge fs-xxxs bg-${item.aprobado == 1 ? "success" : "danger"}'>${item.aprobado == 1 ? "APROBADO" : "REPROBADO"}</span></td></tr>
+        `;
+    });
+    body.innerHTML = html || `<tr><td colspan="7" class="text-center">Lista vacia</td></tr>`;
+    if (editable && listaCalificaciones.length > 0) btnGuardarTodo.removeAttribute("hidden");
     mapearValidadoresTabla();
 }
 
@@ -142,9 +169,13 @@ function mapearValidadoresTabla() {
         row.querySelectorAll("input[data-ref]").forEach(item => {
             item.addEventListener("focusout", () => {
                 if (item.dataset.ref == "faltas") {
+                    if (!item.value) item.value = "0";
                     if (parseFloat(item.value.replaceAll(",", ".")) > parametros.horasCurso) item.value = parametros.horasCurso;
+                    if (parseFloat(item.value) < 0) item.value = "0";
                 } else {
+                    if (!item.value) item.value = "0";
                     if (parseFloat(item.value.replaceAll(",", ".")) > parametros.puntajeMaximo) item.value = parametros.puntajeMaximo;
+                    if (parseFloat(item.value) < 0) item.value = "0";
                 }
                 guardar(index);
             });
@@ -158,16 +189,33 @@ async function guardar(_index) {
         const elementos = tableDatos.querySelector("tbody").querySelectorAll("tr")[_index];
         if (!elementos) return;
         elementos.querySelectorAll("input[data-ref]").forEach(item => {
-            listaCalificaciones[_index][item.dataset.ref] = item.value.replaceAll(",",".");
+            listaCalificaciones[_index][item.dataset.ref] = item.value.replaceAll(",", ".");
         });
         const url = `${baseUrl}guardar`;
         await axios.post(url, JSON.stringify(listaCalificaciones[_index]), {
             headers: { 'Content-Type': 'application/json' }
         });
+        calcularPromedio(_index);
     } catch (e) {
         listar();
         handleError(e);
     }
+
+}
+
+function calcularPromedio(_index) {
+    const estudiante = listaCalificaciones[_index];
+    const fila = tableDatos.querySelector("tbody").querySelectorAll("tr")[_index];
+    const notas = Object.keys(estudiante).filter(x => x.indexOf("nota") == 0).slice(0, parametros.numeroNotas);
+    let acumulador = 0;
+    for (let index = 0; index < notas.length; index++) {
+        acumulador += parseFloat(estudiante[notas[index]]);
+    }
+    let promedio = parseFloat(acumulador / parametros.numeroNotas);
+    listaCalificaciones[_index].promedioFinal = promedio;
+    listaCalificaciones[_index].aprobado = ((promedio >= parseFloat(parametros.puntajeMinimo)) && (parseFloat(parametros.asistenciaMinima) >= parseFloat(listaCalificaciones[_index].faltas))) ? 1 : 0;
+    fila.querySelector("td[data-estado]").innerHTML = `<span class='badge fs-xxxs bg-${listaCalificaciones[_index].aprobado == 1 ? "success" : "danger"}'>${listaCalificaciones[_index].aprobado == 1 ? "APROBADO" : "REPROBADO"}</span>`;
+    fila.querySelector("td[data-promedio]").innerHTML = `<div class='span-nota'>${listaCalificaciones[_index].promedioFinal.toFixed(2).toString().replaceAll(".", ",")}</div>`;
 
 }
 
@@ -178,7 +226,10 @@ async function guardarTodo() {
             x.nota1 = x.nota1.toString().replaceAll(",", ".");
             x.nota2 = x.nota2.toString().replaceAll(",", ".");
             x.nota3 = x.nota3.toString().replaceAll(",", ".");
+            x.nota4 = x.nota4.toString().replaceAll(",", ".");
+            x.nota5 = x.nota5.toString().replaceAll(",", ".");
             x.faltas = x.faltas.toString().replaceAll(",", ".");
+            x.promedioFinal = x.promedioFinal.toString().replaceAll(",", ".");
             return x;
         })
         const url = `${baseUrl}guardarTodo`;
@@ -200,11 +251,11 @@ function buscarEnTabla(_busqueda) {
     if (tableDatos.innerText.indexOf("Lista vacia") > 0) return;
     tableDatos.querySelector("tbody").querySelectorAll("tr").forEach(item => {
         item.removeAttribute("hidden");
-        if (item.innerText.toLowerCase().indexOf(_busqueda.toLowerCase())<0) {
+        if (item.innerText.toLowerCase().indexOf(_busqueda.toLowerCase()) < 0) {
             item.hidden = true;
         }
     });
     if (tableDatos.querySelector("tbody").querySelectorAll("tr").length == tableDatos.querySelector("tbody").querySelectorAll("tr[hidden]").length) {
-        tableDatos.querySelector("tbody").insertAdjacentHTML("beforeend", "<tr id='trSinResultados'><td colspan='7' class='text-center'>Sin resultados</td></tr>");
+        tableDatos.querySelector("tbody").insertAdjacentHTML("beforeend", "<tr id='trSinResultados'><td colspan='11' class='text-center'>Sin resultados</td></tr>");
     }
 }

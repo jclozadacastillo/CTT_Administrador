@@ -1,4 +1,5 @@
-﻿using CTT_Administrador.Auth.Administrador;
+﻿using CTT_Administrador.Auth;
+using CTT_Administrador.Auth.Administrador;
 using CTT_Administrador.Models.ctt;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace CTT_Administrador.Controllers
         [HttpGet]
         public async Task<IActionResult> listar()
         {
-            var dapper = new MySqlConnection(_context.Database.GetConnectionString());
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
                 string sql = @"SELECT c.*,tipoCurso,categoria

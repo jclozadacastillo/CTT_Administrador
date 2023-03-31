@@ -1,4 +1,5 @@
-﻿using CTT_Administrador.Auth.Administrador;
+﻿using CTT_Administrador.Auth;
+using CTT_Administrador.Auth.Administrador;
 using CTT_Administrador.Models.ctt;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,7 @@ namespace CTT_Administrador.Controllers
         [HttpGet]
         public async Task<IActionResult> comboPeriodos()
         {
-            var dapper = new MySqlConnection(_context.Database.GetConnectionString());
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
                 string sql = @"
@@ -66,7 +67,7 @@ namespace CTT_Administrador.Controllers
         [HttpPost]
         public async Task<IActionResult> comboTiposCursos(int idPeriodo)
         {
-            var dapper = new MySqlConnection(_context.Database.GetConnectionString());
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
                 string sql = @"
@@ -107,7 +108,7 @@ namespace CTT_Administrador.Controllers
         [HttpPost]
         public async Task<IActionResult> comboCursos(int idTipoCurso, int idPeriodo)
         {
-            var dapper = new MySqlConnection(_context.Database.GetConnectionString());
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
                 string sql = @"
@@ -253,7 +254,7 @@ namespace CTT_Administrador.Controllers
         [HttpPost]
         public async Task<IActionResult> generarMatriculas(string _alumnos, matriculas _data, string _alumnosCedulas)
         {
-            var dapper = new MySqlConnection(_context.Database.GetConnectionString());
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
                 var usuario = _auth.getUser();
@@ -356,7 +357,7 @@ namespace CTT_Administrador.Controllers
 
         public IActionResult generarPdfReporte(matriculas _data, string _alumnosCedulas, string usuario)
         {
-            var dapper = new MySqlConnection(_context.Database.GetConnectionString());
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
                 string sql = $@"SELECT c.curso,tp.tipoCurso,

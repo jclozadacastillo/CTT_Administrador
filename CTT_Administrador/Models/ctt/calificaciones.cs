@@ -19,7 +19,7 @@ public partial class calificaciones
 
     public decimal? promedioFinal { get; set; }
 
-    public int? faltas { get; set; }
+    public decimal? faltas { get; set; }
 
     public sbyte? pierdeFaltas { get; set; }
 

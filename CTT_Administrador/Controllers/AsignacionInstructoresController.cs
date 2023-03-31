@@ -1,4 +1,5 @@
-﻿using CTT_Administrador.Auth.Administrador;
+﻿using CTT_Administrador.Auth;
+using CTT_Administrador.Auth.Administrador;
 using CTT_Administrador.Models.ctt;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace CTT_Administrador.Controllers
         [HttpGet]
         public async Task<IActionResult> listar()
         {
-            var dapper = new MySqlConnection(_context.Database.GetConnectionString());
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
                 string sql = @"SELECT a.*,i.documentoIdentidad,i.abreviaturaTitulo,
@@ -49,7 +50,7 @@ namespace CTT_Administrador.Controllers
         [HttpGet]
         public async Task<IActionResult> comboPeriodos()
         {
-            var dapper = new MySqlConnection(_context.Database.GetConnectionString());
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
                 string sql = @"
@@ -89,7 +90,7 @@ namespace CTT_Administrador.Controllers
         [HttpPost]
         public async Task<IActionResult> comboTiposCursos(int idPeriodo)
         {
-            var dapper = new MySqlConnection(_context.Database.GetConnectionString());
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
                 string sql = @"
@@ -130,7 +131,7 @@ namespace CTT_Administrador.Controllers
         [HttpPost]
         public async Task<IActionResult> comboCursos(int idTipoCurso, int idPeriodo)
         {
-            var dapper = new MySqlConnection(_context.Database.GetConnectionString());
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
                 string sql = @"
@@ -172,7 +173,7 @@ namespace CTT_Administrador.Controllers
         [HttpPost]
         public async Task<IActionResult> comboCursosAsociados(int idGrupoCurso)
         {
-            var dapper = new MySqlConnection(_context.Database.GetConnectionString());
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
                 string sql = @"select * from gruposcursos g 
@@ -195,7 +196,7 @@ namespace CTT_Administrador.Controllers
         [HttpGet]
         public async Task<IActionResult> comboInstructores()
         {
-            var dapper = new MySqlConnection(_context.Database.GetConnectionString());
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
                 string sql = @"
@@ -217,7 +218,7 @@ namespace CTT_Administrador.Controllers
         [HttpPost]
         public async Task<IActionResult> unDato(int idAsignacion)
         { 
-            var dapper=new MySqlConnection(_context.Database.GetConnectionString());
+            var dapper=new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
                 string sql = @"SELECT a.*,i.documentoIdentidad,i.abreviaturaTitulo,

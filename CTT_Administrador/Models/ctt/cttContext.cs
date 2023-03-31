@@ -57,9 +57,9 @@ public partial class cttContext : DbContext
 
     public virtual DbSet<usuarios> usuarios { get; set; }
 
-//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseMySQL("server=localhost;user=sa;password=Ctt$.2023;database=cec_ctt;SslMode=false");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseMySQL("server=localhost;user=root;password=123;database=cec_ctt;SslMode=none");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -85,7 +85,7 @@ public partial class cttContext : DbContext
 
             entity.Property(e => e.aprobado).HasDefaultValueSql("'0'");
             entity.Property(e => e.esExcento).HasDefaultValueSql("'0'");
-            entity.Property(e => e.faltas).HasDefaultValueSql("'0'");
+            entity.Property(e => e.faltas).HasPrecision(5);
             entity.Property(e => e.nota1)
                 .HasPrecision(5)
                 .HasDefaultValueSql("'0.00'");

@@ -1,4 +1,4 @@
-﻿const baseUrl = `${_route}Calificaciones/`;
+﻿const baseUrl = `${_route}AsignacionAsistencias/`;
 let activo = 1;
 let listaCalificaciones = [];
 let parametros = {};
@@ -138,7 +138,7 @@ function llenarTabla() {
         `
     });
     htmlHeader += `<th>Promedio</th>
-                 <th>Faltas</th>
+                 <th>Asistencia</th>
                  <th>Estado</th>
                  </tr>`;
     header.innerHTML = htmlHeader;
@@ -151,10 +151,10 @@ function llenarTabla() {
                        <td>${item.documentoIdentidad}</td>
                        <td>${item.estudiante}</td>`;
         listaNotas.forEach(nota => {
-            html += `<td>${allow ? `<input maxlength="4" data-ref="${nota}" class='input-nota'  data-validate="decimal" value='${item[nota].toString().replaceAll(".", ",")}'/>` : `<div class='span-nota'>${item[nota].toString().replaceAll(".", ",")}</div>`}</td>`;
+            html += `<td>${false ? `<input maxlength="4" data-ref="${nota}" class='input-nota'  data-validate="decimal" value='${item[nota].toString().replaceAll(".", ",")}'/>` : `<div class='span-nota'>${item[nota].toString().replaceAll(".", ",")}</div>`}</td>`;
         });
         html += `<td data-promedio><div class='span-nota'>${item.promedioFinal.toString().replaceAll(".", ",")}</div></td>
-        <td>${allow && parametros.calificaAsistencia == 1 && false ? `<input maxlength="4" data-ref="faltas" class='input-nota' data-validate="numeros" value='${item.faltas.toString().replaceAll(".", ",")}'/>` : `<div class='span-nota'>${item.faltas.toString().replaceAll(".", ",")}</div>`}</td>
+        <td>${parametros.calificaAsistencia==1 ? `<input maxlength="4" data-ref="faltas" class='input-nota' data-validate="decimal" value='${item.faltas.toString().replaceAll(".", ",")}'/>` : `<div class='span-nota'>${item.faltas.toString().replaceAll(".", ",")}</div>`}</td>
         <td data-estado><span class='badge fs-xxxs bg-${item.aprobado == 1 ? "success" : "danger"}'>${item.aprobado == 1 ? "APROBADO" : "REPROBADO"}</span></td></tr>
         `;
     });
@@ -213,7 +213,7 @@ function calcularPromedio(_index) {
     }
     let promedio = parseFloat(acumulador / parametros.numeroNotas);
     listaCalificaciones[_index].promedioFinal = promedio;
-    const apruebaCalificaciones = parametros.calificaAsistencia == 0 ? true : (parseFloat(parametros.asistenciaMinima) >= parseFloat(listaCalificaciones[_index].faltas));
+    const apruebaCalificaciones = parametros.calificaAsistencia == 0 ? true : (parseFloat(parametros.asistenciaMinima) <= parseFloat(listaCalificaciones[_index].faltas));
     listaCalificaciones[_index].aprobado = ((promedio >= parseFloat(parametros.puntajeMinimo)) && apruebaCalificaciones) ? 1 : 0;
     fila.querySelector("td[data-estado]").innerHTML = `<span class='badge fs-xxxs bg-${listaCalificaciones[_index].aprobado == 1 ? "success" : "danger"}'>${listaCalificaciones[_index].aprobado == 1 ? "APROBADO" : "REPROBADO"}</span>`;
     fila.querySelector("td[data-promedio]").innerHTML = `<div class='span-nota'>${listaCalificaciones[_index].promedioFinal.toFixed(2).toString().replaceAll(".", ",")}</div>`;

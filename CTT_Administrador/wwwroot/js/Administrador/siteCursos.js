@@ -212,3 +212,7 @@ function handleAsistencia(_edita) {
     if (calificaAsistencia.checked) asistenciaMinima.removeAttribute("data-validate");;
     activarValidadores(frmDatos);
 }
+
+numeroNotas.addEventListener("focusout", () => {
+    if (parseInt(numeroNotas.value) > 5) numeroNotas.value = "5";
+})

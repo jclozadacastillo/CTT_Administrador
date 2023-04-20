@@ -17,11 +17,13 @@ namespace CTT_Administrador.Controllers
     {
         private readonly cttContext _context;
         private readonly IAuthorizeAdministradorTools _auth;
+        private readonly string _path;
 
-        public MatriculasUniandesMasivasController(cttContext context, IAuthorizeAdministradorTools auth)
+        public MatriculasUniandesMasivasController(cttContext context, IAuthorizeAdministradorTools auth, IWebHostEnvironment _env)
         {
             _context = context;
             _auth = auth;
+            _path = _env.WebRootPath;
         }
 
         [HttpGet]
@@ -50,7 +52,7 @@ namespace CTT_Administrador.Controllers
                 and p.activo = 1 and m.activa = 1
                 and datediff(current_date(),p.fechaInicio)>=0
                 and datediff(p.fechaFin,current_date())>=0
-                and c.esVisible = 0
+                                and (c.esVisible = 0 or c.esVisible is null)
                 ";
                 return Ok(await dapper.QueryAsync(sql));
             }
@@ -90,7 +92,7 @@ namespace CTT_Administrador.Controllers
                 and p.activo = 1 and m.activa = 1
                 and datediff(current_date(),p.fechaInicio)>=0
                 and datediff(p.fechaFin,current_date())>=0
-                and c.esVisible = 0
+                                and (c.esVisible = 0 or c.esVisible is null)
                 and p.idPeriodo=@idPeriodo
                 ";
                 return Ok(await dapper.QueryAsync(sql, new { idPeriodo }));
@@ -132,7 +134,7 @@ namespace CTT_Administrador.Controllers
                             and p.activo = 1 and m.activa = 1
                             and datediff(current_date(),p.fechaInicio)>=0
                             and datediff(p.fechaFin,current_date())>=0
-                            and c.esVisible = 0
+                                            and (c.esVisible = 0 or c.esVisible is null)
                 and p.idPeriodo=@idPeriodo and t.idTipoCurso=@idTipoCurso
                 ";
                 return Ok(await dapper.QueryAsync(sql, new { idTipoCurso, idPeriodo }));
@@ -211,21 +213,21 @@ namespace CTT_Administrador.Controllers
                         || string.IsNullOrEmpty(item.GetCell(6).ToString())
                         )
                     {
-                        if (!string.IsNullOrEmpty(item.GetCell(0).ToString()))
-                            novedades += $"<li>Se ha omitido la fila <b>{i + 1}</b> por validación de datos.</li>";
+                        if (item.GetCell(0).ToString().Trim() == "" && item.GetCell(1).ToString().Trim() != "")
+                            novedades += $"<li>Se ha <b>omitido</b> la fila <b>{i + 1}</b> por que no tiene documento de identidad.</li>";
                     }
                     else
                     {
                         listaEstudiantes.Add(new
                         {
                             idTipoDocumento = validarCedula(item.GetCell(0).ToString()) ? "C" : "P",
-                            documentoIdentidad = string.IsNullOrEmpty(item.GetCell(0)?.ToString()) ? "" : item.GetCell(0)?.ToString(),
-                            primerNombre = string.IsNullOrEmpty(item.GetCell(1)?.ToString()) ? "" : item.GetCell(1)?.ToString(),
-                            segundoNombre = string.IsNullOrEmpty(item.GetCell(2)?.ToString()) ? "" : item.GetCell(2)?.ToString(),
-                            primerApellido = string.IsNullOrEmpty(item.GetCell(3)?.ToString()) ? "" : item.GetCell(3)?.ToString(),
-                            segundoApellido = string.IsNullOrEmpty(item.GetCell(4)?.ToString()) ? "" : item.GetCell(4)?.ToString(),
-                            centro_detalle = string.IsNullOrEmpty(item.GetCell(5)?.ToString()) ? "" : item.GetCell(5)?.ToString(),
-                            direccion = string.IsNullOrEmpty(item.GetCell(5)?.ToString()) ? "" : item.GetCell(5)?.ToString(),
+                            documentoIdentidad = string.IsNullOrEmpty(item.GetCell(0)?.ToString()) ? "" : item.GetCell(0)?.ToString()?.Trim(),
+                            primerNombre = string.IsNullOrEmpty(item.GetCell(1)?.ToString()) ? "" : item.GetCell(1)?.ToString()?.TrimStart()?.TrimEnd(),
+                            segundoNombre = string.IsNullOrEmpty(item.GetCell(2)?.ToString()) ? "" : item.GetCell(2)?.ToString()?.TrimStart()?.TrimEnd(),
+                            primerApellido = string.IsNullOrEmpty(item.GetCell(3)?.ToString()) ? "" : item.GetCell(3)?.ToString()?.TrimStart()?.TrimEnd(),
+                            segundoApellido = string.IsNullOrEmpty(item.GetCell(4)?.ToString()) ? "" : item.GetCell(4)?.ToString()?.TrimStart()?.TrimEnd(),
+                            centro_detalle = string.IsNullOrEmpty(item.GetCell(5)?.ToString()) ? "" : item.GetCell(5)?.ToString()?.TrimStart()?.TrimEnd(),
+                            direccion = string.IsNullOrEmpty(item.GetCell(5)?.ToString()) ? "" : item.GetCell(5)?.ToString()?.TrimStart()?.TrimEnd(),
                             listaCentros.Where(x => x.centro_detalle == item.GetCell(5)?.ToString()).FirstOrDefault()?.idcentro,
                             carrera = string.IsNullOrEmpty(item.GetCell(6)?.ToString()) ? "" : item.GetCell(6)?.ToString(),
                             listaCarreras.Where(x => x.carrera == item.GetCell(6)?.ToString()).FirstOrDefault()?.codigo_carrera,
@@ -379,7 +381,7 @@ namespace CTT_Administrador.Controllers
                          WHERE e.documentoIdentidad in({_alumnosCedulas})
                         ";
                 var listaMatriculados = dapper.Query(sql, new { _data.idGrupoCurso, usuario, _data.paralelo });
-                var data = new { datosCurso, listaMatriculados, error = "" };
+                var data = new { datosCurso, listaMatriculados, path = _path, error = "" };
                 return new ViewAsPdf("pdfReporte", data)
                 {
                     FileName = "reporte.pdf",
@@ -395,7 +397,8 @@ namespace CTT_Administrador.Controllers
                 {
                     error = ex.Message,
                     listaMatriculados = new List<dynamic>(),
-                    datosCurso = new { }
+                    datosCurso = new { },
+                    path = _path
                 };
                 return new ViewAsPdf("pdfReporte", data)
                 {
@@ -414,7 +417,15 @@ namespace CTT_Administrador.Controllers
 
         public IActionResult pdfReporte()
         {
-            return View();
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Response.Cookies.Append("errorRotativa", ex.Message);
+                return RedirectToAction("Error", "Error");
+            }
         }
 
         private bool validarCedula(string ced)

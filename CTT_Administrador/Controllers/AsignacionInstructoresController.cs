@@ -27,7 +27,8 @@ namespace CTT_Administrador.Controllers
             try
             {
                 string sql = @"SELECT a.*,i.documentoIdentidad,i.abreviaturaTitulo,
-                              i.primerApellido,i.segundoApellido,i.primerNombre,i.segundoNombre,c.curso,detalle
+                              i.primerApellido,i.segundoApellido,i.primerNombre,i.segundoNombre,c.curso,detalle,
+                              DATE_FORMAT(a.fechaRegistro,'%d-%m-%Y') as fechaRegistroMostrar
                               FROM asignacionesinstructorescalificaciones a
                               INNER JOIN GruposCursos g on g.idGrupoCurso = a.idGrupoCurso
                               INNER JOIN Cursos c on c.idCurso=a.idCurso
@@ -73,7 +74,7 @@ namespace CTT_Administrador.Controllers
                 and p.activo = 1 and m.activa = 1
                 and datediff(current_date(),p.fechaInicio)>=0
                 and datediff(p.fechaFin,current_date())>=0
-                and c.esVisible = 0
+                and (c.esVisible = 0 or c.esVisible is null)
                 ";
                 return Ok(await dapper.QueryAsync(sql));
             }
@@ -111,9 +112,7 @@ namespace CTT_Administrador.Controllers
                 from cursos_mallas cm))
                 and c.activo =1 and g.activo=1
                 and p.activo = 1 and m.activa = 1
-                and datediff(current_date(),p.fechaInicio)>=0
-                and datediff(p.fechaFin,current_date())>=0
-                and c.esVisible = 0
+                and (c.esVisible = 0 or c.esVisible is null)
                 and p.idPeriodo=@idPeriodo
                 ";
                 return Ok(await dapper.QueryAsync(sql, new { idPeriodo }));
@@ -153,9 +152,7 @@ namespace CTT_Administrador.Controllers
                             from cursos_mallas cm))
                             and c.activo =1 and g.activo=1
                             and p.activo = 1 and m.activa = 1
-                            and datediff(current_date(),p.fechaInicio)>=0
-                            and datediff(p.fechaFin,current_date())>=0
-                            and c.esVisible = 0
+                            and (c.esVisible = 0 or c.esVisible is null)
                             and p.idPeriodo=@idPeriodo and t.idTipoCurso=@idTipoCurso
                 ";
                 return Ok(await dapper.QueryAsync(sql, new { idTipoCurso, idPeriodo }));
@@ -176,9 +173,9 @@ namespace CTT_Administrador.Controllers
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
-                string sql = @"select * from gruposcursos g 
-                                inner join cursos_mallas m on m.idCurso = g.idCurso 
-                                inner join cursos c on c.idCurso = m.idCursoAsociado 
+                string sql = @"select * from gruposcursos g
+                                inner join cursos_mallas m on m.idCurso = g.idCurso
+                                inner join cursos c on c.idCurso = m.idCursoAsociado
                                 where idGrupoCurso = @idGrupoCurso
                                 ";
                 return Ok(await dapper.QueryAsync(sql, new { idGrupoCurso }));
@@ -217,8 +214,8 @@ namespace CTT_Administrador.Controllers
 
         [HttpPost]
         public async Task<IActionResult> unDato(int idAsignacion)
-        { 
-            var dapper=new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
+        {
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
                 string sql = @"SELECT a.*,i.documentoIdentidad,i.abreviaturaTitulo,
@@ -230,7 +227,7 @@ namespace CTT_Administrador.Controllers
                               INNER JOIN Instructores i on i.idInstructor=a.idInstructor
                               INNER JOIN Periodos p on p.idPeriodo=g.idPeriodo
                               WHERE idAsignacion=@idAsignacion";
-                return Ok(await dapper.QueryFirstOrDefaultAsync(sql, new {idAsignacion}));
+                return Ok(await dapper.QueryFirstOrDefaultAsync(sql, new { idAsignacion }));
             }
             catch (Exception ex)
             {

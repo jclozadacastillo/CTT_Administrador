@@ -251,7 +251,6 @@ export interface DoughnutControllerDatasetOptions
   ScriptableAndArrayOptions<ArcOptions, ScriptableContext<'doughnut'>>,
   ScriptableAndArrayOptions<ArcHoverOptions, ScriptableContext<'doughnut'>>,
   AnimationOptions<'doughnut'> {
-
   /**
    * Sweep to allow arcs to cover.
    * @default 360
@@ -664,7 +663,6 @@ export interface DatasetControllerChartComponent extends ChartComponent {
 }
 
 export interface Defaults extends CoreChartOptions<ChartType>, ElementChartOptions<ChartType>, PluginChartOptions<ChartType> {
-
   scale: ScaleOptionsByType;
   scales: {
     [key in ScaleType]: ScaleOptionsByType<key>;
@@ -1459,7 +1457,6 @@ export interface CoreInteractionOptions {
 }
 
 export interface CoreChartOptions<TType extends ChartType> extends ParsingOptions, AnimationOptions<TType> {
-
   datasets: {
     [key in ChartType]: ChartTypeRegistry[key]['datasetOptions']
   }
@@ -2513,7 +2510,6 @@ export interface TooltipCallbacks<
   TType extends ChartType,
   Model = TooltipModel<TType>,
   Item = TooltipItem<TType>> {
-
   beforeTitle(this: Model, tooltipItems: Item[]): string | string[] | void;
   title(this: Model, tooltipItems: Item[]): string | string[] | void;
   afterTitle(this: Model, tooltipItems: Item[]): string | string[] | void;
@@ -3115,7 +3111,6 @@ export declare const CategoryScale: ChartComponent & {
 };
 
 export type LinearScaleOptions = CartesianScaleOptions & {
-
   /**
    *  if true, scale will include 0 if it is not already included.
    * @default true

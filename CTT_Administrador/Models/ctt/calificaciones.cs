@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace CTT_Administrador.Models.ctt;
+﻿namespace CTT_Administrador.Models.ctt;
 
 public partial class calificaciones
 {
@@ -32,4 +29,8 @@ public partial class calificaciones
     public decimal? nota4 { get; set; }
 
     public decimal? nota5 { get; set; }
+
+    public string? justificacionObservacion { get; set; }
+
+    public sbyte? justificaFaltas { get; set; }
 }

@@ -1,4 +1,3 @@
-
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
 * or more contributor license agreements.  See the NOTICE file
@@ -151,7 +150,6 @@
     /**
      * @override
      */
-
 
     Overlay.prototype.draw = function () {};
 
@@ -367,7 +365,6 @@
       }
       /* map 2.0 */
 
-
       var originalStyle = bMapModel.__mapStyle;
       var newMapStyle = bMapModel.get('mapStyle') || {}; // FIXME, Not use JSON methods
 
@@ -382,7 +379,6 @@
         bMapModel.__mapStyle = JSON.parse(mapStyleStr);
       }
       /* map 3.0 */
-
 
       var originalStyle2 = bMapModel.__mapStyle2;
       var newMapStyle2 = bMapModel.get('mapStyleV2') || {}; // FIXME, Not use JSON methods
@@ -420,6 +416,5 @@
   exports.version = version;
 
   Object.defineProperty(exports, '__esModule', { value: true });
-
 })));
 //# sourceMappingURL=bmap.js.map

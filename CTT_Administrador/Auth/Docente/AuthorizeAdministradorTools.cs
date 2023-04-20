@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using static CTT_Administrador.Auth.TokenTools;
+﻿using static CTT_Administrador.Auth.TokenTools;
 
 namespace CTT_Administrador.Auth.Docente
 {
@@ -7,7 +6,8 @@ namespace CTT_Administrador.Auth.Docente
     {
         private IHttpContextAccessor _context;
         private string _token;
-        private string _cookieName=ConfigurationHelper.config["JWT:cookieNames:docente"];
+        private string _cookieName = ConfigurationHelper.config["JWT:cookieNames:docente"];
+
         public AuthorizeDocenteTools(IHttpContextAccessor context)
         {
             _context = context;
@@ -36,7 +36,6 @@ namespace CTT_Administrador.Auth.Docente
                 _context?.HttpContext.Response.Cookies.Append(_cookieName, token, new CookieOptions
                 {
                     Expires = DateTime.Now.AddYears(10),
-
                 });
                 return token;
             }

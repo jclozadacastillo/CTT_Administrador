@@ -8,7 +8,7 @@ let activo = 1;
 const mayusculas = true;
 window.addEventListener("load", async function () {
     if (mayusculas) frmDatos.classList.add("to-uppercase");
-    loader.hidden=false;
+    loader.hidden = false;
     $(idCategoria).select2({ dropdownParent: $('#modalDatos') });
     $(idTipoCurso).select2({ dropdownParent: $('#modalDatos') });
     $(idCursoPrecedencia).select2({ dropdownParent: $('#modalDatos') });
@@ -16,8 +16,8 @@ window.addEventListener("load", async function () {
     await comboCategorias();
     await comboTiposCursos();
     await listar();
-    loader.hidden=true;
-    content.hidden=false;
+    loader.hidden = true;
+    content.hidden = false;
 });
 async function listar() {
     try {
@@ -34,7 +34,7 @@ async function listar() {
                     render: (data, type, row) => {
                         const eliminar = row.eliminable == true ?
                             `<li>
-                                <a class="dropdown-item" 
+                                <a class="dropdown-item"
                                 onclick="eliminar('${data}')">
                                 <i class='bi-trash-fill me-1 text-gray'></i>
                                 <small>ELIMINAR</small>
@@ -76,9 +76,9 @@ async function listar() {
                                 `;
                     }
                 },
-                {title: "Curso",data: "curso",class: "w-50"},
-                {title: "Categoría",data: "categoria",class: "w-25"},
-                {title: "Tipo",data: "tipoCurso",class: "w-25"},
+                { title: "Curso", data: "curso", class: "w-50" },
+                { title: "Categoría", data: "categoria", class: "w-25" },
+                { title: "Tipo", data: "tipoCurso", class: "w-25" },
 
             ],
             columnDefs: [
@@ -113,34 +113,33 @@ async function nuevo() {
     handlePrecedencia();
 }
 
-async function comboCategorias(){
+async function comboCategorias() {
     try {
-        const url=`${baseUrl}comboCategorias`;
-        const res=(await axios.get(url)).data;
-        let html="<option value=''>Seleccione</option>";
+        const url = `${baseUrl}comboCategorias`;
+        const res = (await axios.get(url)).data;
+        let html = "<option value=''>Seleccione</option>";
         res.forEach(item => {
-            html+=`<option value='${item.idCategoria}'>${item.categoria}</option>`;
+            html += `<option value='${item.idCategoria}'>${item.categoria}</option>`;
         });
-        idCategoria.innerHTML=html;
+        idCategoria.innerHTML = html;
     } catch (e) {
         handleError(e);
     }
 }
 
-async function comboTiposCursos(){
+async function comboTiposCursos() {
     try {
-        const url=`${baseUrl}comboTiposCursos`;
-        const res=(await axios.get(url)).data;
-        let html="<option value=''>Seleccione</option>";
+        const url = `${baseUrl}comboTiposCursos`;
+        const res = (await axios.get(url)).data;
+        let html = "<option value=''>Seleccione</option>";
         res.forEach(item => {
-            html+=`<option value='${item.idTipoCurso}'>${item.tipoCurso}</option>`;
+            html += `<option value='${item.idTipoCurso}'>${item.tipoCurso}</option>`;
         });
-        idTipoCurso.innerHTML=html;
+        idTipoCurso.innerHTML = html;
     } catch (e) {
         handleError(e);
     }
 }
-
 
 async function guardar() {
     try {
@@ -157,7 +156,7 @@ async function guardar() {
         listar();
     } catch (e) {
         handleError(e);
-    }finally{
+    } finally {
         desbloquearBotones();
     }
 }
@@ -182,33 +181,31 @@ async function editar(_idCurso) {
     }
 }
 
-async function activar(_idCurso,_switch){
+async function activar(_idCurso, _switch) {
     try {
-        const url=`${baseUrl}activar`;
-        const data=new FormData();
-        data.append("idCurso",_idCurso);
-        await axios.post(url,data);
-        toastSuccess(`<b>${_switch.checked?"Activado":"Desactivado"}</b> con éxito`);
+        const url = `${baseUrl}activar`;
+        const data = new FormData();
+        data.append("idCurso", _idCurso);
+        await axios.post(url, data);
+        toastSuccess(`<b>${_switch.checked ? "Activado" : "Desactivado"}</b> con éxito`);
     } catch (e) {
         handleError(e.message);
-        _switch.checked=!_switch.checked;
+        _switch.checked = !_switch.checked;
     }
 }
 
 function handlePrecedencia(_edita) {
-    
     idCursoPrecedencia.setAttribute("data-validate", "no-validate")
     divPrecedencia.hidden = !tienePrecedencia.checked;
-    if(!_edita)limpiarForm(divPrecedencia);
+    if (!_edita) limpiarForm(divPrecedencia);
     if (tienePrecedencia.checked) idCursoPrecedencia.removeAttribute("data-validate");;
     activarValidadores(frmDatos);
 }
 
 function handleAsistencia(_edita) {
-
     asistenciaMinima.setAttribute("data-validate", "no-validate")
     divAsistencia.hidden = !calificaAsistencia.checked;
-    if (!_edita)limpiarForm(divAsistencia);
+    if (!_edita) limpiarForm(divAsistencia);
     if (calificaAsistencia.checked) asistenciaMinima.removeAttribute("data-validate");;
     activarValidadores(frmDatos);
 }

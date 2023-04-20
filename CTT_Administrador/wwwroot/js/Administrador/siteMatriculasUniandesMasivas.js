@@ -1,10 +1,11 @@
 ﻿const baseUrl = `${_route}MatriculasUniandesMasivas/`;
 const modalEspere = new bootstrap.Modal(espere, {
     keyboard: false,
-    backdrop:'static'
+    backdrop: 'static'
 })
 let listaEstudiantes = [];
 window.addEventListener("load", async function () {
+    $(idGrupoCurso).select2();
     activarValidadores(frmDatos)
     llenarTabla();
     loader.hidden = false;
@@ -103,7 +104,6 @@ async function cargarDatos(_press) {
             </ul>
             `);
         }
-
     } catch (e) {
         handleError(e);
         btnGenerar.hidden = true;
@@ -123,6 +123,7 @@ function llenarTabla() {
             { title: "Segundo Nombre", class: "", data: "segundoNombre" },
             { title: "Primer Apellido", class: "", data: "primerApellido" },
             { title: "Segundo Apellido", class: "", data: "segundoApellido" },
+            { title: "Centro", class: "", data: "centro_detalle" },
 
         ]
     })
@@ -133,7 +134,7 @@ async function generarMatriculas() {
         if (!await validarTodo(frmDatos)) throw new Error("Verifique los campos requeridos");
         if (!await toastPreguntar(`
             <div class='text-justify-all fs-xxs my-2'>
-                Está seguro que desea generar <b>${listaEstudiantes.length}</b> ${listaEstudiantes.length==1?"matricula":"matriculas"} para: 
+                Está seguro que desea generar <b>${listaEstudiantes.length}</b> ${listaEstudiantes.length == 1 ? "matricula" : "matriculas"} para:
             </div>
             <div class='text-justify-all fs-xxs'>
             <b>Periodo Académico: </b></br>${idPeriodo.options[idPeriodo.selectedIndex].text}
@@ -161,8 +162,8 @@ async function generarMatriculas() {
             x.documento = x.documentoIdentidad.trim();
             return x;
         });
-        data.append("_alumnos",JSON.stringify(listaEstudiantes));
-        data.append("_alumnosCedulas",await generarSubconsulta());
+        data.append("_alumnos", JSON.stringify(listaEstudiantes));
+        data.append("_alumnosCedulas", await generarSubconsulta());
         const res = await axios({
             method: "POST",
             url,
@@ -171,32 +172,31 @@ async function generarMatriculas() {
         });
         await downloadArchivo(res.data);
         toastSuccess("Matriculas generadas exitosamente");
-        await new Promise(resolve => setTimeout(()=>resolve(true), 1900));
+        await new Promise(resolve => setTimeout(() => resolve(true), 1900));
         //top.location.reload();
     } catch (e) {
         handleError(e);
-        setTimeout(() =>modalEspere.hide(), 190);
-    }finally{
+        setTimeout(() => modalEspere.hide(), 1900);
+    } finally {
         desbloquearBotones();
         modalEspere.hide();
     }
 }
 
-function generarSubconsulta(){
-    let subconsulta=`'D3F@UL7'`;
-    return new Promise(resolve=>{
+function generarSubconsulta() {
+    let subconsulta = `'D3F@UL7'`;
+    return new Promise(resolve => {
         try {
-            if(listaEstudiantes.length==0) throw new Error("Sin datos");
-            listaEstudiantes.forEach((item,index)=>{
-                subconsulta+=`,'${item.documentoIdentidad}'`;
-                if(index==listaEstudiantes.length-1) resolve(subconsulta.trim().replaceAll(" ",""));
+            if (listaEstudiantes.length == 0) throw new Error("Sin datos");
+            listaEstudiantes.forEach((item, index) => {
+                subconsulta += `,'${item.documentoIdentidad}'`;
+                if (index == listaEstudiantes.length - 1) resolve(subconsulta.trim().replaceAll(" ", ""));
             });
         } catch (e) {
             resolve(subconsulta);
         }
     })
 }
-
 
 async function downloadArchivo(res) {
     try {

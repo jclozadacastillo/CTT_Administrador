@@ -1,16 +1,16 @@
 ﻿const baseUrl = `${_route}Administrador/`;
 
-frmDatos.addEventListener("submit",e=>{
+frmDatos.addEventListener("submit", e => {
     e.preventDefault();
     authorization();
 });
 
-async function authorization(){
+async function authorization() {
     try {
         bloquearBotones();
-        if(!await validarTodo(frmDatos)) throw new Error("Verifique los campos requeridos")
-        const url=`${baseUrl}authorization`;
-        const data=new FormData(frmDatos);
+        if (!await validarTodo(frmDatos)) throw new Error("Verifique los campos requeridos")
+        const url = `${baseUrl}authorization`;
+        const data = new FormData(frmDatos);
         addAntiForgeryToken(data);
         const res = (await axios.post(url, data)).data;
         //let now = new Date();
@@ -19,7 +19,7 @@ async function authorization(){
         top.location.reload();
     } catch (e) {
         handleError(e);
-    }finally{
+    } finally {
         desbloquearBotones();
     }
 }

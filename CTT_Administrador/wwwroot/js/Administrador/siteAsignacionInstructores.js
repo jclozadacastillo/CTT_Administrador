@@ -47,6 +47,13 @@ async function listar() {
                     data: "idAsignacion",
                     class: "text-center td-switch",
                     render: (data, type, row) => {
+                        let eliminar = `<li>
+                                        <a class="dropdown-item"
+                                          onclick="eliminar('${data}')">
+                                          <i class='bi-trash-fill me-1 text-gray'></i>
+                                          <small>ELIMINAR</small>
+                                        </a>
+                                      </li>`;
                         return `<div class="btn-group dropleft" role="group">
                                       <a id="btnGroup${data}" type="button" class="dropdown-toggle no-arrow btn-group-sm" data-bs-toggle="dropdown" aria-expanded="false">
                                               <i class='bi-three-dots-vertical'></i>
@@ -59,13 +66,6 @@ async function listar() {
                                               <small>EDITAR</small>
                                               </a>
                                               </li>
-                                              <li>
-                                                <a class="dropdown-item"
-                                                onclick="eliminar('${data}')">
-                                                <i class='bi-trash-fill me-1 text-gray'></i>
-                                                <small>ELIMINAR</small>
-                                                </a>
-                                             </li>
                                           </ul>
                                 </div>`;
                     }
@@ -86,6 +86,7 @@ async function listar() {
                                 `;
                     }
                 },
+                { title: "Registrado", data: "fechaRegistroMostrar", class: "text-nowrap" },
                 {
                     title: "Documento",
                     data: "documentoIdentidad",
@@ -96,11 +97,11 @@ async function listar() {
                     data: "idInstructor",
                     class: "text-start w-25",
                     render: (data, type, row) => {
-                        return `${row.abreviaturaTitulo.replaceAll(".", "")}. ${row.primerApellido} ${row.segundoApellido} ${row.primerNombre} ${row.segundoNombre}`;
+                        return `${row.abreviaturaTitulo.replaceAll(".", "")}. ${row.primerApellido} ${row.segundoApellido || ""} ${row.primerNombre} ${row.segundoNombre || ""}`;
                     }
                 },
                 { title: "Curso", data: "curso", class: "w-25" },
-                { title: "Paralelo", data: "paralelo", class: "w-id" },
+                { title: "Paralelo", data: "paralelo", class: "w-id text-center" },
                 { title: "Periodo", data: "detalle", class: "w-25" }
             ],
             columnDefs: [
@@ -133,7 +134,7 @@ async function comboInstructores() {
         const res = (await axios.get(url)).data;
         let html = "<option value=''>Seleccione</option>";
         res.forEach(item => {
-            html += `<option value='${item.idInstructor}'>${item.documentoIdentidad} - ${item.abreviaturaTitulo?.replaceAll(".")}. ${item.primerNombre} ${item.segundoNombre} ${item.primerApellido} ${item.segundoApellido}</option>`
+            html += `<option value='${item.idInstructor}'>${item.documentoIdentidad} - ${item.abreviaturaTitulo?.replaceAll(".")}. ${item.primerNombre} ${item.segundoNombre || ""} ${item.primerApellido} ${item.segundoApellido || ""}</option>`
         });
         idInstructor.innerHTML = html;
     } catch (e) {
@@ -242,11 +243,14 @@ async function editar(_idAsignacion) {
         activo = res.activo == 1 || res.activo == true ? 1 : 0;
         cargarFormularioInForm(frmDatos, res);
         setTimeout(() => {
-            $(idTipoCurso).val(res.idTipoCurso).trigger("change");
+            $(idPeriodo).val(res.idPeriodo).trigger("change");
         }, 109);
         setTimeout(() => {
-            $(idGrupoCurso).val(res.idGrupoCurso).trigger("change");
+            $(idTipoCurso).val(res.idTipoCurso).trigger("change");
         }, 190);
+        setTimeout(() => {
+            $(idGrupoCurso).val(res.idGrupoCurso).trigger("change");
+        }, 253);
         setTimeout(() => {
             $(idCurso).val(res.idCurso).trigger("change");
             idPeriodo.disabled = true;
@@ -255,7 +259,7 @@ async function editar(_idAsignacion) {
             paralelo.disabled = true;
             idInstructor.disabled = true;
             idCurso.disabled = true;
-        }, 216);
+        }, 307);
         modal.show();
     } catch (e) {
         handleError(e);

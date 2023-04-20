@@ -11,7 +11,7 @@ namespace CTT_Administrador.Auth
         {
             try
             {
-                if(string.IsNullOrEmpty(token)) return false;
+                if (string.IsNullOrEmpty(token)) return false;
                 var validador = new JwtSecurityTokenHandler();
                 SecurityToken validatedToken;
                 var validToken = validador.ValidateToken(token, new TokenValidationParameters()

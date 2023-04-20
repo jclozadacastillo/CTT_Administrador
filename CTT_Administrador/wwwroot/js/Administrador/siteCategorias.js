@@ -8,10 +8,10 @@ let activo = 1;
 const mayusculas = true;
 window.addEventListener("load", async function () {
     if (mayusculas) frmDatos.classList.add("to-uppercase");
-    loader.hidden=false;
+    loader.hidden = false;
     await listar();
-    loader.hidden=true;
-    content.hidden=false;
+    loader.hidden = true;
+    content.hidden = false;
 });
 async function listar() {
     try {
@@ -27,7 +27,7 @@ async function listar() {
                     render: (data, type, row) => {
                         const eliminar = row.eliminable == true ?
                             `<li>
-                                <a class="dropdown-item" 
+                                <a class="dropdown-item"
                                 onclick="eliminar('${data}')">
                                 <i class='bi-trash-fill me-1 text-gray'></i>
                                 <small>ELIMINAR</small>
@@ -108,7 +108,7 @@ async function guardar() {
         listar();
     } catch (e) {
         handleError(e);
-    }finally{
+    } finally {
         desbloquearBotones();
     }
 }
@@ -130,15 +130,15 @@ async function editar(_idCategoria) {
     }
 }
 
-async function activar(_idCategoria,_switch){
+async function activar(_idCategoria, _switch) {
     try {
-        const url=`${baseUrl}activar`;
-        const data=new FormData();
-        data.append("idCategoria",_idCategoria);
-        await axios.post(url,data);
-        toastSuccess(`<b>${_switch.checked?"Activado":"Desactivado"}</b> con éxito`);
+        const url = `${baseUrl}activar`;
+        const data = new FormData();
+        data.append("idCategoria", _idCategoria);
+        await axios.post(url, data);
+        toastSuccess(`<b>${_switch.checked ? "Activado" : "Desactivado"}</b> con éxito`);
     } catch (e) {
         handleError(e.message);
-        _switch.checked=!_switch.checked;
+        _switch.checked = !_switch.checked;
     }
 }

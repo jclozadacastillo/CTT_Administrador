@@ -58,6 +58,7 @@ namespace CTT_Administrador.Controllers
             if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
             return View();
         }
+
         public IActionResult Estudiantes()
         {
             if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
@@ -69,7 +70,20 @@ namespace CTT_Administrador.Controllers
             if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
             return View();
         }
+
         public IActionResult AsignacionAsistencias()
+        {
+            if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
+            return View();
+        }
+
+        public IActionResult PeriodosAcademicos()
+        {
+            if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
+            return View();
+        }
+
+        public IActionResult AdministrarMatriculas()
         {
             if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
             return View();

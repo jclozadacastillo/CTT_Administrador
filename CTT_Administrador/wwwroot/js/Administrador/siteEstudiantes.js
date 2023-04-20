@@ -87,11 +87,10 @@ async function listar() {
                     }
                 },
                 { title: "Documento", data: "documentoIdentidad", class: "w-cedula" },
-                { title: "Primer Nombre", data: "primerNombre", class: "w-25" },
-                { title: "Segundo Nombre", data: "segundoNombre", class: "w-25" },
                 { title: "Primer Apellido", data: "primerApellido", class: "w-25" },
                 { title: "Segundo Apellido", data: "segundoApellido", class: "w-25" },
-
+                { title: "Primer Nombre", data: "primerNombre", class: "w-25" },
+                { title: "Segundo Nombre", data: "segundoNombre", class: "w-25" },
             ],
             columnDefs: [
                 { targets: [0, 1], orderable: false }

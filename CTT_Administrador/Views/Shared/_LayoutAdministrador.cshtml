@@ -257,7 +257,12 @@ var _v = $"?v={DateTime.Now.Ticks}";
                <i class="bi bi-gear"></i><span>Parámetros</span><i class="bi bi-chevron-down ms-auto"></i>
                </a>
                <ul id="navConfiguraciones" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                  <li>
+                    <li>
+                        <a href="~/Administrador/PeriodosAcademicos" data-menu>
+                            <i class="bi bi-circle"></i><span>Periodos Académicos</span>
+                        </a>
+                    </li>
+                    <li>
                      <a href="~/Administrador/Categorias" data-menu>
                      <i class="bi bi-circle"></i><span>Categorías</span>
                      </a>
@@ -293,12 +298,17 @@ var _v = $"?v={DateTime.Now.Ticks}";
             </li>
             <li class="nav-item">
                <a class="nav-link collapsed" data-bs-target="#navMatriculasUniandes" data-bs-toggle="collapse" href="#">
-               <i class="bi bi-buildings"></i><span>Matriculas Uniandes</span><i class="bi bi-chevron-down ms-auto"></i>
+               <i class="bi bi-clipboard"></i><span>Matriculas</span><i class="bi bi-chevron-down ms-auto"></i>
                </a>
                <ul id="navMatriculasUniandes" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                   <li>
                      <a href="~/Administrador/MatriculasUniandesMasivas" data-menu>
                      <i class="bi bi-circle"></i><span>Carga Masiva</span>
+                     </a>
+                  </li>                  
+                  <li>
+                     <a href="~/Administrador/AdministrarMatriculas" data-menu>
+                     <i class="bi bi-circle"></i><span>Administrar Matriculas</span>
                      </a>
                   </li>
                </ul>

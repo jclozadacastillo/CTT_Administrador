@@ -17,4 +17,3 @@
         bool validateToken();
     }
 }
-

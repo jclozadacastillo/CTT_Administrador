@@ -1,4 +1,3 @@
-
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
 * or more contributor license agreements.  See the NOTICE file
@@ -182,7 +181,6 @@
         // node.shape = getAttr(vizShapeDom, 'shape');
         // }
 
-
         if (attvaluesDom) {
           var attvalueDomList = getChildrenByTagName(attvaluesDom, 'attvalue');
           node.attributes = {};
@@ -248,7 +246,6 @@
         //     edge.shape = vizShapeDom.getAttribute('shape');
         // }
 
-
         return edge;
       }) : [];
     }
@@ -309,7 +306,6 @@
     * specific language governing permissions and limitations
     * under the License.
     */
-
 
     /**
      * AUTO-GENERATED FILE. DO NOT MODIFY.
@@ -374,7 +370,6 @@
      * }
      */
 
-
     function prepareBoxplotData (rawData, opt) {
       opt = opt || {};
       var boxData = [];
@@ -431,6 +426,5 @@
     exports.version = version;
 
     Object.defineProperty(exports, '__esModule', { value: true });
-
 })));
 //# sourceMappingURL=dataTool.js.map

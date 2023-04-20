@@ -520,8 +520,8 @@ const decimal = async (e) => {
             e.classList.add("is-invalid");
             valido = false;
         }
-        if (parseFloat(e.value.replaceAll(",", ".")) < 0.01) {
-        if (!!msg) msg.innerText = "* Mínimo 0,01";
+        if (parseFloat(e.value.replaceAll(",", ".")) < 0) {
+        if (!!msg) msg.innerText = "* Mínimo 0";
             e.classList.add("is-invalid");
             valido = false;
         }
@@ -976,7 +976,6 @@ function addAntiForgeryToken(_formData) {
 
 function handleError(e) {
     try {
-        console.log(e);
         if (e?.response?.status == 404) {
             toastError(`<b>404:</b> ${e.response.request.responseURL}`);
             return;
@@ -989,9 +988,9 @@ function handleError(e) {
             }
             return;
         }
-        const error = `${e.response ? `<b>${e.response?.status}:</b> ${e.response.data.detail}` : `${e.message}`}`;
-        if (!e.message && !e.response.data.detail) {
-            error = "nepe";
+        let error = `${e.response ? `<b>${e.response?.status}:</b> ${e.response?.data.detail}` : `${e.message}`}`;
+        if (!e.message && !e.response?.data.detail) {
+            error = e;
         }
         if (!!(typeof toastError)) {
             toastError(error)
@@ -1021,7 +1020,7 @@ function limpiarValidadores(form) {
 
 function formToUpperCase(form) {
     if (!!form) form.querySelectorAll("input,select,textarea").forEach((item) => {
-        if (!(item.dataset?.validate == "email" || item.hasAttribute("password")) || item.hasAttribute("no-uppercase"))item.value = item.value.toUpperCase()
-
-    }); 
+        if (item.dataset?.validate == "email" || item.hasAttribute("password") || item.hasAttribute("no-uppercase")) return;
+        item.value = item.value.toUpperCase()
+    });
 }

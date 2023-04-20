@@ -109,7 +109,7 @@ namespace CTT_Administrador.Controllers
             try
             {
                 string sql = @"
-                                select c.idCurso,curso
+                                select distinct(c.idCurso) as idCurso,curso
                                 from asignacionesinstructorescalificaciones a
                                 inner join gruposcursos g on g.idGrupoCurso=a.idGrupoCurso
                                 inner join cursos_mallas m on m.idCurso = g.idCurso
@@ -140,6 +140,7 @@ namespace CTT_Administrador.Controllers
                                 inner join cursos_mallas m on m.idCurso = g.idCurso
                                 inner join cursos c on c.idCurso = m.idCursoAsociado
                                 where a.idGrupoCurso = @idGrupoCurso and a.idCurso=@idCurso
+                                order by a.paralelo
                 ";
                 return Ok(await dapper.QueryAsync(sql, new { idGrupoCurso, idCurso }));
             }
@@ -174,7 +175,13 @@ namespace CTT_Administrador.Controllers
                 var listaCalificaciones = await dapper.QueryAsync(sql, new { idGrupoCurso, idCurso, paralelo });
                 sql = @"SELECT * FROM cursos WHERE idCurso=@idCurso";
                 var parametros = await dapper.QueryFirstOrDefaultAsync(sql, new { idCurso });
-                return Ok(new { listaCalificaciones, parametros });
+                sql = @"select i.* from asignacionesinstructorescalificaciones a
+                    inner join instructores i on i.idInstructor = a.idInstructor
+                    where idGrupoCurso =@idGrupoCurso
+                    and idCurso=@idCurso
+                    and paralelo=@paralelo";
+                var instructor = await dapper.QueryFirstOrDefaultAsync(sql, new { idCurso, idGrupoCurso, paralelo });
+                return Ok(new { listaCalificaciones, parametros, instructor });
             }
             catch (Exception ex)
             {
@@ -206,12 +213,15 @@ namespace CTT_Administrador.Controllers
                 }
                 _data.promedioFinal = Convert.ToDecimal(acumulador / notas);
                 var aprobadoFaltas = true;
-                if (parametros.calificaAsistencia == 1) aprobadoFaltas = _data.faltas <= parametros.asistenciaMinima;
+                if (parametros.calificaAsistencia == 1) aprobadoFaltas = _data.faltas >= parametros.asistenciaMinima;
+                if (parametros.calificaAsistencia == 1) _data.promedioFinal = Convert.ToDecimal((_data.promedioFinal + _data.faltas) / 2);
                 _data.aprobado = Convert.ToSByte(_data.promedioFinal >= Convert.ToDecimal(puntajeMinimo) && aprobadoFaltas);
                 sql = @"
                                 UPDATE calificaciones
                                 SET faltas=@faltas,
-                                aprobado=@aprobado
+                                aprobado=@aprobado,
+                                justificaFaltas=@justificaFaltas,
+                                justificacionObservacion=@justificacionObservacion
                                 WHERE idMatricula=@idMatricula
                                 AND idGrupoCurso=@idGrupoCurso
                                 AND idCurso=@idCurso;
@@ -251,7 +261,8 @@ namespace CTT_Administrador.Controllers
                     }
                     item.promedioFinal = Convert.ToDecimal(acumulador / notas);
                     var aprobadoFaltas = true;
-                    if (parametros.calificaAsistencia == 1) aprobadoFaltas = item.faltas <= parametros.asistenciaMinima;
+                    if (parametros.calificaAsistencia == 1) item.promedioFinal = Convert.ToDecimal((item.promedioFinal + item.faltas) / 2);
+                    if (parametros.calificaAsistencia == 1) aprobadoFaltas = item.faltas >= parametros.asistenciaMinima;
                     item.aprobado = Convert.ToSByte(item.promedioFinal >= Convert.ToDecimal(puntajeMinimo) && aprobadoFaltas);
                     _context.calificaciones.Update(item);
                 }

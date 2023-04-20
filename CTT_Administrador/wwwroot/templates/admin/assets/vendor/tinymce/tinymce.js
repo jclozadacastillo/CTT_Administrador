@@ -30208,5 +30208,4 @@
     };
     exportToWindowGlobal(tinymce);
     exportToModuleLoaders(tinymce);
-
 })();

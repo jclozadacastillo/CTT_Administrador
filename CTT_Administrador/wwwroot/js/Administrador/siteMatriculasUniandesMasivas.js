@@ -34,12 +34,9 @@ async function comboPeriodos() {
 
 async function comboTiposCursos() {
     try {
-        if (idPeriodo.value == "") {
-            idTipoCurso.innerHTML = `<option value="">Seleccione un periodo</option>`;
-            idGrupoCurso.innerHTML = `<option value="">Seleccione un tipo de curso</option>`;
-            return;
-        }
-
+        idTipoCurso.innerHTML = `<option value="">Seleccione un periodo</option>`;
+        idGrupoCurso.innerHTML = `<option value="">Seleccione un tipo de curso</option>`;
+        if (idPeriodo.value == "") return;
         const url = `${baseUrl}comboTiposCursos`;
         const data = new FormData(frmDatos);
         const res = (await axios.post(url, data)).data;
@@ -66,11 +63,8 @@ archivo.addEventListener("change", function () {
 });
 async function comboCursos() {
     try {
-        if (idTipoCurso.value == "") {
-            idGrupoCurso.innerHTML = `<option value="">Seleccione un tipo de curso</option>`;
-            return;
-        }
-
+        idGrupoCurso.innerHTML = `<option value="">Seleccione un tipo de curso</option>`;
+        if (idTipoCurso.value == "") return;
         const url = `${baseUrl}comboCursos`;
         const data = new FormData(frmDatos);
         const res = (await axios.post(url, data)).data;

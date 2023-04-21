@@ -113,11 +113,10 @@ namespace CTT_Administrador.Controllers
             {
                 string sql = @"
                                 select distinct(c.idCurso) as idCurso,curso
-                                from asignacionesinstructorescalificaciones a
-                                inner join gruposcursos g on g.idGrupoCurso=a.idGrupoCurso
+                                from gruposcursos g 
                                 inner join cursos_mallas m on m.idCurso = g.idCurso
                                 inner join cursos c on c.idCurso = m.idCursoAsociado
-                                where a.idGrupoCurso = @idGrupoCurso
+                                where g.idGrupoCurso = @idGrupoCurso
                 ";
                 return Ok(await dapper.QueryAsync(sql, new { idGrupoCurso }));
             }
@@ -157,6 +156,32 @@ namespace CTT_Administrador.Controllers
             {
                 dapper.Dispose();
             }
+        }        
+        
+        public async Task<IActionResult> comboParalelosListado(int idGrupoCurso, int idCurso)
+        {
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
+            try
+            {
+                string sql = @"
+                                select distinct(m.paralelo)
+                                from calificaciones ca
+                                inner join Matriculas m on m.idMatricula=ca.idMatricula
+                                where ca.idGrupoCurso = @idGrupoCurso and ca.idCurso=@idCurso
+                                order by m.paralelo
+                ";
+                var paralelos = new List<dynamic>() { new { paralelo = "TODOS" } };
+                paralelos.AddRange(await dapper.QueryAsync(sql, new { idGrupoCurso, idCurso }));
+                return Ok(paralelos);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+            finally
+            {
+                dapper.Dispose();
+            }
         }
 
         public async Task<IActionResult> listar(int idGrupoCurso, int idCurso, string paralelo)
@@ -177,6 +202,43 @@ namespace CTT_Administrador.Controllers
                                 and m.paralelo = a.paralelo and a.idCurso = c.idCurso
                                 where m.idGrupoCurso = @idGrupoCurso and c.idCurso=@idCurso {paralelos}
                                 order by a.paralelo,e.primerApellido,e.primerNombre
+                ";
+                var listaCalificaciones = await dapper.QueryAsync(sql, new { idGrupoCurso, idCurso, paralelo });
+                sql = @"SELECT * FROM cursos WHERE idCurso=@idCurso";
+                var parametros = await dapper.QueryFirstOrDefaultAsync(sql, new { idCurso });
+                sql = @"select i.* from asignacionesinstructorescalificaciones a
+                    inner join instructores i on i.idInstructor = a.idInstructor
+                    where idGrupoCurso =@idGrupoCurso
+                    and idCurso=@idCurso
+                    and paralelo=@paralelo";
+                var instructor = await dapper.QueryFirstOrDefaultAsync(sql, new { idCurso, idGrupoCurso, paralelo });
+                return Ok(new { listaCalificaciones, parametros, instructor });
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+            finally
+            {
+                dapper.Dispose();
+            }
+        }
+        public async Task<IActionResult> listarMatriculados(int idGrupoCurso, int idCurso, string paralelo)
+        {
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
+            try
+            {
+                string paralelos = paralelo == "TODOS" ? "" : "and m.paralelo = @paralelo";
+                string sql = $@"
+                                select c.*,e.documentoIdentidad,
+                                concat(e.primerApellido,' ',e.segundoApellido,' ',e.primerNombre,' ',e.segundoNombre) as estudiante,
+                                0 as tiempoLimite,
+                                0 as tiempoLimiteAtraso,m.paralelo
+                                from matriculas m
+                                inner join estudiantes e on e.idEstudiante = m.idEstudiante
+                                inner join calificaciones c on c.idMatricula = m.idMatricula
+                                where m.idGrupoCurso = @idGrupoCurso and c.idCurso=@idCurso {paralelos}
+                                order by m.paralelo,e.primerApellido,e.primerNombre
                 ";
                 var listaCalificaciones = await dapper.QueryAsync(sql, new { idGrupoCurso, idCurso, paralelo });
                 sql = @"SELECT * FROM cursos WHERE idCurso=@idCurso";

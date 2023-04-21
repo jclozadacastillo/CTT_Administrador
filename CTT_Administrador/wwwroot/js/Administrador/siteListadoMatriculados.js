@@ -28,11 +28,11 @@ async function comboPeriodos() {
 
 async function comboCursos() {
     try {
+        /*divBotones.hidden = true;*/
         idCurso.innerHTML = `<option value="">Seleccione un curso</option>`;
         paralelo.innerHTML = `<option value="">Seleccione un módulo</option>`;
         idGrupoCurso.innerHTML = `<option value="">Seleccione un periodo</option>`;
         listar();
-        divBotones.hidden = true;
         if (idPeriodo.value == "") return;
         const url = `${baseUrl}comboCursos`;
         const data = new FormData(frmDatos);
@@ -52,8 +52,8 @@ async function comboCursosAsociados() {
         idCurso.innerHTML = `<option value="">Seleccione un curso</option>`;
         paralelo.innerHTML = `<option value="">Seleccione un módulo</option>`;
         listar();
-        divBotones.hidden = true;
-        if (idGrupoCurso.value == "") return;      
+        /*divBotones.hidden = true;*/
+        if (idGrupoCurso.value == "")return;
         const url = `${baseUrl}comboCursosAsociados`;
         const data = new FormData(frmDatos);
         const res = (await axios.post(url, data)).data;
@@ -69,11 +69,11 @@ async function comboCursosAsociados() {
 
 async function comboParalelos() {
     try {
+        /*divBotones.hidden = true;*/
         paralelo.innerHTML = `<option value="">Seleccione un módulo</option>`;
         listar();
-        divBotones.hidden = true;
         if (idCurso.value == "") return;
-        const url = `${baseUrl}comboParalelos`;
+        const url = `${baseUrl}comboParalelosListado`;
         const data = new FormData(frmDatos);
         const res = (await axios.post(url, data)).data;
         let html = "<option value=''>Seleccione</option>";
@@ -90,9 +90,9 @@ async function listar() {
     try {
         instructorLabel.hidden = true;
         instructorLabel.innerHTML = "";
-        divBotones.hidden = true;
+        /*divBotones.hidden = true;*/
         editable = false;
-        const url = `${baseUrl}listar`;
+        const url = `${baseUrl}listarMatriculados`;
         const data = new FormData(frmDatos);
         const res = (await axios.post(url, data)).data;
         parametros = res.parametros;
@@ -101,9 +101,16 @@ async function listar() {
             instructorLabel.innerHTML = `<b>Instructor:</b> ${instructor.abreviaturaTitulo.replaceAll(".", "")}.
             ${instructor.primerNombre} ${instructor.segundoNombre || ""}
             ${instructor.primerApellido} ${instructor.segundoApellido || ""}`;
+            instructorLabel.classList.add("alert-success");
+            instructorLabel.classList.remove("alert-warning");
+            instructorLabel.removeAttribute("hidden");
+        } else if(res.listaCalificaciones.length>0 && paralelo.value!="TODOS") {
+            instructorLabel.innerHTML = "<small>NO SE HA ASIGNADO NINGÚN INSTRUCTOR PARA ESTE MÓDULO Y PARALELO</small>";
+            instructorLabel.classList.remove("alert-success");
+            instructorLabel.classList.add("alert-warning");
             instructorLabel.removeAttribute("hidden");
         }
-        if (res.listaCalificaciones.length > 0) divBotones.removeAttribute("hidden");
+        /*if (res.listaCalificaciones.length > 0) divBotones.removeAttribute("hidden");*/
         await $(tableDatos).DataTable({
             bDestroy: true,
             data: res.listaCalificaciones,
@@ -112,36 +119,7 @@ async function listar() {
                     data: "idMatricula",
                     class: "text-center td-switch",
                     render: (data, type, row) => {
-                        return `<div class="btn-group dropleft" role="group">
-                                      <a id="btnGroup${data}" type="button" class="dropdown-toggle no-arrow btn-group-sm" data-bs-toggle="dropdown" aria-expanded="false">
-                                              <i class='bi-three-dots-vertical'></i>
-                                       </a>
-                                          <ul class="dropdown-menu" aria-labelledby="btnGroup${data}">
-                                           <li>
-                                               <a class="dropdown-item"
-                                                  onclick="eliminar('${row.idGrupoCurso}','${row.idCurso}','${row.idMatricula}','${row.documentoIdentidad}','${row.estudiante}')">
-                                                  <i class='bi-trash-fill me-1 text-gray'></i>
-                                                  <small>ELIMINAR</small>
-                                                  </a>
-                                           </li>
-                                          </ul>
-                                </div>`;
-                    }
-                },
-                {
-                    title: "Suspendido",
-                    data: "activo",
-                    className: "text-center switch-td",
-                    render: (data, type, row) => {
-                        return `
-                                <label class="switch">
-                                       <input type="checkbox"
-                                            id="check${row.idPeriodo}" ${(row.suspendido == true) ? "checked" : ""}
-                                            onchange="suspender('${row.idGrupoCurso}','${row.idCurso}','${row.idMatricula}',this)"
-                                            />
-                                        <span class="slider danger"></span>
-                                </label>
-                                `;
+                        return res.listaCalificaciones.indexOf(row)+1;
                     }
                 },
                 {
@@ -155,27 +133,6 @@ async function listar() {
                     class: "w-100"
                 },
                 { title: "Paralelo", data: "paralelo", class: "text-center" },
-                {
-                    title: "Promedio",
-                    data: "promedioFinal",
-                    class: "text-end",
-                    render: (data) => {
-                        return parseFloat(data).toFixed(2).replaceAll(".00", "");
-                    }
-                },
-                {
-                    title: "Estado",
-                    data: "idMatricula",
-                    class: "text-center",
-                    render: (data, type, row) => {
-                        let estado = "";
-                        if (row.aprobado == 1) estado = `<span id='estado-${row.idGrupoCurso}-${row.idCurso}-${row.idMatricula}' data-anterior='a' class='badge bg-success'>APROBADO</span>`;
-                        if (row.justificaFaltas == 1) estado = `<span id='estado-${row.idGrupoCurso}-${row.idCurso}-${row.idMatricula}' data-anterior='j' class='badge bg-info'>JUSTIFICADO</span>`;
-                        if (row.aprobado == 0 && row.justificaFaltas != 1) estado = `<span id='estado-${row.idGrupoCurso}-${row.idCurso}-${row.idMatricula}' data-anterior='r' class='badge bg-danger'>REPROBADO</span>`;
-                        if (row.suspendido == 1) estado = `<span id='estado-${row.idGrupoCurso}-${row.idCurso}-${row.idMatricula}' data-anterior='s' class='badge bg-warning'>SUSPENDIDO</span>`;
-                        return estado;
-                    }
-                },
             ],
             columnDefs: [
                 { targets: [0, 1], orderable: false }

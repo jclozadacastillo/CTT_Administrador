@@ -252,8 +252,10 @@ var _v = $"?v={DateTime.Now.Ticks}";
       <!-- ======= Sidebar ======= -->
       <aside id="sidebar" class="sidebar">
          <ul class="sidebar-nav" id="sidebar-nav">
-            <li class="nav-item">
-               <a class="nav-link collapsed" data-bs-target="#navConfiguraciones" data-bs-toggle="collapse" href="#">
+            @if (_auth.inRol("admin"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#navConfiguraciones" data-bs-toggle="collapse" href="#">
                <i class="bi bi-gear"></i><span>Parámetros</span><i class="bi bi-chevron-down ms-auto"></i>
                </a>
                <ul id="navConfiguraciones" class="nav-content collapse" data-bs-parent="#sidebar-nav">
@@ -279,8 +281,11 @@ var _v = $"?v={DateTime.Now.Ticks}";
                   </li>
                </ul>
             </li>
-            <li class="nav-item">
-               <a class="nav-link collapsed" data-bs-target="#navPersonas" data-bs-toggle="collapse" href="#">
+            }
+            @if (_auth.inRol("admin"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#navPersonas" data-bs-toggle="collapse" href="#">
                <i class="bi bi-people"></i><span>Personas</span><i class="bi bi-chevron-down ms-auto"></i>
                </a>
                <ul id="navPersonas" class="nav-content collapse" data-bs-parent="#sidebar-nav">
@@ -296,8 +301,11 @@ var _v = $"?v={DateTime.Now.Ticks}";
                   </li>
                </ul>
             </li>
-            <li class="nav-item">
-               <a class="nav-link collapsed" data-bs-target="#navMatriculasUniandes" data-bs-toggle="collapse" href="#">
+            }
+            @if (_auth.inRol("admin"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#navMatriculasUniandes" data-bs-toggle="collapse" href="#">
                <i class="bi bi-clipboard"></i><span>Matriculas</span><i class="bi bi-chevron-down ms-auto"></i>
                </a>
                <ul id="navMatriculasUniandes" class="nav-content collapse" data-bs-parent="#sidebar-nav">
@@ -318,8 +326,11 @@ var _v = $"?v={DateTime.Now.Ticks}";
                   </li>
                </ul>
             </li>
-            <li class="nav-item">
-               <a class="nav-link collapsed" data-bs-target="#navDistributivo" data-bs-toggle="collapse" href="#">
+            }
+            @if (_auth.inRol("admin"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#navDistributivo" data-bs-toggle="collapse" href="#">
                <i class="bi bi-person-video3"></i><span>Distributivo</span><i class="bi bi-chevron-down ms-auto"></i>
                </a>
                <ul id="navDistributivo" class="nav-content collapse" data-bs-parent="#sidebar-nav">
@@ -330,8 +341,11 @@ var _v = $"?v={DateTime.Now.Ticks}";
                   </li>
                </ul>
             </li>
-               <li class="nav-item">
-               <a class="nav-link collapsed" data-bs-target="#navAcademico" data-bs-toggle="collapse" href="#">
+            }
+            @if (_auth.inRol("admin,faltas"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#navAcademico" data-bs-toggle="collapse" href="#">
                <i class="bi bi-mortarboard"></i><span>Académico</span><i class="bi bi-chevron-down ms-auto"></i>
                </a>
                <ul id="navAcademico" class="nav-content collapse" data-bs-parent="#sidebar-nav">
@@ -342,6 +356,7 @@ var _v = $"?v={DateTime.Now.Ticks}";
                   </li>
                </ul>
             </li>
+            }
          </ul>
       </aside>
       <main id="main" class="main">

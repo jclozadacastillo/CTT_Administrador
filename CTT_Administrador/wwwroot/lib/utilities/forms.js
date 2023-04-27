@@ -218,6 +218,43 @@ const cargarFormularioInForm = (form, datos) => {
     }
 }
 
+
+const cargarFormularioInFormNoSelect2 = (form, datos) => {
+    try {
+        if (!datos) throw new Error("No se han enviado los datos o el form");
+        limpiarForm(form);
+        let indexSelect2 = 1000;
+        Object.keys(datos).forEach(key => {
+            let element = form.querySelector(`#${key}`);
+            if (!!element) {
+                if (element.type == "checkbox") {
+                    if (datos[key] == true) element.checked = true;
+                    else element.checked = false;
+                    return;
+                }
+                const _selectize = $(element)[0].selectize;
+                if (!!_selectize) {
+                    setValueSelect(_selectize, datos[key]);
+                    return;
+                }
+                element.value = datos[key];
+                //if ($(element).data('select2')) {
+                //   $(element).val(datos[key]).trigger('change.select2');      
+                //    return;
+                //}
+                if (element.getAttribute("type") == "date") {
+                    element.value = datos[key].split("T")[0];
+                }
+                if (element.getAttribute("type") == "datetime-local") {
+                    element.value = datos[key].replaceAll("T", " ");
+                }
+            }
+        });
+    } catch (e) {
+        console.warn(`${e.message}`);
+    }
+}
+
 document.querySelector("form")?.querySelectorAll("input,select,textarea").forEach((item) => {
     let special_validate = item.dataset.validate;
     if (special_validate == "no-validate") return;

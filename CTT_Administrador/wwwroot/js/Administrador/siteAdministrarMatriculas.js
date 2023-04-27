@@ -278,6 +278,39 @@ async function generarExcel() {
     }
 }
 
+async function generarExcelCertificados() {
+    try {
+        return response = new Promise(async (resolve) => {
+            const url = `${baseUrl}generarExcelCertificados`;
+            bloquearBotones();
+            const data = new FormData(frmDatos);
+            let res = await axios({
+                method: "POST",
+                url,
+                data,
+                responseType: "arraybuffer"
+            }).catch(e => {
+                handleError(e.message);
+            });
+            res = res.data;
+            const blob = new Blob([res], { type: 'application/vnd.ms-excel' });
+            const urlObject = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = urlObject;
+            link.download = `REPORTE_MATRICULAS_${new Date().toISOString()}.xlsx`;
+            link.click();
+            window.URL.revokeObjectURL(urlObject);
+            link.remove();
+            resolve(true);
+        });
+    } catch (e) {
+        handleError(e);
+        resolve(false);
+    } finally {
+        desbloquearBotones();
+    }
+}
+
 async function generarPdf() {
     try {
         bloquearBotones();

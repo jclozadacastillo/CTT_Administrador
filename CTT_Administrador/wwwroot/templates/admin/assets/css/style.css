@@ -1724,7 +1724,8 @@ div.row.mx-alert {
 
 form.to-uppercase input:not([data-validate="email"]):not([password]):not([no-uppercase]),
 form.to-uppercase select,
-form.to-uppercase textarea {
+form.to-uppercase textarea,
+form.to-uppercase .select2{
     text-transform: uppercase !important;
 }
 

@@ -46,7 +46,7 @@
                     <td>@item.segundoApellido</td>
                     <td>@item.nombres</td>
                     <td>@item.carrera</td>
-                    <td>@item.estado</td>
+                    <td class="@(item.estado.ToUpper() == "REPROBADO" ? "text-danger" : "")">@item.estado</td>
                 </tr>
                 index++;
             }

@@ -173,7 +173,8 @@ namespace CTT_Administrador.Controllers
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
-                string sql = @"select * from gruposcursos g
+                string sql = @"select m.idCursoAsociado,c.curso 
+                                from gruposcursos g
                                 inner join cursos_mallas m on m.idCurso = g.idCurso
                                 inner join cursos c on c.idCurso = m.idCursoAsociado
                                 where idGrupoCurso = @idGrupoCurso
@@ -220,10 +221,11 @@ namespace CTT_Administrador.Controllers
             {
                 string sql = @"SELECT a.*,i.documentoIdentidad,i.abreviaturaTitulo,
                               i.primerApellido,i.segundoApellido,i.primerNombre,i.segundoNombre,c.curso,detalle,
-                              g.idPeriodo,c.idTipoCurso
+                              g.idPeriodo,c.idTipoCurso,cm.idCurso as idCursoPadre
                               FROM asignacionesinstructorescalificaciones a
                               INNER JOIN GruposCursos g on g.idGrupoCurso = a.idGrupoCurso
                               INNER JOIN Cursos c on c.idCurso=a.idCurso
+                              INNER JOIN cursos_mallas cm on cm.idCurso=g.idCurso and cm.idCursoAsociado = a.idCurso
                               INNER JOIN Instructores i on i.idInstructor=a.idInstructor
                               INNER JOIN Periodos p on p.idPeriodo=g.idPeriodo
                               WHERE idAsignacion=@idAsignacion";
@@ -244,7 +246,7 @@ namespace CTT_Administrador.Controllers
         {
             try
             {
-                _data.idCurso = await _context.gruposcursos.Where(x => x.idGrupoCurso == _data.idGrupoCurso).Select(x => x.idCurso).FirstOrDefaultAsync();
+                //_data.idCurso = await _context.gruposcursos.Where(x => x.idGrupoCurso == _data.idGrupoCurso).Select(x => x.idCurso).FirstOrDefaultAsync();
                 _data.usuarioRegistra = _auth.getUser();
                 _data.fechaRegistro = DateTime.Now;
                 if (_data.idAsignacion > 0)
@@ -253,7 +255,7 @@ namespace CTT_Administrador.Controllers
                 }
                 else
                 {
-                    if (_context.asignacionesinstructorescalificaciones.Where(x => x.idGrupoCurso == _data.idGrupoCurso && x.paralelo == _data.paralelo).Count() > 0) throw new Exception("Ya existe un instructor asignado para ese curso en ese paralelo");
+                    if (_context.asignacionesinstructorescalificaciones.Where(x => x.idCurso == _data.idCurso && x.paralelo == _data.paralelo && x.activo==1).Count() > 0) throw new Exception("Ya existe un instructor asignado para ese curso en ese paralelo");
                     _context.asignacionesinstructorescalificaciones.Add(_data);
                 }
 

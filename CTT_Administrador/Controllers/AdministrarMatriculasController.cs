@@ -113,7 +113,7 @@ namespace CTT_Administrador.Controllers
             {
                 string sql = @"
                                 select distinct(c.idCurso) as idCurso,curso
-                                from gruposcursos g 
+                                from gruposcursos g
                                 inner join cursos_mallas m on m.idCurso = g.idCurso
                                 inner join cursos c on c.idCurso = m.idCursoAsociado
                                 where g.idGrupoCurso = @idGrupoCurso
@@ -156,8 +156,8 @@ namespace CTT_Administrador.Controllers
             {
                 dapper.Dispose();
             }
-        }        
-        
+        }
+
         public async Task<IActionResult> comboParalelosListado(int idGrupoCurso, int idCurso)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
@@ -223,6 +223,7 @@ namespace CTT_Administrador.Controllers
                 dapper.Dispose();
             }
         }
+
         public async Task<IActionResult> listarMatriculados(int idGrupoCurso, int idCurso, string paralelo)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
@@ -327,7 +328,7 @@ namespace CTT_Administrador.Controllers
 
                 sql = $@"select cen.centro,e.documentoIdentidad,
                          e.primerApellido,e.segundoApellido,concat(e.primerNombre,' ',e.segundoNombre) as nombres,
-                         a.paralelo{notas},c.promedioFinal,c.faltas,
+                         a.paralelo{notas},c.faltas,c.promedioFinal,
                          ca.carrera,
                          case when c.justificaFaltas=1 then 'SI' else 'NO' end as justificaFaltas,
                          case when c.justificaFaltas = 1 then 'JUSTIFICADO'
@@ -350,6 +351,56 @@ namespace CTT_Administrador.Controllers
                 {
                     op.SheetName("MATRICULAS");
                 });
+                var archivo = new FileContentResult(excel, "application/vnd.ms-excel");
+                archivo.FileDownloadName = $"REPORTE_{DateTime.Now.Ticks}.xlsx";
+                return archivo;
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+            finally
+            {
+                dapper.Dispose();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> generarExcelCertificados(int idGrupoCurso, int idCurso, string paralelo)
+        {
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
+            try
+            {
+                string paralelos = paralelo == "TODOS" ? "" : "and m.paralelo = @paralelo";
+                string sql = @"select numeroNotas from cursos where idCurso=@idCurso";
+                int cantidadNotas = await dapper.ExecuteScalarAsync<int>(sql, new { idCurso });
+                string notas = "";
+                for (int i = 1; i <= cantidadNotas; i++)
+                {
+                    notas += $",nota{i}";
+                }
+
+                sql = $@"select e.documentoIdentidad as 'Cédula',
+                         e.primerNombre,e.segundoNombre,e.primerApellido,e.segundoApellido,
+                         cen.centro as 'Ciudad',ca.carrera as 'Carrera'
+                         from matriculas m
+                         inner join estudiantes e on e.idEstudiante = m.idEstudiante
+                         inner join calificaciones c on c.idMatricula = m.idMatricula
+                         inner join cursos cu on cu.idCurso=@idCurso
+                         left join carrerasuniandes ca on ca.idCarrera=m.idCarrera
+                         left join centrosuniandes cen on cen.idCentro=m.idCentro
+                         inner join asignacionesinstructorescalificaciones a on a.idGrupoCurso = c.idGrupoCurso
+                         and m.paralelo = a.paralelo and a.idCurso = c.idCurso
+                         where m.idGrupoCurso = @idGrupoCurso and c.idCurso=@idCurso {paralelos}
+                         and aprobado=1
+                         order by a.paralelo,e.primerApellido,e.primerNombre
+                ";
+                var listaCalificaciones = await dapper.QueryAsync(sql, new { idGrupoCurso, idCurso, paralelo });
+                var excel = listaCalificaciones.ToExcel(op =>
+                {
+                    op.SheetName("CERTIFICADOS");
+                });
+
                 var archivo = new FileContentResult(excel, "application/vnd.ms-excel");
                 archivo.FileDownloadName = $"REPORTE_{DateTime.Now.Ticks}.xlsx";
                 return archivo;
@@ -399,7 +450,7 @@ namespace CTT_Administrador.Controllers
                          inner join asignacionesinstructorescalificaciones a on a.idGrupoCurso = c.idGrupoCurso
                          and m.paralelo = a.paralelo and a.idCurso = c.idCurso
                          where m.idGrupoCurso = @idGrupoCurso and c.idCurso=@idCurso {paralelos}
-                         order by a.paralelo,e.primerApellido,e.primerNombre
+                         order by e.primerApellido,e.segundoApellido,e.primerNombre
                 ";
                 var listado = dapper.Query(sql, new { idCurso, idGrupoCurso, paralelo });
                 return new ViewAsPdf("pdfReporte", new { error = "", listado, path = _path, cantidad = listado.Count(), curso })

@@ -31,67 +31,67 @@ namespace CTT_Administrador.Controllers
 
         public IActionResult Categorias()
         {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
+            if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
             return View();
         }
 
         public IActionResult TiposCursos()
         {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
+            if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
             return View();
         }
 
         public IActionResult Cursos()
         {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
+            if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
             return View();
         }
 
         public IActionResult MatriculasUniandesMasivas()
         {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
+            if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
             return View();
         }
 
         public IActionResult Instructores()
         {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
+            if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
             return View();
         }
 
         public IActionResult Estudiantes()
         {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
+            if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
             return View();
         }
 
         public IActionResult AsignacionInstructores()
         {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
+            if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
             return View();
         }
 
         public IActionResult AsignacionAsistencias()
         {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
+            if (!_auth.inRol("admin,faltas")) return RedirectToAction("Login", "Administrador");
             return View();
         }
 
         public IActionResult PeriodosAcademicos()
         {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
+            if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
             return View();
         }
 
         public IActionResult AdministrarMatriculas()
         {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
+            if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
             return View();
         }
 
         public IActionResult ListadoMatriculados()
         {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Administrador");
+            if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
             return View();
         }
 
@@ -104,6 +104,7 @@ namespace CTT_Administrador.Controllers
                 var user = await _context.usuarios.Where(x => x.usuario == _data.usuario).FirstOrDefaultAsync();
                 if (user == null) throw new Exception("El usuario ingresado no se encuentra registrado");
                 if (Convert.ToBoolean(user.activo) != true) throw new Exception("El usuario ingresado no se encuentra activo");
+                if (_context.rolesusuarios.Where(x => x.idUsuario == user.idUsuario).Count() == 0) throw new Exception("El usuario ingresado no se encuentra registrado en ningún rol");
                 if (user.clave != _data.clave) throw new Exception("La contraseña ingresada no es correcta");
                 _data.nombre = user.nombre;
                 _data.usuario = user.usuario;

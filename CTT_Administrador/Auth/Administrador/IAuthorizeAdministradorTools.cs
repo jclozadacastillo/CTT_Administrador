@@ -15,5 +15,6 @@
         Task logoutAsync();
 
         bool validateToken();
+        bool inRol(string roles);
     }
 }

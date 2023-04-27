@@ -100,7 +100,7 @@ async function listar() {
                         return `${row.abreviaturaTitulo.replaceAll(".", "")}. ${row.primerApellido} ${row.segundoApellido || ""} ${row.primerNombre} ${row.segundoNombre || ""}`;
                     }
                 },
-                { title: "Curso", data: "curso", class: "w-25" },
+                { title: "Módulo", data: "curso", class: "w-25" },
                 { title: "Paralelo", data: "paralelo", class: "w-id text-center" },
                 { title: "Periodo", data: "detalle", class: "w-25" }
             ],
@@ -144,14 +144,14 @@ async function comboInstructores() {
 
 async function comboTiposCursos() {
     try {
-        if (idPeriodo.value == "") {
+        if (idPeriodo.value == "" ) {
             idTipoCurso.innerHTML = `<option value="">Seleccione un periodo</option>`;
             idGrupoCurso.innerHTML = `<option value="">Seleccione un tipo de curso</option>`;
             return;
         }
 
         const url = `${baseUrl}comboTiposCursos`;
-        const data = new FormData(frmDatos);
+        let data = new FormData(frmDatos);
         const res = (await axios.post(url, data)).data;
         let html = "<option value=''>Seleccione</option>";
         res.forEach(item => {
@@ -171,7 +171,7 @@ async function comboCursos() {
         }
 
         const url = `${baseUrl}comboCursos`;
-        const data = new FormData(frmDatos);
+        let data = new FormData(frmDatos);
         const res = (await axios.post(url, data)).data;
         let html = "<option value=''>Seleccione</option>";
         res.forEach(item => {
@@ -189,13 +189,12 @@ async function comboCursosAsociados() {
             idCurso.innerHTML = `<option value="">Seleccione un curso</option>`;
             return;
         }
-
         const url = `${baseUrl}comboCursosAsociados`;
-        const data = new FormData(frmDatos);
+        let data = new FormData(frmDatos);
         const res = (await axios.post(url, data)).data;
         let html = "<option value=''>Seleccione</option>";
         res.forEach(item => {
-            html += `<option value='${item.idCurso}'>${item.curso}</option>`
+            html += `<option value='${item.idCursoAsociado}'>${item.curso}</option>`
         });
         idCurso.innerHTML = html;
     } catch (e) {
@@ -233,6 +232,12 @@ async function guardar() {
 
 async function editar(_idAsignacion) {
     try {
+        idPeriodo.removeAttribute("disabled");
+        idTipoCurso.removeAttribute("disabled");
+        idGrupoCurso.removeAttribute("disabled");
+        paralelo.removeAttribute("disabled");
+        idInstructor.removeAttribute("disabled");
+        idCurso.removeAttribute("disabled");
         const url = `${baseUrl}unDato`;
         const data = new FormData();
         data.append("idAsignacion", _idAsignacion);
@@ -241,27 +246,39 @@ async function editar(_idAsignacion) {
         modalDatosLabel.innerHTML = "Editar registro";
         idAsignacion = res.idAsignacion;
         activo = res.activo == 1 || res.activo == true ? 1 : 0;
-        cargarFormularioInForm(frmDatos, res);
-        setTimeout(() => {
-            $(idPeriodo).val(res.idPeriodo).trigger("change");
-        }, 109);
+        cargarFormularioInFormNoSelect2(frmDatos, res);
+        $(idPeriodo).val(res.idPeriodo).trigger("change");
         setTimeout(() => {
             $(idTipoCurso).val(res.idTipoCurso).trigger("change");
-        }, 190);
+        },100)
         setTimeout(() => {
             $(idGrupoCurso).val(res.idGrupoCurso).trigger("change");
-        }, 253);
+        }, 250);
         setTimeout(() => {
             $(idCurso).val(res.idCurso).trigger("change");
+            $(idInstructor).val(res.idInstructor).trigger("change");
             idPeriodo.disabled = true;
             idTipoCurso.disabled = true;
             idGrupoCurso.disabled = true;
             paralelo.disabled = true;
             idInstructor.disabled = true;
             idCurso.disabled = true;
-        }, 307);
+        }, 500);
         modal.show();
     } catch (e) {
         handleError(e);
+    }
+}
+
+async function activar(_idAsignacion, _switch) {
+    try {
+        const url = `${baseUrl}activar`;
+        const data = new FormData();
+        data.append("idAsignacion", _idAsignacion);
+        await axios.post(url, data);
+        toastSuccess(`<b>${_switch.checked ? "Activado" : "Desactivado"}</b> con éxito`);
+    } catch (e) {
+        handleError(e.message);
+        _switch.checked = !_switch.checked;
     }
 }

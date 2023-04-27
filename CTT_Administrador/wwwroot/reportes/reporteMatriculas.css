@@ -52,7 +52,7 @@ table {
 }
 
 .text-danger {
-    color: red;
+    color: red !important;
 }
 
 .text-success {

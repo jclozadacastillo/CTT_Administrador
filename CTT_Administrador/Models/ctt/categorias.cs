@@ -1,4 +1,7 @@
-﻿namespace CTT_Administrador.Models.ctt;
+﻿using System;
+using System.Collections.Generic;
+
+namespace CTT_Administrador.Models.ctt;
 
 public partial class categorias
 {
@@ -10,5 +13,5 @@ public partial class categorias
 
     public sbyte? activo { get; set; }
 
-    public virtual ICollection<cursos> cursos { get; } = new List<cursos>();
+    public virtual ICollection<cursos> cursos { get; set; } = new List<cursos>();
 }

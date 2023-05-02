@@ -97,10 +97,18 @@ async function listar() {
                     data: "idInstructor",
                     class: "text-start w-25",
                     render: (data, type, row) => {
-                        return `${row.abreviaturaTitulo.replaceAll(".", "")}. ${row.primerApellido} ${row.segundoApellido || ""} ${row.primerNombre} ${row.segundoNombre || ""}`;
+                        const docente = `${row.abreviaturaTitulo.replaceAll(".", "")}. ${row.primerApellido} ${row.segundoApellido || ""} ${row.primerNombre} ${row.segundoNombre || ""}`;
+                        return `<span class='ellipsis w-109' title='${docente}'>${docente}</span>`;
                     }
                 },
-                { title: "Módulo", data: "curso", class: "w-25" },
+                {
+                    title: "Módulo",
+                    data: "curso",
+                    class: "w-25",
+                    render: (data)=>{
+                        return `<span class='ellipsis w-370' title="${data}">${data}</span>`;
+                    }
+                },
                 { title: "Paralelo", data: "paralelo", class: "w-id text-center" },
                 { title: "Periodo", data: "detalle", class: "w-25" }
             ],
@@ -218,6 +226,7 @@ async function guardar() {
         if (mayusculas) formToUpperCase(frmDatos);
         const data = new FormData(frmDatos);
         data.append("idAsignacion", idAsignacion);
+        data.append("pasaFaltas", pasaFaltas.checked ? 1 : 0);
         data.append("activo", activo);
         await axios.post(url, data);
         toastSuccess("<b>Guardado</b> con éxito");
@@ -247,6 +256,7 @@ async function editar(_idAsignacion) {
         idAsignacion = res.idAsignacion;
         activo = res.activo == 1 || res.activo == true ? 1 : 0;
         cargarFormularioInFormNoSelect2(frmDatos, res);
+        pasaFaltas.checked = res.pasaFaltas == 1;
         $(idPeriodo).val(res.idPeriodo).trigger("change");
         setTimeout(() => {
             $(idTipoCurso).val(res.idTipoCurso).trigger("change");

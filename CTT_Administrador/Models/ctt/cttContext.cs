@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace CTT_Administrador.Models.ctt;
 
@@ -55,9 +57,8 @@ public partial class cttContext : DbContext
 
     public virtual DbSet<usuarios> usuarios { get; set; }
 
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-    //        => optionsBuilder.UseMySQL("server=localhost;user=root;password=123;database=cec_ctt;SslMode=none");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseMySQL("name=ctt");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -74,6 +75,7 @@ public partial class cttContext : DbContext
                 .HasColumnType("timestamp");
             entity.Property(e => e.observacion).HasMaxLength(100);
             entity.Property(e => e.paralelo).HasMaxLength(1);
+            entity.Property(e => e.pasaFaltas).HasDefaultValueSql("'0'");
             entity.Property(e => e.usuarioRegistra).HasMaxLength(20);
         });
 
@@ -108,6 +110,7 @@ public partial class cttContext : DbContext
             entity.Property(e => e.promedioFinal)
                 .HasPrecision(5)
                 .HasDefaultValueSql("'0.00'");
+            entity.Property(e => e.suspendido).HasDefaultValueSql("'0'");
         });
 
         modelBuilder.Entity<carrerasuniandes>(entity =>

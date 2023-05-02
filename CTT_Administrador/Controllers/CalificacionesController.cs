@@ -168,7 +168,8 @@ namespace CTT_Administrador.Controllers
                                 select c.*,e.documentoIdentidad,
                                 concat(e.primerApellido,' ',e.segundoApellido,' ',e.primerNombre,' ',e.segundoNombre) as estudiante,
                                 datediff(fechaLimiteNotas,current_timestamp()) as tiempoLimite,
-                                datediff(fechaLimiteNotasAtraso,current_timestamp()) as tiempoLimiteAtraso
+                                datediff(fechaLimiteNotasAtraso,current_timestamp()) as tiempoLimiteAtraso,
+                                a.pasaFaltas
                                 from matriculas m
                                 inner join estudiantes e on e.idEstudiante = m.idEstudiante
                                 inner join calificaciones c on c.idMatricula = m.idMatricula

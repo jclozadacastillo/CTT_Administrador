@@ -1,4 +1,7 @@
-﻿namespace CTT_Administrador.Models.ctt;
+﻿using System;
+using System.Collections.Generic;
+
+namespace CTT_Administrador.Models.ctt;
 
 public partial class calificaciones
 {
@@ -33,4 +36,6 @@ public partial class calificaciones
     public string? justificacionObservacion { get; set; }
 
     public sbyte? justificaFaltas { get; set; }
+
+    public sbyte? suspendido { get; set; }
 }

@@ -40,7 +40,7 @@
 
 <body>
     @Html.AntiForgeryToken()
-    <main class="bg-login">
+    <main class="bg-login-docente">
         <div class="container">
             <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
                 <div class="container">
@@ -65,7 +65,7 @@
 
                                         <div class="col-12">
                                             <label class="form-label">Contraseña</label>
-                                            <input type="password" id="clave" name="clave" class="form-control">
+                                            <input type="password" id="clave" name="clave" class="form-control" placeholder="Ingrese su contraseña">
                                         </div>
 
                                         <div class="col-12">
@@ -82,7 +82,7 @@
                                             <button class="btn btn-primary w-100" type="submit">Login</button>
                                         </div>
                                         <div class="col-12">
-                                            <p class="small mb-0">
+                                            <p class="small mb-0" hidden>
                                                 Olvido sus credenciales? <a href="pages-register.html">
                                                     Recuperar
                                                     contraseña
@@ -90,7 +90,7 @@
                                             </p>
                                         </div>
                                     </form>
-                                    <div class="credits fs-xxxxs fw-bold text-black text-center mt-3">
+                                    <div class="credits fs-xxxxs fw-bold text-secondary text-center mt-3">
                                         CTT DE LOS ANDES &copy; 2023
                                     </div>
                                 </div>

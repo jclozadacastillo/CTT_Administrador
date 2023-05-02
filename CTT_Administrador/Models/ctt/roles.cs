@@ -1,4 +1,7 @@
-﻿namespace CTT_Administrador.Models.ctt;
+﻿using System;
+using System.Collections.Generic;
+
+namespace CTT_Administrador.Models.ctt;
 
 public partial class roles
 {
@@ -10,5 +13,5 @@ public partial class roles
 
     public sbyte? activo { get; set; }
 
-    public virtual ICollection<rolesusuarios> rolesusuarios { get; } = new List<rolesusuarios>();
+    public virtual ICollection<rolesusuarios> rolesusuarios { get; set; } = new List<rolesusuarios>();
 }

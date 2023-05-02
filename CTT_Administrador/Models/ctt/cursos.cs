@@ -1,4 +1,7 @@
-﻿namespace CTT_Administrador.Models.ctt;
+﻿using System;
+using System.Collections.Generic;
+
+namespace CTT_Administrador.Models.ctt;
 
 public partial class cursos
 {
@@ -40,13 +43,13 @@ public partial class cursos
 
     public int? numeroNotas { get; set; }
 
-    public virtual ICollection<cursos_mallas> cursos_mallasidCursoAsociadoNavigation { get; } = new List<cursos_mallas>();
+    public virtual ICollection<cursos_mallas> cursos_mallasidCursoAsociadoNavigation { get; set; } = new List<cursos_mallas>();
 
-    public virtual ICollection<cursos_mallas> cursos_mallasidCursoNavigation { get; } = new List<cursos_mallas>();
+    public virtual ICollection<cursos_mallas> cursos_mallasidCursoNavigation { get; set; } = new List<cursos_mallas>();
 
     public virtual categorias? idCategoriaNavigation { get; set; }
 
     public virtual tiposcursos? idTipoCursoNavigation { get; set; }
 
-    public virtual ICollection<temas> temas { get; } = new List<temas>();
+    public virtual ICollection<temas> temas { get; set; } = new List<temas>();
 }

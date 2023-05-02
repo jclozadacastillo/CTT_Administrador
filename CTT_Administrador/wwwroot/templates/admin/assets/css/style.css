@@ -1631,12 +1631,33 @@ select {
     padding: 0 !important;
 }
 
+
+.main-container:has(.portada-docente) {
+    background-image: linear-gradient(to bottom, rgba(var(--primary-hover-rgb), 0.91), rgba(var(--primary-hover-rgb), 0.91)), url('../../../../lib/utilities/toast/img/login_docente.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    padding: 0 !important;
+}
+
 .bg-login {
     /*    background: rgba(var(--primary-rgb), .91) !important;
     background: url(../../../../lib/utilities/toast/img/bg-admin.jpg);*/
     background-image: linear-gradient(to bottom, rgba(var(--primary-rgb), 0.91), rgba(var(--primary-rgb), 0.91)), url('../../../../lib/utilities/toast/img/bg-admin.jpg');
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    padding: 0 !important;
+}
+
+.bg-login-docente {
+    /*    background: rgba(var(--primary-rgb), .91) !important;
+    background: url(../../../../lib/utilities/toast/img/bg-admin.jpg);*/
+    background-image: linear-gradient(to bottom, rgba(var(--primary-hover-rgb), 0.91), rgba(var(--primary-hover-rgb), 0.91)), url('../../../../lib/utilities/toast/img/login_docente.jpg');
+    background-size: cover;
+    background-position: left;
     background-repeat: no-repeat;
     background-attachment: fixed;
     padding: 0 !important;
@@ -1725,7 +1746,7 @@ div.row.mx-alert {
 form.to-uppercase input:not([data-validate="email"]):not([password]):not([no-uppercase]),
 form.to-uppercase select,
 form.to-uppercase textarea,
-form.to-uppercase .select2{
+form.to-uppercase .select2 {
     text-transform: uppercase !important;
 }
 
@@ -1796,4 +1817,137 @@ form.to-uppercase .select2{
 .paginate_button:not(.active) .page-link:hover,
 .paginate_button:not(.active) .page-link:focus {
     color: #008E74 !important;
+}
+
+td:has(span.ellipsis.w-109) {
+    max-width: 109px;
+}
+
+td:has(span.ellipsis.w-370) {
+    max-width: 370px;
+}
+
+.ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
+}
+table.table-custom tbody tr td:not(.w-id):not(.switch-td),
+table.table-custom thead tr th:not(.w-id):not(.switch-td)
+{
+    padding-left: 10px !important;
+}
+
+
+    table.table-custom tbody tr td.switch-td {
+        padding-right: 10px !important;
+    }
+
+.table-custom > tbody > tr:nth-of-type(odd) > * {
+    --bs-table-accent-bg: #E5F6F3 !important;
+    color: var(--bs-table-striped-color);
+}
+
+.table-custom tbody tr,
+.table-custom thead tr
+{
+    border-color: #E5F6F3 !important;
+}
+
+.table-custom tbody td{
+    background:white;
+}
+
+table.table-hover.table-light tbody tr:hover td {
+    background: #F9FBEF;
+    box-shadow: none ;
+}
+table.table-custom.table-hover tbody tr:hover {
+    box-shadow: none !important;
+    border-top: none !important;
+}
+table.table-custom.table-hover tbody tr:hover td {
+    --bs-table-accent-bg: #F9FBEF !important;
+    border-color: #02A788 !important;
+    box-shadow: none ;
+
+}
+
+.table-custom-columns > :not(caption) > tr > :nth-child(even) {
+    --bs-table-accent-bg: #E5F6F3 !important;
+    color: var(--bs-table-striped-color);
+}
+
+.alert.alert-success{
+    background-color:#E5F6F3 ;
+}
+
+.col-sm-12:has(#instructorLabel) label{
+    margin-bottom: 10px !important;
+}
+
+table.table-hover tbody tr td[colspan="11"]{
+    background: none !important;
+    background-color: none !important;
+    --bs-table-accent-bg: white !important;
+    border-bottom:1px solid rgb(206, 212, 218) !important;
+    color:rgb(206, 212, 218) !important;
+    padding-top: 15px !important;
+}
+
+table.table-hover tr td[colspan="11"]:hover{
+    color: #02A788 !important;
+}
+
+#tableDatos_length label{
+    font-weight: 600 !important;
+    color: #595A5D !important;
+    font-size: .875em !important;
+
+}
+#tableDatos_info{
+    font-size: .875em !important;
+}
+
+#tableDatos_info b{
+    font-size: 1.09em !important;
+}
+  #tableDatos_length select option:checked {
+    color: white !important;
+    background:#02A788 !important;
+  }
+
+  #tableDatos_length select, 
+  #tableDatos_length select option {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+  }
+  #tableDatos_length select:hover > option {
+     background:#02A788 !important;
+    color:white !important;
+    font-size: 50px !important;
+  }
+@media (max-width:700px) {
+    #tableDatos_length{
+        margin-bottom: 10px !important;
+        float: left !important;
+    }
+
+    #tableDatos_length label span{
+        display: none !important;
+    }
+
+    #tableDatos_filter label{
+        float: left !important;
+        /* display: none; */
+    }
+
+    #tableDatos_filter label small{
+        display: none !important;
+    }
+    #tableDatos_filter label input{
+        margin-left: 0 !important;
+    }
 }

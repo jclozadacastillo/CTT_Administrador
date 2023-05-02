@@ -76,7 +76,14 @@ async function listar() {
                                 `;
                     }
                 },
-                { title: "Curso", data: "curso", class: "w-50" },
+                {
+                    title: "Curso",
+                    data: "curso",
+                    class: "w-50",
+                    render: (data) => {
+                        return `<span class='ellipsis w-370' title="${data}">${data}</span>`;
+                    }
+                },
                 { title: "Categoría", data: "categoria", class: "w-25" },
                 { title: "Tipo", data: "tipoCurso", class: "w-25" },
 

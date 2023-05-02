@@ -1,4 +1,7 @@
-﻿namespace CTT_Administrador.Models.ctt;
+﻿using System;
+using System.Collections.Generic;
+
+namespace CTT_Administrador.Models.ctt;
 
 public partial class asignacionesinstructorescalificaciones
 {
@@ -25,4 +28,6 @@ public partial class asignacionesinstructorescalificaciones
     public sbyte? activo { get; set; }
 
     public string? observacion { get; set; }
+
+    public sbyte? pasaFaltas { get; set; }
 }

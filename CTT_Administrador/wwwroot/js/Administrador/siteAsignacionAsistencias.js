@@ -251,7 +251,6 @@ function calcularPromedio(_index) {
 }
 
 function claseEstado(_data) {
-    console.log(_data);
     const res = {};
     if (_data.aprobado == 1) {
         res.estado = "APROBADO";

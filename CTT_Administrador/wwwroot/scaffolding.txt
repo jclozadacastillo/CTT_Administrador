@@ -1,1 +1,2 @@
 ﻿Scaffold-DbContext name=ctt MySql.EntityFrameworkCore -OutputDir Models/ctt -f -UseDatabaseNames -NoPluralize -Context cttContext
+dotnet ef dbcontext scaffold name=ctt MySql.EntityFrameworkCore -o Models/ctt -f --no-pluralize --use-database-names -c cttContext

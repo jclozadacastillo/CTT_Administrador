@@ -11,7 +11,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Rotativa.AspNetCore;
 
-namespace CTT_Administrador.Controllers
+namespace CTT_Administrador.Controllers.Administrador
 {
     public class MatriculasUniandesMasivasController : Controller
     {

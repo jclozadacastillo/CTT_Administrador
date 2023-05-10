@@ -4,7 +4,7 @@ using CTT_Administrador.Models.ctt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTT_Administrador.Controllers
+namespace CTT_Administrador.Controllers.Docente
 {
     public class DocenteController : Controller
     {

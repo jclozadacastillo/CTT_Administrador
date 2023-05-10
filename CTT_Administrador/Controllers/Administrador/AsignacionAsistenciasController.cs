@@ -1,5 +1,5 @@
 ﻿using CTT_Administrador.Auth;
-using CTT_Administrador.Auth.Docente;
+using CTT_Administrador.Auth.Administrador;
 using CTT_Administrador.Models.ctt;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
@@ -7,14 +7,14 @@ using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using System.Reflection;
 
-namespace CTT_Administrador.Controllers
+namespace CTT_Administrador.Controllers.Administrador
 {
-    public class CalificacionesController : Controller
+    public class AsignacionAsistenciasController : Controller
     {
         private readonly cttContext _context;
-        private readonly IAuthorizeDocenteTools _auth;
+        private readonly IAuthorizeAdministradorTools _auth;
 
-        public CalificacionesController(cttContext context, IAuthorizeDocenteTools auth)
+        public AsignacionAsistenciasController(cttContext context, IAuthorizeAdministradorTools auth)
         {
             _auth = auth;
             _context = context;
@@ -24,7 +24,6 @@ namespace CTT_Administrador.Controllers
         public async Task<IActionResult> comboPeriodos()
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
-            var usuario = _auth.getUser();
             try
             {
                 string sql = @"
@@ -48,9 +47,8 @@ namespace CTT_Administrador.Controllers
                                 and p.activo = 1 and m.activa = 1
                                 and datediff(current_date(),p.fechaInicio)>=0
                                 and datediff(p.fechaFin,current_date())>=0
-                                and a.idInstructor = @usuario
                 ";
-                return Ok(await dapper.QueryAsync(sql, new { usuario }));
+                return Ok(await dapper.QueryAsync(sql));
             }
             catch (Exception ex)
             {
@@ -66,7 +64,6 @@ namespace CTT_Administrador.Controllers
         public async Task<IActionResult> comboCursos(int idPeriodo)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
-            var usuario = _auth.getUser();
             try
             {
                 string sql = @"
@@ -90,9 +87,9 @@ namespace CTT_Administrador.Controllers
                                 and p.activo = 1 and m.activa = 1
                                 and datediff(current_date(),p.fechaInicio)>=0
                                 and datediff(p.fechaFin,current_date())>=0
-                                and a.idInstructor = @usuario and p.idPeriodo=@idPeriodo
+                                and p.idPeriodo=@idPeriodo
                 ";
-                return Ok(await dapper.QueryAsync(sql, new { usuario, idPeriodo }));
+                return Ok(await dapper.QueryAsync(sql, new { idPeriodo }));
             }
             catch (Exception ex)
             {
@@ -108,7 +105,7 @@ namespace CTT_Administrador.Controllers
         public async Task<IActionResult> comboCursosAsociados(int idGrupoCurso)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
-            var usuario = _auth.getUser();
+
             try
             {
                 string sql = @"
@@ -117,9 +114,9 @@ namespace CTT_Administrador.Controllers
                                 inner join gruposcursos g on g.idGrupoCurso=a.idGrupoCurso
                                 inner join cursos_mallas m on m.idCurso = g.idCurso
                                 inner join cursos c on c.idCurso = m.idCursoAsociado
-                                where a.idGrupoCurso = @idGrupoCurso and a.idInstructor=@usuario
+                                where a.idGrupoCurso = @idGrupoCurso
                 ";
-                return Ok(await dapper.QueryAsync(sql, new { usuario, idGrupoCurso }));
+                return Ok(await dapper.QueryAsync(sql, new { idGrupoCurso }));
             }
             catch (Exception ex)
             {
@@ -134,7 +131,6 @@ namespace CTT_Administrador.Controllers
         public async Task<IActionResult> comboParalelos(int idGrupoCurso, int idCurso)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
-            var usuario = _auth.getUser();
             try
             {
                 string sql = @"
@@ -143,10 +139,10 @@ namespace CTT_Administrador.Controllers
                                 inner join gruposcursos g on g.idGrupoCurso=a.idGrupoCurso
                                 inner join cursos_mallas m on m.idCurso = g.idCurso
                                 inner join cursos c on c.idCurso = m.idCursoAsociado
-                                where a.idGrupoCurso = @idGrupoCurso and a.idInstructor=@usuario and a.idCurso=@idCurso
+                                where a.idGrupoCurso = @idGrupoCurso and a.idCurso=@idCurso
                                 order by a.paralelo
                 ";
-                return Ok(await dapper.QueryAsync(sql, new { usuario, idGrupoCurso, idCurso }));
+                return Ok(await dapper.QueryAsync(sql, new { idGrupoCurso, idCurso }));
             }
             catch (Exception ex)
             {
@@ -161,27 +157,32 @@ namespace CTT_Administrador.Controllers
         public async Task<IActionResult> listar(int idGrupoCurso, int idCurso, string paralelo)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
-            var usuario = _auth.getUser();
             try
             {
                 string sql = @"
                                 select c.*,e.documentoIdentidad,
                                 concat(e.primerApellido,' ',e.segundoApellido,' ',e.primerNombre,' ',e.segundoNombre) as estudiante,
                                 datediff(fechaLimiteNotas,current_timestamp()) as tiempoLimite,
-                                datediff(fechaLimiteNotasAtraso,current_timestamp()) as tiempoLimiteAtraso,
-                                a.pasaFaltas
+                                datediff(fechaLimiteNotasAtraso,current_timestamp()) as tiempoLimiteAtraso
                                 from matriculas m
                                 inner join estudiantes e on e.idEstudiante = m.idEstudiante
                                 inner join calificaciones c on c.idMatricula = m.idMatricula
                                 inner join asignacionesinstructorescalificaciones a on a.idGrupoCurso = c.idGrupoCurso
-                                and m.paralelo = a.paralelo and a.idCurso = c.idCurso and a.idInstructor = @usuario
+                                and m.paralelo = a.paralelo and a.idCurso = c.idCurso
                                 where m.idGrupoCurso = @idGrupoCurso and c.idCurso=@idCurso and m.paralelo=@paralelo
                                 order by e.primerApellido,e.primerNombre
                 ";
-                var listaCalificaciones = await dapper.QueryAsync(sql, new { usuario, idGrupoCurso, idCurso, paralelo });
+                var listaCalificaciones = await dapper.QueryAsync(sql, new { idGrupoCurso, idCurso, paralelo });
                 sql = @"SELECT * FROM cursos WHERE idCurso=@idCurso";
                 var parametros = await dapper.QueryFirstOrDefaultAsync(sql, new { idCurso });
-                return Ok(new { listaCalificaciones, parametros });
+                sql = @"select i.* from asignacionesinstructorescalificaciones a
+                    inner join instructores i on i.idInstructor = a.idInstructor
+                    where idGrupoCurso =@idGrupoCurso
+                    and idCurso=@idCurso
+                    and paralelo=@paralelo
+                    and a.activo=1 and i.activo=1";
+                var instructor = await dapper.QueryFirstOrDefaultAsync(sql, new { idCurso, idGrupoCurso, paralelo });
+                return Ok(new { listaCalificaciones, parametros, instructor });
             }
             catch (Exception ex)
             {
@@ -199,7 +200,8 @@ namespace CTT_Administrador.Controllers
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
-                string sql = @"SELECT numeroNotas,puntajeMinimo,asistenciaMinima,calificaAsistencia from cursos WHERE idCurso=@idCurso"; ;
+                string sql = @"SELECT numeroNotas,puntajeMinimo,asistenciaMinima,calificaAsistencia
+                              from cursos WHERE idCurso=@idCurso"; ;
                 var parametros = await dapper.QueryFirstOrDefaultAsync<cursos>(sql, _data);
                 int? notas = parametros.numeroNotas;
                 int? puntajeMinimo = parametros.puntajeMinimo;
@@ -212,14 +214,15 @@ namespace CTT_Administrador.Controllers
                 }
                 _data.promedioFinal = Convert.ToDecimal(acumulador / notas);
                 var aprobadoFaltas = true;
-                if (parametros.calificaAsistencia == 1) _data.promedioFinal = Convert.ToDecimal((_data.promedioFinal + _data.faltas) / 2);
                 if (parametros.calificaAsistencia == 1) aprobadoFaltas = _data.faltas >= parametros.asistenciaMinima;
+                if (parametros.calificaAsistencia == 1) _data.promedioFinal = Convert.ToDecimal((_data.promedioFinal + _data.faltas) / 2);
                 _data.aprobado = Convert.ToSByte(_data.promedioFinal >= Convert.ToDecimal(puntajeMinimo) && aprobadoFaltas);
                 sql = @"
                                 UPDATE calificaciones
-                                SET nota1=@nota1, nota2=@nota2, nota3=@nota3,nota4=@nota4,nota5=@nota5,
-                                faltas=@faltas,
-                                promedioFinal=@promedioFinal,aprobado=@aprobado
+                                SET faltas=@faltas,
+                                aprobado=@aprobado,
+                                justificaFaltas=@justificaFaltas,
+                                justificacionObservacion=@justificacionObservacion
                                 WHERE idMatricula=@idMatricula
                                 AND idGrupoCurso=@idGrupoCurso
                                 AND idCurso=@idCurso;
@@ -243,7 +246,7 @@ namespace CTT_Administrador.Controllers
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
-                string sql = @"SELECT numeroNotas,puntajeMinimo,asistenciaMinima from cursos WHERE idCurso=@idCurso"; ;
+                string sql = @"SELECT numeroNotas,puntajeMinimo,asistenciaMinima,calificaAsistencia from cursos WHERE idCurso=@idCurso"; ;
                 var parametros = await dapper.QueryFirstOrDefaultAsync<cursos>(sql, _data.FirstOrDefault());
                 int? notas = parametros.numeroNotas;
                 int? puntajeMinimo = parametros.puntajeMinimo;

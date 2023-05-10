@@ -1,0 +1,161 @@
+@{
+    ViewData["Title"] = "Modulos Diplomados";
+}
+<div class="container-fluid" id="content" hidden>
+    <div class="row">
+        <div class="col-auto me-0 pe-0 form-title">
+            <h4>Cursos</h4>
+        </div>
+        <div class="col-auto ">
+            <button class="btn btn-sm btn-primary btn-new" title="Nuevo registro" onclick="nuevo()">
+                <i class="bi-plus"></i> Agregar
+            </button>
+        </div>
+    </div>
+    <hr>
+    <div class="row mt-3">
+        <div class="col-sm-12">
+            <div class="table-responsive-sm">
+                <table class="table table-sm table-condensed w-100
+            table-light table-hover table-custom" id="tableDatos"></table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="modalDatos" tabindex="-1" aria-labelledby="modalDatosLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header py-2">
+                    <h1 class="modal-title" id="modalDatosLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmDatos">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label class="fs-sm">Categoría</label>
+                                <select class="form-select form-select-sm" name="idCategoria" id="idCategoria">
+                                    <option value="">Seleccione</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="fs-sm">Tipo de curso</label>
+                                <select class="form-select form-select-sm" name="idTipoCurso" id="idTipoCurso">
+                                    <option value="">Seleccione</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-12">
+                                <label class="fs-sm">Curso</label>
+                                <textarea type="text" class="form-control form-control-sm" id="curso" name="curso"
+                                    maxlength="500"></textarea>
+                            </div>
+                            <div class="col-sm-12" hidden> 
+                                <label class="fs-sm">Objetivo Principal</label>
+                                <textarea class="form-control form-control-sm" id="objetivoPrincipal" name="objetivoPrincipal" data-validate="no-validate" maxlength="100"></textarea>
+                            </div>
+                            <div class="col-sm-12" hidden>
+                                <label class="fs-sm">Objetivo Secundario</label>
+                                <textarea class="form-control form-control-sm" id="objetivoSecuncdario" name="objetivoSecuncdario" data-validate="no-validate" maxlength="10000"></textarea>
+                            </div>
+                            <div class="col-sm-2">
+                                <label class="fs-sm">Total Horas</label>
+                                <input type="text" class="form-control form-control-sm text-end" data-validate="decimal" id="horasCurso" name="horasCurso"
+                                       maxlength="7">
+                                <div class="invalid-feedback">
+                                    *Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <label class="fs-sm">Número notas</label>
+                                <input type="text" class="form-control form-control-sm text-end" data-validate="numeros-no-cero" id="numeroNotas" name="numeroNotas"
+                                       maxlength="7">
+                                <div class="invalid-feedback">
+                                    *Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <label class="fs-sm">Puntaje Máximo</label>
+                                <input type="text" class="form-control form-control-sm text-end" value="10" data-value="10" data-validate="decimal" id="puntajeMaximo" name="puntajeMaximo"
+                                       maxlength="7">
+                                <div class="invalid-feedback">
+                                    *Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <label class="fs-sm">Puntaje Mínimo</label>
+                                <input type="text" class="form-control form-control-sm text-end" value="7" data-value="7" data-validate="decimal" id="puntajeMinimo" name="puntajeMinimo"
+                                       maxlength="7">
+                                <div class="invalid-feedback">
+                                    *Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-2 ms-auto">
+                                <label class="fs-sm">Precio</label>
+                                <input type="text" class="form-control form-control-sm text-end" data-validate="decimal" id="precioCurso" name="precioCurso"
+                                       maxlength="7">
+                                <div class="invalid-feedback">
+                                    *Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-3 mt-2 ">
+                                <label class="pointer fw-600 me-1 fs-sm" for="procesoUniandes">Proceso Uniandes</label>
+                                <label class="switch">
+                                    <input type="checkbox"
+                                           id="procesoUniandes" name="procesoUniandes" value="1"/>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="col-sm-12 mt-2">
+                                <label class="pointer fw-600 me-1 fs-sm" for="tienePrecedencia">Tiene precedencia</label>
+                                <label class="switch">
+                                    <input type="checkbox"
+                                           value="1"
+                                           id="tienePrecedencia" name="tienePrecedencia" onchange="handlePrecedencia()" />
+                                    <span class="slider"></span>
+                                </label>
+                                <div class="row" id="divPrecedencia" hidden>
+                                    <div class="col-sm-6 mt-1">
+                                        <label class="fs-sm text-primary">Curso Precendencia</label>
+                                        <select class="form-select form-select-sm" data-validate="no-validate" name="idCursoPrecedencia" id="idCursoPrecedencia">
+                                            <option value="">Seleccione</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mt-2">
+                                <label class="pointer fw-600 me-1 fs-sm" for="tienePrecedencia">Califica Asistencia</label>
+                                <label class="switch">
+                                    <input type="checkbox"
+                                           value="1"
+                                           id="calificaAsistencia" name="calificaAsistencia" onchange="handleAsistencia()" />
+                                    <span class="slider"></span>
+                                </label>
+                                <div class="row" id="divAsistencia" hidden>
+                                    <div class="col-sm-3 mt-1">
+                                        <label class="fs-sm text-primary">Asistencia Mínima</label>
+                                        <input type="text" class="form-control form-control-sm text-end" data-validate="numeros-no-cero" id="asistenciaMinima" name="asistenciaMinima"
+                                               maxlength="7">
+                                        <div class="invalid-feedback">
+                                            *Campo requerido
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer py-2">
+                    <button type="button" class="btn btn-secondary btn-sm" data-cerrar data-bs-dismiss="modal">
+                        Cerrar
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" data-guardar onclick="guardar()">
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script defer src="~/js/administrador/siteModulosDiplomados.js?v=@DateTime.Now.Ticks"></script>

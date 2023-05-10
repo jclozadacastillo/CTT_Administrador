@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 
-namespace CTT_Administrador.Controllers
+namespace CTT_Administrador.Controllers.Administrador
 {
     [AuthorizeAdministrador]
     public class CursosController : Controller

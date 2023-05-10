@@ -3,14 +3,14 @@ using CTT_Administrador.Models.ctt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTT_Administrador.Controllers
+namespace CTT_Administrador.Controllers.Administrador
 {
     [AuthorizeAdministrador]
-    public class InstructoresController : Controller
+    public class EstudiantesController : Controller
     {
         private readonly cttContext _context;
 
-        public InstructoresController(cttContext context)
+        public EstudiantesController(cttContext context)
         {
             _context = context;
         }
@@ -20,7 +20,7 @@ namespace CTT_Administrador.Controllers
         {
             try
             {
-                return Ok(await _context.instructores.OrderBy(x => x.primerApellido).ToListAsync());
+                return Ok(await _context.estudiantes.OrderBy(x => x.primerApellido).ToListAsync());
             }
             catch (Exception ex)
             {
@@ -42,11 +42,11 @@ namespace CTT_Administrador.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> unDato(int idInstructor)
+        public async Task<IActionResult> unDato(int idEstudiante)
         {
             try
             {
-                return Ok(await _context.instructores.FindAsync(idInstructor));
+                return Ok(await _context.estudiantes.FindAsync(idEstudiante));
             }
             catch (Exception ex)
             {
@@ -55,14 +55,14 @@ namespace CTT_Administrador.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> guardar(instructores _data)
+        public async Task<IActionResult> guardar(estudiantes _data)
         {
             try
             {
-                if (_context.instructores.Where(x => x.documentoIdentidad == _data.documentoIdentidad && _data.idInstructor != x.idInstructor).Count() > 0) throw new Exception("Lo sentimos esa documento de identidad ya se encuentra registrado");
-                if (_data.idInstructor > 0)
-                    _context.instructores.Update(_data);
-                else _context.instructores.Add(_data);
+                if (_context.estudiantes.Where(x => x.documentoIdentidad == _data.documentoIdentidad && _data.idEstudiante != x.idEstudiante).Count() > 0) throw new Exception("Lo sentimos esa documento de identidad ya se encuentra registrado");
+                if (_data.idEstudiante > 0)
+                    _context.estudiantes.Update(_data);
+                else _context.estudiantes.Add(_data);
                 await _context.SaveChangesAsync();
                 return Ok();
             }
@@ -73,11 +73,11 @@ namespace CTT_Administrador.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> activar(int idInstructor)
+        public async Task<IActionResult> activar(int idEstudiante)
         {
             try
             {
-                var data = await _context.instructores.FindAsync(idInstructor);
+                var data = await _context.estudiantes.FindAsync(idEstudiante);
                 if (data == null) throw new Exception("Elemento no encontrado");
                 data.activo = Convert.ToBoolean(data.activo) == true ? Convert.ToSByte(false) : Convert.ToSByte(true);
                 _context.Update(data);

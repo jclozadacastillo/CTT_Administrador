@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using Rotativa.AspNetCore;
 
-namespace CTT_Administrador.Controllers
+namespace CTT_Administrador.Controllers.Administrador
 {
     public class AdministrarMatriculasController : Controller
     {
@@ -50,6 +50,7 @@ namespace CTT_Administrador.Controllers
                                 and p.activo = 1 and m.activa = 1
                                 and datediff(current_date(),p.fechaInicio)>=0
                                 and datediff(p.fechaFin,current_date())>=0
+                                and a.activo=1
                 ";
                 return Ok(await dapper.QueryAsync(sql));
             }
@@ -91,6 +92,7 @@ namespace CTT_Administrador.Controllers
                                 and datediff(current_date(),p.fechaInicio)>=0
                                 and datediff(p.fechaFin,current_date())>=0
                                 and p.idPeriodo=@idPeriodo
+                                and a.activo=1
                 ";
                 return Ok(await dapper.QueryAsync(sql, new { idPeriodo }));
             }
@@ -142,6 +144,7 @@ namespace CTT_Administrador.Controllers
                                 inner join cursos_mallas m on m.idCurso = g.idCurso
                                 inner join cursos c on c.idCurso = m.idCursoAsociado
                                 where a.idGrupoCurso = @idGrupoCurso and a.idCurso=@idCurso
+                                and a.activo=1
                                 order by a.paralelo
                 ";
                 var paralelos = new List<dynamic>() { new { paralelo = "TODOS" } };
@@ -200,7 +203,7 @@ namespace CTT_Administrador.Controllers
                                 inner join calificaciones c on c.idMatricula = m.idMatricula
                                 inner join asignacionesinstructorescalificaciones a on a.idGrupoCurso = c.idGrupoCurso
                                 and m.paralelo = a.paralelo and a.idCurso = c.idCurso
-                                where m.idGrupoCurso = @idGrupoCurso and c.idCurso=@idCurso {paralelos}
+                                where m.idGrupoCurso = @idGrupoCurso and a.activo=1 and c.idCurso=@idCurso {paralelos}
                                 order by a.paralelo,e.primerApellido,e.primerNombre
                 ";
                 var listaCalificaciones = await dapper.QueryAsync(sql, new { idGrupoCurso, idCurso, paralelo });
@@ -210,7 +213,8 @@ namespace CTT_Administrador.Controllers
                     inner join instructores i on i.idInstructor = a.idInstructor
                     where idGrupoCurso =@idGrupoCurso
                     and idCurso=@idCurso
-                    and paralelo=@paralelo";
+                    and paralelo=@paralelo
+                    and a.activo=1";
                 var instructor = await dapper.QueryFirstOrDefaultAsync(sql, new { idCurso, idGrupoCurso, paralelo });
                 return Ok(new { listaCalificaciones, parametros, instructor });
             }
@@ -248,7 +252,8 @@ namespace CTT_Administrador.Controllers
                     inner join instructores i on i.idInstructor = a.idInstructor
                     where idGrupoCurso =@idGrupoCurso
                     and idCurso=@idCurso
-                    and paralelo=@paralelo";
+                    and paralelo=@paralelo
+                    and a.activo=1";
                 var instructor = await dapper.QueryFirstOrDefaultAsync(sql, new { idCurso, idGrupoCurso, paralelo });
                 return Ok(new { listaCalificaciones, parametros, instructor });
             }
@@ -391,7 +396,7 @@ namespace CTT_Administrador.Controllers
                          left join centrosuniandes cen on cen.idCentro=m.idCentro
                          inner join asignacionesinstructorescalificaciones a on a.idGrupoCurso = c.idGrupoCurso
                          and m.paralelo = a.paralelo and a.idCurso = c.idCurso
-                         where m.idGrupoCurso = @idGrupoCurso and c.idCurso=@idCurso {paralelos}
+                         where m.idGrupoCurso = @idGrupoCurso and a.activo=1 and c.idCurso=@idCurso {paralelos}
                          and aprobado=1
                          order by a.paralelo,e.primerApellido,e.primerNombre
                 ";
@@ -449,7 +454,7 @@ namespace CTT_Administrador.Controllers
                          left join centrosuniandes cen on cen.idCentro=m.idCentro
                          inner join asignacionesinstructorescalificaciones a on a.idGrupoCurso = c.idGrupoCurso
                          and m.paralelo = a.paralelo and a.idCurso = c.idCurso
-                         where m.idGrupoCurso = @idGrupoCurso and c.idCurso=@idCurso {paralelos}
+                         where m.idGrupoCurso = @idGrupoCurso and a.activo=1 and c.idCurso=@idCurso {paralelos}
                          order by e.primerApellido,e.segundoApellido,e.primerNombre
                 ";
                 var listado = dapper.Query(sql, new { idCurso, idGrupoCurso, paralelo });

@@ -3,14 +3,14 @@ using CTT_Administrador.Models.ctt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTT_Administrador.Controllers
+namespace CTT_Administrador.Controllers.Administrador
 {
     [AuthorizeAdministrador]
-    public class EstudiantesController : Controller
+    public class PeriodosAcademicosController : Controller
     {
         private readonly cttContext _context;
 
-        public EstudiantesController(cttContext context)
+        public PeriodosAcademicosController(cttContext context)
         {
             _context = context;
         }
@@ -20,20 +20,7 @@ namespace CTT_Administrador.Controllers
         {
             try
             {
-                return Ok(await _context.estudiantes.OrderBy(x => x.primerApellido).ToListAsync());
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message);
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> comboTiposDocumentos()
-        {
-            try
-            {
-                return Ok(await _context.tiposdocumentos.ToListAsync());
+                return Ok(await _context.periodos.OrderByDescending(x => x.fechaFin).ToListAsync());
             }
             catch (Exception ex)
             {
@@ -42,11 +29,11 @@ namespace CTT_Administrador.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> unDato(int idEstudiante)
+        public async Task<IActionResult> unDato(int idPeriodo)
         {
             try
             {
-                return Ok(await _context.estudiantes.FindAsync(idEstudiante));
+                return Ok(await _context.periodos.FindAsync(idPeriodo));
             }
             catch (Exception ex)
             {
@@ -55,14 +42,13 @@ namespace CTT_Administrador.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> guardar(estudiantes _data)
+        public async Task<IActionResult> guardar(periodos _data)
         {
             try
             {
-                if (_context.estudiantes.Where(x => x.documentoIdentidad == _data.documentoIdentidad && _data.idEstudiante != x.idEstudiante).Count() > 0) throw new Exception("Lo sentimos esa documento de identidad ya se encuentra registrado");
-                if (_data.idEstudiante > 0)
-                    _context.estudiantes.Update(_data);
-                else _context.estudiantes.Add(_data);
+                if (_data.idPeriodo > 0)
+                    _context.periodos.Update(_data);
+                else _context.periodos.Add(_data);
                 await _context.SaveChangesAsync();
                 return Ok();
             }
@@ -73,11 +59,11 @@ namespace CTT_Administrador.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> activar(int idEstudiante)
+        public async Task<IActionResult> activar(int idPeriodo)
         {
             try
             {
-                var data = await _context.estudiantes.FindAsync(idEstudiante);
+                var data = await _context.periodos.FindAsync(idPeriodo);
                 if (data == null) throw new Exception("Elemento no encontrado");
                 data.activo = Convert.ToBoolean(data.activo) == true ? Convert.ToSByte(false) : Convert.ToSByte(true);
                 _context.Update(data);

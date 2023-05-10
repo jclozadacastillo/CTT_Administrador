@@ -4,7 +4,7 @@ using CTT_Administrador.Models.ctt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTT_Administrador.Controllers
+namespace CTT_Administrador.Controllers.Administrador
 {
     public class AdministradorController : Controller
     {
@@ -90,6 +90,12 @@ namespace CTT_Administrador.Controllers
         }
 
         public IActionResult ListadoMatriculados()
+        {
+            if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
+            return View();
+        }
+
+        public IActionResult ModulosDiplomados()
         {
             if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
             return View();

@@ -319,7 +319,7 @@
   }
 })();
 
-window.addEventListener("load", function () {
+(function () {
   const _url = top.location.pathname.toLowerCase().replaceAll("/", "");
   document.getElementById("sidebar-nav").querySelectorAll("a[data-menu]").forEach(item => {
     if (_url === item.getAttribute("href").toLowerCase().replaceAll("/", "")) {
@@ -331,4 +331,4 @@ window.addEventListener("load", function () {
       return;
     }
   });
-});
+})();

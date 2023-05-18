@@ -6,13 +6,13 @@ const modal = new bootstrap.Modal(modalDatos, {
 let idPeriodo = 0;
 let activo = 1;
 const mayusculas = true;
-window.addEventListener("load", async function () {
+(async function () {
     if (mayusculas) frmDatos.classList.add("to-uppercase");
     loader.hidden = false;
     await listar();
     loader.hidden = true;
     content.hidden = false;
-});
+})();
 async function listar() {
     try {
         const url = `${baseUrl}listar`;
@@ -77,7 +77,7 @@ async function listar() {
                 {
                     title: "Fecha Inicio",
                     data: "fechaInicio",
-                    class:"text-nowrap w-25",
+                    class: "text-nowrap w-25",
                     render: (data) => {
                         return data.split("T")[0];
                     }
@@ -85,7 +85,7 @@ async function listar() {
                 {
                     title: "Fecha Final",
                     data: "fechaFin",
-                    class:"text-nowrap w-25",
+                    class: "text-nowrap w-25",
                     render: (data) => {
                         return data.split("T")[0];
                     }

@@ -4,7 +4,7 @@ const modalEspere = new bootstrap.Modal(espere, {
     backdrop: 'static'
 })
 let listaEstudiantes = [];
-window.addEventListener("load", async function () {
+(async function () {
     $(idGrupoCurso).select2();
     activarValidadores(frmDatos)
     llenarTabla();
@@ -12,7 +12,7 @@ window.addEventListener("load", async function () {
     await comboPeriodos();
     loader.hidden = true;
     content.hidden = false;
-});
+})();
 let formatosPermitidos = [
     "application/vnd.ms-excel",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

@@ -6,7 +6,7 @@ const modal = new bootstrap.Modal(modalDatos, {
 let idInstructor = 0;
 let activo = 1;
 const mayusculas = true;
-window.addEventListener("load", async function () {
+(async function () {
     if (mayusculas) frmDatos.classList.add("to-uppercase");
     activarValidadores(frmDatos);
     loader.hidden = false;
@@ -14,7 +14,7 @@ window.addEventListener("load", async function () {
     await listar();
     loader.hidden = true;
     content.hidden = false;
-});
+})();
 
 async function comboTiposDocumentos() {
     try {

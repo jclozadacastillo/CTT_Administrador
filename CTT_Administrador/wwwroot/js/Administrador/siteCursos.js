@@ -6,7 +6,7 @@ const modal = new bootstrap.Modal(modalDatos, {
 let idCurso = 0;
 let activo = 1;
 const mayusculas = true;
-window.addEventListener("load", async function () {
+(async function () {
     if (mayusculas) frmDatos.classList.add("to-uppercase");
     loader.hidden = false;
     $(idCategoria).select2({ dropdownParent: $('#modalDatos') });
@@ -18,7 +18,7 @@ window.addEventListener("load", async function () {
     await listar();
     loader.hidden = true;
     content.hidden = false;
-});
+})();
 async function listar() {
     try {
         const url = `${baseUrl}listar`;

@@ -144,6 +144,7 @@ namespace CTT_Administrador.Controllers.Administrador
         {
             try
             {
+                _data.esVisible = 1;
                 if (_data.idGrupoCurso > 0)
                     _context.gruposcursos.Update(_data);
                 else _context.gruposcursos.Add(_data);

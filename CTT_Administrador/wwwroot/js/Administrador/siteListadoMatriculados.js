@@ -2,7 +2,7 @@
 let activo = 1;
 let parametros = {};
 let editable = false;
-window.addEventListener("load", async function () {
+(async function () {
     loader.hidden = false;
     $(idPeriodo).select2();
     $(idGrupoCurso).select2();
@@ -10,7 +10,7 @@ window.addEventListener("load", async function () {
     await comboPeriodos();
     loader.hidden = true;
     content.hidden = false;
-});
+})();
 
 async function comboPeriodos() {
     try {
@@ -53,7 +53,7 @@ async function comboCursosAsociados() {
         paralelo.innerHTML = `<option value="">Seleccione un módulo</option>`;
         listar();
         /*divBotones.hidden = true;*/
-        if (idGrupoCurso.value == "")return;
+        if (idGrupoCurso.value == "") return;
         const url = `${baseUrl}comboCursosAsociados`;
         const data = new FormData(frmDatos);
         const res = (await axios.post(url, data)).data;
@@ -104,7 +104,7 @@ async function listar() {
             instructorLabel.classList.add("alert-success");
             instructorLabel.classList.remove("alert-warning");
             instructorLabel.removeAttribute("hidden");
-        } else if(res.listaCalificaciones.length>0 && paralelo.value!="TODOS") {
+        } else if (res.listaCalificaciones.length > 0 && paralelo.value != "TODOS") {
             instructorLabel.innerHTML = "<small>NO SE HA ASIGNADO NINGÚN INSTRUCTOR PARA ESTE MÓDULO Y PARALELO</small>";
             instructorLabel.classList.remove("alert-success");
             instructorLabel.classList.add("alert-warning");
@@ -119,7 +119,7 @@ async function listar() {
                     data: "idMatricula",
                     class: "text-center td-switch",
                     render: (data, type, row) => {
-                        return res.listaCalificaciones.indexOf(row)+1;
+                        return res.listaCalificaciones.indexOf(row) + 1;
                     }
                 },
                 {

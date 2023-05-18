@@ -2,7 +2,7 @@
 let activo = 1;
 let parametros = {};
 let editable = false;
-window.addEventListener("load", async function () {
+(async function () {
     loader.hidden = false;
     $(idPeriodo).select2();
     $(idGrupoCurso).select2();
@@ -10,7 +10,7 @@ window.addEventListener("load", async function () {
     await comboPeriodos();
     loader.hidden = true;
     content.hidden = false;
-});
+})();
 
 async function comboPeriodos() {
     try {
@@ -53,7 +53,7 @@ async function comboCursosAsociados() {
         paralelo.innerHTML = `<option value="">Seleccione un módulo</option>`;
         listar();
         divBotones.hidden = true;
-        if (idGrupoCurso.value == "") return;      
+        if (idGrupoCurso.value == "") return;
         const url = `${baseUrl}comboCursosAsociados`;
         const data = new FormData(frmDatos);
         const res = (await axios.post(url, data)).data;

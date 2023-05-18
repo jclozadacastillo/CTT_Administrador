@@ -23,7 +23,7 @@ async function listar() {
         const url = `${baseUrl}listar`;
         const data = new FormData();
         data.append("idPeriodo", idPeriodo.value)
-        const res = (await axios.post(url,data)).data;
+        const res = (await axios.post(url, data)).data;
         await $(tableDatos).DataTable({
             bDestroy: true,
             data: res,
@@ -78,7 +78,7 @@ async function listar() {
                 },
                 {
                     title: "Tipo",
-                    data:"tipoCurso"
+                    data: "tipoCurso"
                 },
                 {
                     title: "Nombre",
@@ -100,7 +100,6 @@ async function listar() {
     }
 }
 
-
 async function comboPeriodos() {
     try {
         let html = "<option value=''>SELECCIONE</option>";
@@ -121,7 +120,7 @@ async function comboCursos() {
         let html = "<option value=''>SELECCIONE</option>";
         const url = `${baseUrl}comboCursos`;
         const data = new FormData();
-        data.append("idPeriodo", idPeriodo.value);  
+        data.append("idPeriodo", idPeriodo.value);
         const res = (await axios.post(url, data)).data;
         res.forEach(item => {
             html += `<option value='${item.idCurso}'>(${item.tipoCurso}) ${item.curso}</option>`;
@@ -145,8 +144,6 @@ async function comboModalidades() {
         handleError(e);
     }
 }
-
-
 
 async function nuevo() {
     idGrupoCurso = 0;
@@ -238,4 +235,3 @@ async function activar(_idGrupoCurso, _switch) {
         _switch.checked = !_switch.checked;
     }
 }
-

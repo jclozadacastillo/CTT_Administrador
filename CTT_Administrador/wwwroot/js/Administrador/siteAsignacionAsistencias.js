@@ -3,7 +3,7 @@ let activo = 1;
 let listaCalificaciones = [];
 let parametros = {};
 let editable = false;
-window.addEventListener("load", async function () {
+(async function () {
     loader.hidden = false;
     $(idPeriodo).select2();
     $(idGrupoCurso).select2();
@@ -11,7 +11,7 @@ window.addEventListener("load", async function () {
     await comboPeriodos();
     loader.hidden = true;
     content.hidden = false;
-});
+})();
 
 async function comboPeriodos() {
     try {
@@ -101,8 +101,8 @@ async function comboParalelos() {
 
 async function listar() {
     try {
-        instructorLabel.hidden=true;
-        instructorLabel.innerHTML="";
+        instructorLabel.hidden = true;
+        instructorLabel.innerHTML = "";
         btnGuardarTodo.hidden = true;
         editable = false;
         const url = `${baseUrl}listar`;
@@ -110,9 +110,9 @@ async function listar() {
         const res = (await axios.post(url, data)).data;
         parametros = res.parametros;
         listaCalificaciones = res.listaCalificaciones;
-        const instructor=res.instructor;
-        if(!!instructor){
-            instructorLabel.innerHTML=`<b>Instructor:</b> ${instructor.abreviaturaTitulo.replaceAll(".","")}.
+        const instructor = res.instructor;
+        if (!!instructor) {
+            instructorLabel.innerHTML = `<b>Instructor:</b> ${instructor.abreviaturaTitulo.replaceAll(".", "")}.
             ${instructor.primerNombre} ${instructor.segundoNombre || ""}
             ${instructor.primerApellido} ${instructor.segundoApellido || ""}`;
             instructorLabel.removeAttribute("hidden");
@@ -165,7 +165,7 @@ function llenarTabla() {
         listaNotas.forEach(nota => {
             html += `<td>${false ? `<input maxlength="4" data-ref="${nota}" class='input-nota'  data-validate="decimal" value='${item[nota].toString().replaceAll(".", ",")}'/>` : `<div class='span-nota'>${item[nota].toString().replaceAll(".", ",")}</div>`}</td>`;
         });
-{/* <td>${parametros.calificaAsistencia == 1 ? `<input maxlength="4" data-ref="faltas" class='input-nota' data-validate="decimal" value='${item.faltas.toString().replaceAll(".", ",")}'/>` : `<div class='span-nota'>${item.faltas.toString().replaceAll(".", ",")}</div>`}</td> */}
+        {/* <td>${parametros.calificaAsistencia == 1 ? `<input maxlength="4" data-ref="faltas" class='input-nota' data-validate="decimal" value='${item.faltas.toString().replaceAll(".", ",")}'/>` : `<div class='span-nota'>${item.faltas.toString().replaceAll(".", ",")}</div>`}</td> */ }
 
         html += `
         <td><input maxlength="4" data-ref="faltas" class='input-nota' data-validate="decimal" value='${item.faltas.toString().replaceAll(".", ",")}'/></td>
@@ -244,7 +244,7 @@ function calcularPromedio(_index) {
         promedio = sum / 2;
     }
     listaCalificaciones[_index].promedioFinal = promedio;
-    const apruebaCalificaciones = parametros.calificaAsistencia !=1 ? true : (parseFloat(parametros.asistenciaMinima) <= parseFloat(listaCalificaciones[_index].faltas));
+    const apruebaCalificaciones = parametros.calificaAsistencia != 1 ? true : (parseFloat(parametros.asistenciaMinima) <= parseFloat(listaCalificaciones[_index].faltas));
     listaCalificaciones[_index].aprobado = ((promedio >= parseFloat(parametros.puntajeMinimo)) && apruebaCalificaciones) ? 1 : 0;
     fila.querySelector("td[data-estado]").innerHTML = `<span class='badge fs-xxxs bg-${claseEstado(listaCalificaciones[_index]).class}'>${claseEstado(listaCalificaciones[_index]).estado}</span>`;
     fila.querySelector("td[data-promedio]").innerHTML = `<div class='span-nota'>${listaCalificaciones[_index].promedioFinal.toFixed(2).toString().replaceAll(".", ",").replaceAll(",00", "")}</div>`;

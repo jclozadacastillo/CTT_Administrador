@@ -6,7 +6,7 @@ const modal = new bootstrap.Modal(modalDatos, {
 let idAsignacion = 0;
 let activo = 1;
 const mayusculas = true;
-window.addEventListener("load", async function () {
+(async function () {
     if (mayusculas) frmDatos.classList.add("to-uppercase");
     activarValidadores(frmDatos);
     loader.hidden = false;
@@ -19,7 +19,7 @@ window.addEventListener("load", async function () {
     await comboInstructores();
     loader.hidden = true;
     content.hidden = false;
-});
+})();
 
 function nuevo() {
     idPeriodo.removeAttribute("disabled");
@@ -105,7 +105,7 @@ async function listar() {
                     title: "Módulo",
                     data: "curso",
                     class: "w-25",
-                    render: (data)=>{
+                    render: (data) => {
                         return `<span class='ellipsis w-370' title="${data}">${data}</span>`;
                     }
                 },
@@ -152,7 +152,7 @@ async function comboInstructores() {
 
 async function comboTiposCursos() {
     try {
-        if (idPeriodo.value == "" ) {
+        if (idPeriodo.value == "") {
             idTipoCurso.innerHTML = `<option value="">Seleccione un periodo</option>`;
             idGrupoCurso.innerHTML = `<option value="">Seleccione un tipo de curso</option>`;
             return;
@@ -260,7 +260,7 @@ async function editar(_idAsignacion) {
         $(idPeriodo).val(res.idPeriodo).trigger("change");
         setTimeout(() => {
             $(idTipoCurso).val(res.idTipoCurso).trigger("change");
-        },100)
+        }, 100)
         setTimeout(() => {
             $(idGrupoCurso).val(res.idGrupoCurso).trigger("change");
         }, 250);

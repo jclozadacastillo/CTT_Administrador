@@ -24,35 +24,33 @@ async function listar() {
             const data = new FormData();
             data.append("idCursoDiplomado", idCursoDiplomado.value);
             const res = (await axios.post(url, data)).data;
-            let html = `<b class='fs-xxs text-primary'>DATOS DIPLOMADO</b>
-                          <table class='table-datos-diplomado'>
+            let html = `<table class='table-datos-diplomado'>
                             <tr>
-                                <td class='title'>DIPLOMADO</td>
-                                <td>${res.curso}</td>
+                                <td class='bg-primary text-white fs-sm fw-600' colspan='2'>${res.curso}</td>
                             </tr>
                             <tr>
                                 <td class='title'>TOTAL HORAS</td>
-                                <td class='text-end'>${res.horasCurso}</td>
+                                <td class='text-end fw-600'>${res.horasCurso}</td>
                             </tr>
                             <tr>
                                 <td class='title'>PRECIO</td>
-                                <td class='text-end'>$${res.precioCurso}</td>
+                                <td class='text-end fw-600'>$ ${res.precioCurso.toFixed(2)}</td>
                             </tr>
                             <tr>
                                 <td class='title'>PUNTAJE MÁXIMO</td>
-                                <td class='text-end'>${res.puntajeMaximo}</td>
+                                <td class='text-end fw-600'>${res.puntajeMaximo}</td>
                             </tr>
                             <tr>
                                 <td class='title'>PUNTAJE MÍNIMO</td>
-                                <td class='text-end'>${res.puntajeMinimo}</td>
+                                <td class='text-end fw-600'>${res.puntajeMinimo}</td>
                             </tr>
                         </table>`;
             datosDiplomado.innerHTML = html;
         }
         const url = `${baseUrl}listar`;
         const data = new FormData();
-        data.append("idCursoDiplomado",idCursoDiplomado.value)
-        const res = (await axios.post(url,data)).data;
+        data.append("idCursoDiplomado", idCursoDiplomado.value)
+        const res = (await axios.post(url, data)).data;
         await $(tableDatos).DataTable({
             bDestroy: true,
             data: res,
@@ -124,7 +122,6 @@ async function listar() {
         handleError(e);
     }
 }
-
 
 async function comboDiplomados() {
     try {

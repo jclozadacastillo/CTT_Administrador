@@ -3,7 +3,7 @@ let activo = 1;
 let listaCalificaciones = [];
 let parametros = {};
 let editable = false;
-window.addEventListener("load", async function () {
+(async function () {
     loader.hidden = false;
     $(idPeriodo).select2();
     $(idGrupoCurso).select2();
@@ -11,7 +11,7 @@ window.addEventListener("load", async function () {
     await comboPeriodos();
     loader.hidden = true;
     content.hidden = false;
-});
+})();
 
 async function comboPeriodos() {
     try {

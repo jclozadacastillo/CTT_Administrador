@@ -1951,3 +1951,18 @@ table.table-hover tr td[colspan="11"]:hover{
         margin-left: 0 !important;
     }
 }
+
+.table-datos-diplomado{
+    border-collapse:collapse;
+    font-size:11px;
+    margin-bottom:10px;
+}
+.table-datos-diplomado tr td.title{
+    font-weight:700;
+    color:var(--bs-secondary)
+}
+
+.table-datos-diplomado tr td{
+    border:1px solid var(--bs-secondary);
+    padding:3px 5px;
+}

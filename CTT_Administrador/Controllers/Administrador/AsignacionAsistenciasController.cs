@@ -47,6 +47,7 @@ namespace CTT_Administrador.Controllers.Administrador
                                 and p.activo = 1 and m.activa = 1
                                 and datediff(current_date(),p.fechaInicio)>=0
                                 and datediff(p.fechaFin,current_date())>=0
+                                and a.activo=1
                 ";
                 return Ok(await dapper.QueryAsync(sql));
             }
@@ -88,6 +89,7 @@ namespace CTT_Administrador.Controllers.Administrador
                                 and datediff(current_date(),p.fechaInicio)>=0
                                 and datediff(p.fechaFin,current_date())>=0
                                 and p.idPeriodo=@idPeriodo
+                                and a.activo=1
                 ";
                 return Ok(await dapper.QueryAsync(sql, new { idPeriodo }));
             }
@@ -170,6 +172,7 @@ namespace CTT_Administrador.Controllers.Administrador
                                 inner join asignacionesinstructorescalificaciones a on a.idGrupoCurso = c.idGrupoCurso
                                 and m.paralelo = a.paralelo and a.idCurso = c.idCurso
                                 where m.idGrupoCurso = @idGrupoCurso and c.idCurso=@idCurso and m.paralelo=@paralelo
+                                and a.activo=1
                                 order by e.primerApellido,e.primerNombre
                 ";
                 var listaCalificaciones = await dapper.QueryAsync(sql, new { idGrupoCurso, idCurso, paralelo });
@@ -180,7 +183,8 @@ namespace CTT_Administrador.Controllers.Administrador
                     where idGrupoCurso =@idGrupoCurso
                     and idCurso=@idCurso
                     and paralelo=@paralelo
-                    and a.activo=1 and i.activo=1";
+                    and a.activo=1 and i.activo=1
+                    and a.activo=1";
                 var instructor = await dapper.QueryFirstOrDefaultAsync(sql, new { idCurso, idGrupoCurso, paralelo });
                 return Ok(new { listaCalificaciones, parametros, instructor });
             }

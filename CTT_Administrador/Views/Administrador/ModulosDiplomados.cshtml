@@ -1,18 +1,29 @@
 @{
-    ViewData["Title"] = "Modulos Diplomados";
+    ViewData["Title"] = "Módulos Diplomados";
 }
 <div class="container-fluid" id="content" hidden>
     <div class="row">
         <div class="col-auto me-0 pe-0 form-title">
-            <h4>Cursos</h4>
-        </div>
-        <div class="col-auto ">
-            <button class="btn btn-sm btn-primary btn-new" title="Nuevo registro" onclick="nuevo()">
-                <i class="bi-plus"></i> Agregar
-            </button>
+            <h4>Modulos Diplomados</h4>
         </div>
     </div>
     <hr>
+
+    <div class="row">
+        <div class="col-sm-8">
+            <label class="fs-sm fw-600">Diplomado</label>
+            <select class="form-select form-select-sm" name="idCursoDiplomado" id="idCursoDiplomado" onchange="listar()">
+                <option value="">Seleccione</option>
+            </select>
+        </div>
+        <div class="col-auto ">
+            <br />
+            <button class="btn btn-sm btn-primary btn-new" title="Nuevo registro" id="btnAgregar" onclick="nuevo()">
+                <i class="bi-plus"></i> Agregar Módulo
+            </button>
+        </div>
+    </div>
+    <hr />
     <div class="row mt-3">
         <div class="col-sm-12">
             <div class="table-responsive-sm">
@@ -33,20 +44,11 @@
                 <div class="modal-body">
                     <form id="frmDatos">
                         <div class="row">
-                            <div class="col-sm-6">
-                                <label class="fs-sm">Categoría</label>
-                                <select class="form-select form-select-sm" name="idCategoria" id="idCategoria">
-                                    <option value="">Seleccione</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-6">
-                                <label class="fs-sm">Tipo de curso</label>
-                                <select class="form-select form-select-sm" name="idTipoCurso" id="idTipoCurso">
-                                    <option value="">Seleccione</option>
-                                </select>
-                            </div>
+                            <div class="col-sm-12" id="datosDiplomado"></div>
+                        </div>
+                        <div class="row">
                             <div class="col-sm-12">
-                                <label class="fs-sm">Curso</label>
+                                <label class="fs-sm">Nombre del Modulo</label>
                                 <textarea type="text" class="form-control form-control-sm" id="curso" name="curso"
                                     maxlength="500"></textarea>
                             </div>

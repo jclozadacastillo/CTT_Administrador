@@ -333,6 +333,9 @@ namespace CTT_Administrador.Controllers.Administrador
                         inner join tiposcursos t on t.idTipoCurso = c.idTipoCurso
                         inner join cursos_mallas cm on cm.idCurso = g.idCurso
                         where c.activo = 1
+                        and cm.idCursoAsociado in(
+                        select c2.idCurso from cursos c2 where activo=1
+                        )
                         and concat(cast(m.idMatricula as char),'_',
                         cast(m.idGrupoCurso as char),'_',cast(cm.idCursoAsociado as char))
                         not in(

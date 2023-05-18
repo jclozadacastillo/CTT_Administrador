@@ -91,12 +91,64 @@ namespace CTT_Administrador.Controllers.Administrador
         [HttpPost]
         public async Task<IActionResult> guardar(cursos _data)
         {
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
+                string sql = @"DELETE FROM cursos_mallas WHERE idCurso=idCursoAsociado
+                              AND idCurso=@idCurso;  
+                              ";
                 if (_data.idCurso > 0)
+                {
                     _context.cursos.Update(_data);
-                else _context.cursos.Add(_data);
-                await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
+                    if (_context.tiposcursos.Where(x => x.idTipoCurso == _data.idTipoCurso).FirstOrDefault()?.esDiplomado != 1)
+                    {
+                        if (_context.cursos_mallas.Where(x => x.idCurso == _data.idCurso).Count() == 0)
+                        {
+                            _context.cursos_mallas.Add(new cursos_mallas
+                            {
+                                idCurso = _data.idCurso,
+                                idCursoAsociado = _data.idCurso,
+                                valor = _data.precioCurso,
+                                activo = 1
+                            });
+                            await _context.SaveChangesAsync();
+                        }
+
+                    }
+                    else
+                    {
+                        await dapper.ExecuteAsync(sql, _data);
+                    }
+                }
+                else
+                {
+                    _context.cursos.Add(_data);
+                    await _context.SaveChangesAsync();
+                    if (_context.tiposcursos.Where(x => x.idTipoCurso == _data.idTipoCurso).FirstOrDefault()?.esDiplomado != 1)
+                    {
+                        if (_context.cursos_mallas.Where(x => x.idCurso == _data.idCurso).Count() == 0)
+                        {
+                            _context.cursos_mallas.Add(new cursos_mallas
+                            {
+                                idCurso = _data.idCurso,
+                                idCursoAsociado = _data.idCurso,
+                                valor = _data.precioCurso,
+                                activo = 1
+                            });
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                    else
+                    {
+                        await dapper.ExecuteAsync(sql, _data);
+                    }
+
+                }
+
+
+
+
                 return Ok();
             }
             catch (Exception ex)

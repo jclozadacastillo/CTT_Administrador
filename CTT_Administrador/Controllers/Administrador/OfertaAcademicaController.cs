@@ -26,8 +26,8 @@ namespace CTT_Administrador.Controllers.Administrador
             {
                 string sql = @"select g.*,c.curso,t.tipoCurso
                                 from gruposcursos g
-                                inner join cursos c on c.idCurso = g.idCurso 
-                                inner join tiposcursos t on t.idTipoCurso = c.idTipoCurso 
+                                inner join cursos c on c.idCurso = g.idCurso
+                                inner join tiposcursos t on t.idTipoCurso = c.idTipoCurso
                                 where g.idPeriodo = @idPeriodo and c.activo=1";
                 return Ok(await dapper.QueryAsync(sql, new { idPeriodo }));
             }
@@ -63,8 +63,6 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
-
-
         [HttpPost]
         public async Task<IActionResult> comboCursos(int idPeriodo)
         {
@@ -72,7 +70,7 @@ namespace CTT_Administrador.Controllers.Administrador
             try
             {
                 string sql = @"SELECT c.*,t.tipoCurso
-                                FROM cursos c 
+                                FROM cursos c
                                 inner join tiposcursos t on t.idTipoCurso = c.idTipoCurso
                                 where
                                 (c.idCurso in(
@@ -88,7 +86,7 @@ namespace CTT_Administrador.Controllers.Administrador
                                 WHERE idPeriodo=@idPeriodo)
                             ";
 
-                return Ok(await dapper.QueryAsync(sql, new {idPeriodo}));
+                return Ok(await dapper.QueryAsync(sql, new { idPeriodo }));
             }
             catch (Exception ex)
             {
@@ -99,8 +97,6 @@ namespace CTT_Administrador.Controllers.Administrador
                 dapper?.Dispose();
             }
         }
-
-
 
         [HttpGet]
         public async Task<IActionResult> comboModalidades()
@@ -123,15 +119,14 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
-
         [HttpPost]
         public async Task<IActionResult> unDato(int idGrupoCurso)
         {
             try
             {
-                var grupoCurso=await _context.gruposcursos.FindAsync(idGrupoCurso);
+                var grupoCurso = await _context.gruposcursos.FindAsync(idGrupoCurso);
                 var curso = await _context.cursos.FindAsync(grupoCurso?.idCurso);
-                return Ok(new {curso,grupoCurso});
+                return Ok(new { curso, grupoCurso });
             }
             catch (Exception ex)
             {

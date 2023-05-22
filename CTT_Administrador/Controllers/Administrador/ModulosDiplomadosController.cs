@@ -119,15 +119,14 @@ namespace CTT_Administrador.Controllers.Administrador
                 {
                     _context.cursos.Add(_data);
                     await _context.SaveChangesAsync();
-                        _context.cursos_mallas.Add(new cursos_mallas
-                        {
-                            idCurso = idCursoDiplomado,
-                            idCursoAsociado = _data.idCurso,
-                            valor = _data.precioCurso,
-                            activo = 1
-                        });
-                        await _context.SaveChangesAsync();
-                    
+                    _context.cursos_mallas.Add(new cursos_mallas
+                    {
+                        idCurso = idCursoDiplomado,
+                        idCursoAsociado = _data.idCurso,
+                        valor = _data.precioCurso,
+                        activo = 1
+                    });
+                    await _context.SaveChangesAsync();
                 }
                 return Ok();
             }

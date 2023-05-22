@@ -95,7 +95,7 @@ namespace CTT_Administrador.Controllers.Administrador
             try
             {
                 string sql = @"DELETE FROM cursos_mallas WHERE idCurso=idCursoAsociado
-                              AND idCurso=@idCurso;  
+                              AND idCurso=@idCurso;
                               ";
                 if (_data.idCurso > 0)
                 {
@@ -114,7 +114,6 @@ namespace CTT_Administrador.Controllers.Administrador
                             });
                             await _context.SaveChangesAsync();
                         }
-
                     }
                     else
                     {
@@ -143,11 +142,7 @@ namespace CTT_Administrador.Controllers.Administrador
                     {
                         await dapper.ExecuteAsync(sql, _data);
                     }
-
                 }
-
-
-
 
                 return Ok();
             }

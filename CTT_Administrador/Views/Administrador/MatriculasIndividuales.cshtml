@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewData["Title"] = "Matriculas Individuales";
+    Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+}
+
+<div class="container-fluid" id="content" hidden>
+    <div class="row">
+        <div class="col-auto me-0 pe-0 form-title">
+            <h4>Matriculas Individuales</h4>
+        </div>
+    </div>
+    <hr>
+
+    <form id="frmDatos" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-sm-4">
+                <label class="fs-sm">Periodo</label>
+                <select class="form-select form-select-sm" id="idPeriodo" name="idPeriodo" onchange="comboTiposCursos()">
+                    <option value="">Seleccione</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <label class="fs-sm">Tipo</label>
+                <select class="form-select form-select-sm" id="idTipoCurso" name="idTipoCurso" onchange="comboCursos()">
+                    <option value="">Seleccione un periodo</option>
+                </select>
+            </div>
+
+            <div class="col-sm-5">
+                <label class="fs-sm">Curso/Diplomado</label>
+                <select class="form-select form-select-sm" id="idGrupoCurso" name="idGrupoCurso" onchange="comboEstudiantes()">
+                    <option value="">Seleccione un tipo</option>
+                </select>
+            </div>
+            <div class="col-sm-12">
+                <label class="fs-sm">Estudiante</label>
+                <select class="form-select form-select-sm" id="idEstudiante" name="idEstudiante" onchange="cargarModulos()">
+                    <option>Seleccione un curso/diplomado</option>
+                </select>
+            </div>
+            <div class="col-sm-12">
+                <label class="fs-sm">Módulos</label>
+                <table class="table table-sm table-bordered fs-xxs" id="tablaModulos">
+                    <tr><td colspan="2" class="text-center">Seleccione un estudiante</td></tr>
+                </table>
+            </div>
+            <div class="col-sm-4">
+                <label class="fs-sm">Paralelo</label>
+                <select class="form-select form-select-sm" id="paralelo" name="paralelo">
+                    <option value="">Seleccione un estudiante</option>
+                </select>
+            </div>
+            <div class="col-sm-3 text-md-start text-center">
+                <br>
+                <button type="button" class="btn btn-sm btn-primary mt-1" onclick="generarMatricula()" id="btnGenerar">
+                    <i class="bi-check me-1"></i>Generar Matricula
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div class="modal fade" id="espere" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content" style="min-width:330px">
+            <div class="modal-body" style="width:325px">
+                <div>
+                    <img src="~/lib/utilities/toast/img/logo-azul370.png" width="91" />
+                </div>
+                <div class="text-center fs-sm mt-2" style="font-size:13px">
+                    Espere por favor...
+                </div>
+                <div class="text-center my-3">
+                    <div class="spinner-border text-primary text-center"></div>
+                </div>
+                <div class="text-center fs-xxs text-danger fw-bold" style="font-size:11px">
+                    <i class="bi-exclamation-triangle-fill me-1"></i> No cierre la ventana ni cancele el proceso
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script defer src="~/js/administrador/siteMatriculasIndividuales.js?v=@DateTime.Now.Ticks"></script>
+
+

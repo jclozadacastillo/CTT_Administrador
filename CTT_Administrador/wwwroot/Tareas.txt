@@ -1,0 +1,21 @@
+﻿create table creditos(
+idCredito int auto_increment primary key,
+fechaCredito datetime default current_timestamp,
+idMatricula int,
+activo tinyint default 1,
+fechaDesactivacion datetime default current_timestamp
+);
+
+create table detalleCreditos(
+idDetalleCredito int auto_increment primary key,
+idCredito int,
+idCurso int,
+valor decimal(10,2),
+valorPendiente decimal(10,2),
+cancelado tinyint default 0,
+activo tinyint default 1,
+fechaDesactivacion datetime default current_timestamp
+);
+
+-- deudas pendientes
+-- deudas canceladas

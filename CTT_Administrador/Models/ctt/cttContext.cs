@@ -27,9 +27,13 @@ public partial class cttContext : DbContext
 
     public virtual DbSet<clientesfacturas> clientesfacturas { get; set; }
 
+    public virtual DbSet<creditos> creditos { get; set; }
+
     public virtual DbSet<cursos> cursos { get; set; }
 
     public virtual DbSet<cursos_mallas> cursos_mallas { get; set; }
+
+    public virtual DbSet<detallecreditos> detallecreditos { get; set; }
 
     public virtual DbSet<estudiantes> estudiantes { get; set; }
 
@@ -68,15 +72,8 @@ public partial class cttContext : DbContext
 
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
             entity.Property(e => e.atrasoNotas).HasDefaultValueSql("'0'");
-            entity.Property(e => e.fechaLimiteNotas).HasColumnType("date");
-            entity.Property(e => e.fechaLimiteNotasAtraso).HasColumnType("date");
-            entity.Property(e => e.fechaRegistro)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("timestamp");
-            entity.Property(e => e.observacion).HasMaxLength(100);
-            entity.Property(e => e.paralelo).HasMaxLength(1);
+            entity.Property(e => e.fechaRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.pasaFaltas).HasDefaultValueSql("'0'");
-            entity.Property(e => e.usuarioRegistra).HasMaxLength(20);
         });
 
         modelBuilder.Entity<calificaciones>(entity =>
@@ -85,31 +82,15 @@ public partial class cttContext : DbContext
 
             entity.Property(e => e.aprobado).HasDefaultValueSql("'0'");
             entity.Property(e => e.esExcento).HasDefaultValueSql("'0'");
-            entity.Property(e => e.faltas)
-                .HasPrecision(5)
-                .HasDefaultValueSql("'0.00'");
+            entity.Property(e => e.faltas).HasDefaultValueSql("'0.00'");
             entity.Property(e => e.justificaFaltas).HasDefaultValueSql("'0'");
-            entity.Property(e => e.justificacionObservacion).HasMaxLength(10);
-            entity.Property(e => e.nota1)
-                .HasPrecision(5)
-                .HasDefaultValueSql("'0.00'");
-            entity.Property(e => e.nota2)
-                .HasPrecision(5)
-                .HasDefaultValueSql("'0.00'");
-            entity.Property(e => e.nota3)
-                .HasPrecision(5)
-                .HasDefaultValueSql("'0.00'");
-            entity.Property(e => e.nota4)
-                .HasPrecision(5)
-                .HasDefaultValueSql("'0.00'");
-            entity.Property(e => e.nota5)
-                .HasPrecision(5)
-                .HasDefaultValueSql("'0.00'");
-            entity.Property(e => e.observacion).HasMaxLength(100);
+            entity.Property(e => e.nota1).HasDefaultValueSql("'0.00'");
+            entity.Property(e => e.nota2).HasDefaultValueSql("'0.00'");
+            entity.Property(e => e.nota3).HasDefaultValueSql("'0.00'");
+            entity.Property(e => e.nota4).HasDefaultValueSql("'0.00'");
+            entity.Property(e => e.nota5).HasDefaultValueSql("'0.00'");
             entity.Property(e => e.pierdeFaltas).HasDefaultValueSql("'0'");
-            entity.Property(e => e.promedioFinal)
-                .HasPrecision(5)
-                .HasDefaultValueSql("'0.00'");
+            entity.Property(e => e.promedioFinal).HasDefaultValueSql("'0.00'");
             entity.Property(e => e.suspendido).HasDefaultValueSql("'0'");
         });
 
@@ -117,10 +98,7 @@ public partial class cttContext : DbContext
         {
             entity.HasKey(e => e.idCarrera).HasName("PRIMARY");
 
-            entity.Property(e => e.idCarrera).HasMaxLength(3);
             entity.Property(e => e.activa).HasDefaultValueSql("'1'");
-            entity.Property(e => e.carrera).HasMaxLength(200);
-            entity.Property(e => e.especializacion).HasMaxLength(20);
         });
 
         modelBuilder.Entity<categorias>(entity =>
@@ -128,105 +106,70 @@ public partial class cttContext : DbContext
             entity.HasKey(e => e.idCategoria).HasName("PRIMARY");
 
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
-            entity.Property(e => e.categoria).HasMaxLength(100);
-            entity.Property(e => e.imagen).HasMaxLength(100);
         });
 
         modelBuilder.Entity<centrosuniandes>(entity =>
         {
-            entity.HasNoKey();
-
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
-            entity.Property(e => e.centro).HasMaxLength(20);
-            entity.Property(e => e.idCentro).HasMaxLength(3);
         });
 
         modelBuilder.Entity<clientesfacturas>(entity =>
         {
             entity.HasKey(e => e.idCliente).HasName("PRIMARY");
 
-            entity.HasIndex(e => e.documento, "documento").IsUnique();
+            entity.Property(e => e.idTipoDocumento).IsFixedLength();
+        });
 
-            entity.Property(e => e.direccion).HasMaxLength(100);
-            entity.Property(e => e.documento).HasMaxLength(13);
-            entity.Property(e => e.email).HasMaxLength(100);
-            entity.Property(e => e.idTipoDocumento)
-                .HasMaxLength(1)
-                .IsFixedLength();
-            entity.Property(e => e.nombre).HasMaxLength(100);
-            entity.Property(e => e.telefono).HasMaxLength(10);
+        modelBuilder.Entity<creditos>(entity =>
+        {
+            entity.HasKey(e => e.idCredito).HasName("PRIMARY");
+
+            entity.Property(e => e.activo).HasDefaultValueSql("'1'");
+            entity.Property(e => e.fechaCredito).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.fechaDesactivacion).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
         modelBuilder.Entity<cursos>(entity =>
         {
             entity.HasKey(e => e.idCurso).HasName("PRIMARY");
 
-            entity.HasIndex(e => e.idCategoria, "idCategoria");
-
-            entity.HasIndex(e => e.idTipoCurso, "idTipoCurso");
-
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
-            entity.Property(e => e.curso).HasMaxLength(500);
             entity.Property(e => e.idCursoPrecedencia).HasDefaultValueSql("'0'");
-            entity.Property(e => e.imagen).HasMaxLength(100);
-            entity.Property(e => e.objetivoPrincipal).HasMaxLength(100);
-            entity.Property(e => e.objetivoSecuncdario).HasMaxLength(1000);
-            entity.Property(e => e.precioCurso)
-                .HasPrecision(10)
-                .HasDefaultValueSql("'0.00'");
+            entity.Property(e => e.precioCurso).HasDefaultValueSql("'0.00'");
             entity.Property(e => e.tienePrecedencia).HasDefaultValueSql("'0'");
 
-            entity.HasOne(d => d.idCategoriaNavigation).WithMany(p => p.cursos)
-                .HasForeignKey(d => d.idCategoria)
-                .HasConstraintName("cursos_ibfk_1");
+            entity.HasOne(d => d.idCategoriaNavigation).WithMany(p => p.cursos).HasConstraintName("cursos_ibfk_1");
 
-            entity.HasOne(d => d.idTipoCursoNavigation).WithMany(p => p.cursos)
-                .HasForeignKey(d => d.idTipoCurso)
-                .HasConstraintName("cursos_ibfk_2");
+            entity.HasOne(d => d.idTipoCursoNavigation).WithMany(p => p.cursos).HasConstraintName("cursos_ibfk_2");
         });
 
         modelBuilder.Entity<cursos_mallas>(entity =>
         {
             entity.HasKey(e => e.idCursoMalla).HasName("PRIMARY");
 
-            entity.HasIndex(e => e.idCurso, "idCurso");
+            entity.Property(e => e.activo).HasDefaultValueSql("'1'");
+            entity.Property(e => e.valor).HasDefaultValueSql("'0.00'");
 
-            entity.HasIndex(e => e.idCursoAsociado, "idCursoAsociado");
+            entity.HasOne(d => d.idCursoNavigation).WithMany(p => p.cursos_mallasidCursoNavigation).HasConstraintName("cursos_mallas_ibfk_1");
+
+            entity.HasOne(d => d.idCursoAsociadoNavigation).WithMany(p => p.cursos_mallasidCursoAsociadoNavigation).HasConstraintName("cursos_mallas_ibfk_2");
+        });
+
+        modelBuilder.Entity<detallecreditos>(entity =>
+        {
+            entity.HasKey(e => e.idDetalleCredito).HasName("PRIMARY");
 
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
-            entity.Property(e => e.valor)
-                .HasPrecision(10)
-                .HasDefaultValueSql("'0.00'");
-
-            entity.HasOne(d => d.idCursoNavigation).WithMany(p => p.cursos_mallasidCursoNavigation)
-                .HasForeignKey(d => d.idCurso)
-                .HasConstraintName("cursos_mallas_ibfk_1");
-
-            entity.HasOne(d => d.idCursoAsociadoNavigation).WithMany(p => p.cursos_mallasidCursoAsociadoNavigation)
-                .HasForeignKey(d => d.idCursoAsociado)
-                .HasConstraintName("cursos_mallas_ibfk_2");
+            entity.Property(e => e.cancelado).HasDefaultValueSql("'0'");
+            entity.Property(e => e.fechaDesactivacion).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
         modelBuilder.Entity<estudiantes>(entity =>
         {
             entity.HasKey(e => e.idEstudiante).HasName("PRIMARY");
 
-            entity.HasIndex(e => e.documentoIdentidad, "documentoIdentidad").IsUnique();
-
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
-            entity.Property(e => e.celular).HasMaxLength(10);
-            entity.Property(e => e.direccion).HasMaxLength(100);
-            entity.Property(e => e.documentoIdentidad).HasMaxLength(13);
-            entity.Property(e => e.email).HasMaxLength(100);
-            entity.Property(e => e.idTipoDocumento)
-                .HasMaxLength(1)
-                .IsFixedLength();
-            entity.Property(e => e.observacion).HasMaxLength(200);
-            entity.Property(e => e.primerApellido).HasMaxLength(40);
-            entity.Property(e => e.primerNombre).HasMaxLength(40);
-            entity.Property(e => e.segundoApellido).HasMaxLength(40);
-            entity.Property(e => e.segundoNombre).HasMaxLength(40);
-            entity.Property(e => e.sexo).HasMaxLength(10);
+            entity.Property(e => e.idTipoDocumento).IsFixedLength();
         });
 
         modelBuilder.Entity<gruposcursos>(entity =>
@@ -235,37 +178,13 @@ public partial class cttContext : DbContext
 
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
             entity.Property(e => e.esVisible).HasDefaultValueSql("'1'");
-            entity.Property(e => e.fechaFinCurso).HasColumnType("date");
-            entity.Property(e => e.fechaFinMatricula).HasColumnType("date");
-            entity.Property(e => e.fechaInicioCurso).HasColumnType("date");
-            entity.Property(e => e.fechaInicioMatricula).HasColumnType("date");
-            entity.Property(e => e.horario).HasMaxLength(100);
         });
 
         modelBuilder.Entity<instructores>(entity =>
         {
             entity.HasKey(e => e.idInstructor).HasName("PRIMARY");
 
-            entity.HasIndex(e => e.documentoIdentidad, "documentoIdentidad").IsUnique();
-
-            entity.Property(e => e.abreviaturaTitulo).HasMaxLength(10);
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
-            entity.Property(e => e.celular).HasMaxLength(10);
-            entity.Property(e => e.direccion).HasMaxLength(100);
-            entity.Property(e => e.documentoIdentidad).HasMaxLength(13);
-            entity.Property(e => e.elPassword).HasMaxLength(60);
-            entity.Property(e => e.email).HasMaxLength(100);
-            entity.Property(e => e.historialLaboral).HasMaxLength(200);
-            entity.Property(e => e.historialTitulo).HasMaxLength(500);
-            entity.Property(e => e.observacion).HasMaxLength(400);
-            entity.Property(e => e.primerApellido).HasMaxLength(40);
-            entity.Property(e => e.primerNombre).HasMaxLength(40);
-            entity.Property(e => e.referencia).HasMaxLength(500);
-            entity.Property(e => e.segundoApellido).HasMaxLength(40);
-            entity.Property(e => e.segundoNombre).HasMaxLength(40);
-            entity.Property(e => e.sexo).HasMaxLength(10);
-            entity.Property(e => e.telefono).HasMaxLength(10);
-            entity.Property(e => e.tipoDocumento).HasMaxLength(1);
         });
 
         modelBuilder.Entity<matriculas>(entity =>
@@ -273,13 +192,7 @@ public partial class cttContext : DbContext
             entity.HasKey(e => e.idMatricula).HasName("PRIMARY");
 
             entity.Property(e => e.esUniandes).HasDefaultValueSql("'0'");
-            entity.Property(e => e.fechaRegistro)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("timestamp");
-            entity.Property(e => e.idCarrera).HasMaxLength(3);
-            entity.Property(e => e.idCentro).HasMaxLength(3);
-            entity.Property(e => e.paralelo).HasMaxLength(1);
-            entity.Property(e => e.usuarioRegistro).HasMaxLength(20);
+            entity.Property(e => e.fechaRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
         modelBuilder.Entity<modalidades>(entity =>
@@ -287,7 +200,6 @@ public partial class cttContext : DbContext
             entity.HasKey(e => e.idModalidad).HasName("PRIMARY");
 
             entity.Property(e => e.activa).HasDefaultValueSql("'1'");
-            entity.Property(e => e.modalidad).HasMaxLength(30);
         });
 
         modelBuilder.Entity<periodos>(entity =>
@@ -295,9 +207,6 @@ public partial class cttContext : DbContext
             entity.HasKey(e => e.idPeriodo).HasName("PRIMARY");
 
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
-            entity.Property(e => e.detalle).HasMaxLength(100);
-            entity.Property(e => e.fechaFin).HasColumnType("date");
-            entity.Property(e => e.fechaInicio).HasColumnType("date");
         });
 
         modelBuilder.Entity<roles>(entity =>
@@ -305,42 +214,27 @@ public partial class cttContext : DbContext
             entity.HasKey(e => e.idRol).HasName("PRIMARY");
 
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
-            entity.Property(e => e.nombre).HasMaxLength(100);
-            entity.Property(e => e.rol).HasMaxLength(19);
         });
 
         modelBuilder.Entity<rolesusuarios>(entity =>
         {
             entity.HasKey(e => e.idRolUsuario).HasName("PRIMARY");
 
-            entity.HasIndex(e => e.idRol, "idRol");
-
-            entity.HasIndex(e => e.idUsuario, "idUsuario");
-
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
 
-            entity.HasOne(d => d.idRolNavigation).WithMany(p => p.rolesusuarios)
-                .HasForeignKey(d => d.idRol)
-                .HasConstraintName("rolesusuarios_ibfk_1");
+            entity.HasOne(d => d.idRolNavigation).WithMany(p => p.rolesusuarios).HasConstraintName("rolesusuarios_ibfk_1");
 
-            entity.HasOne(d => d.idUsuarioNavigation).WithMany(p => p.rolesusuarios)
-                .HasForeignKey(d => d.idUsuario)
-                .HasConstraintName("rolesusuarios_ibfk_2");
+            entity.HasOne(d => d.idUsuarioNavigation).WithMany(p => p.rolesusuarios).HasConstraintName("rolesusuarios_ibfk_2");
         });
 
         modelBuilder.Entity<temas>(entity =>
         {
             entity.HasKey(e => e.idTema).HasName("PRIMARY");
 
-            entity.HasIndex(e => e.idCurso, "idCurso");
-
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
             entity.Property(e => e.orden).HasDefaultValueSql("'1'");
-            entity.Property(e => e.tema).HasMaxLength(500);
 
-            entity.HasOne(d => d.idCursoNavigation).WithMany(p => p.temas)
-                .HasForeignKey(d => d.idCurso)
-                .HasConstraintName("temas_ibfk_1");
+            entity.HasOne(d => d.idCursoNavigation).WithMany(p => p.temas).HasConstraintName("temas_ibfk_1");
         });
 
         modelBuilder.Entity<tiposcursos>(entity =>
@@ -350,7 +244,6 @@ public partial class cttContext : DbContext
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
             entity.Property(e => e.esCurso).HasDefaultValueSql("'0'");
             entity.Property(e => e.esDiplomado).HasDefaultValueSql("'0'");
-            entity.Property(e => e.tipoCurso).HasMaxLength(60);
         });
 
         modelBuilder.Entity<tiposdescuentos>(entity =>
@@ -358,22 +251,14 @@ public partial class cttContext : DbContext
             entity.HasKey(e => e.idTipoDescuento).HasName("PRIMARY");
 
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
-            entity.Property(e => e.nombreDescuento).HasMaxLength(100);
-            entity.Property(e => e.porcentaje)
-                .HasPrecision(10)
-                .HasDefaultValueSql("'0.00'");
+            entity.Property(e => e.porcentaje).HasDefaultValueSql("'0.00'");
             entity.Property(e => e.sinDescuento).HasDefaultValueSql("'0'");
         });
 
         modelBuilder.Entity<tiposdocumentos>(entity =>
         {
-            entity.HasNoKey();
-
             entity.Property(e => e.esCedula).HasDefaultValueSql("'0'");
-            entity.Property(e => e.idTipoDocumento)
-                .HasMaxLength(1)
-                .IsFixedLength();
-            entity.Property(e => e.tipo).HasMaxLength(20);
+            entity.Property(e => e.idTipoDocumento).IsFixedLength();
         });
 
         modelBuilder.Entity<usuarios>(entity =>
@@ -381,9 +266,6 @@ public partial class cttContext : DbContext
             entity.HasKey(e => e.idUsuario).HasName("PRIMARY");
 
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
-            entity.Property(e => e.clave).HasMaxLength(50);
-            entity.Property(e => e.nombre).HasMaxLength(100);
-            entity.Property(e => e.usuario).HasMaxLength(50);
         });
 
         OnModelCreatingPartial(modelBuilder);

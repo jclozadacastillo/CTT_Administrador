@@ -54,6 +54,12 @@ public partial class cursos
 
     public int? numeroNotas { get; set; }
 
+    [Column(TypeName = "datetime")]
+    public DateTime? fechaRegistro { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? fechaActualizacion { get; set; }
+
     [InverseProperty("idCursoAsociadoNavigation")]
     public virtual ICollection<cursos_mallas> cursos_mallasidCursoAsociadoNavigation { get; set; } = new List<cursos_mallas>();
 

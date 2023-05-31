@@ -176,11 +176,16 @@ namespace CTT_Administrador.Controllers.Administrador
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
-                string sql = @"SELECT m.idCursoAsociado,c.curso,
+                string sql = @"SELECT m.idCursoAsociado,c.curso,c.precioCurso,
                                 (select idMatricula from calificaciones ca
                                 where idMatricula=@idMatricula AND idGrupoCurso=@idGrupoCurso
-                                AND ca.idCurso=m.idCursoAsociado) as idMatricula
-                                FROM gruposcursos g
+                                AND ca.idCurso=m.idCursoAsociado) as idMatricula,
+                                (select valor-valorPendiente from creditos c 
+                                inner join detalleCreditos dt on dt.idCredito=c.idCredito 
+                                and idMatricula=(select idMatricula from calificaciones ca
+                                where idMatricula=@idMatricula AND idGrupoCurso=@idGrupoCurso
+                                AND ca.idCurso=m.idCursoAsociado) and dt.idCurso=c.idCurso) as deuda
+                                FROM gruposcursos g 
                                 inner join cursos_mallas m on m.idCurso = g.idCurso
                                 inner join cursos c on c.idCurso = m.idCursoAsociado
                                 where g.idGrupoCurso = @idGrupoCurso

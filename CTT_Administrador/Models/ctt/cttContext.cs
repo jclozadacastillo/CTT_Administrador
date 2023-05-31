@@ -134,6 +134,7 @@ public partial class cttContext : DbContext
             entity.HasKey(e => e.idCurso).HasName("PRIMARY");
 
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
+            entity.Property(e => e.fechaRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.idCursoPrecedencia).HasDefaultValueSql("'0'");
             entity.Property(e => e.precioCurso).HasDefaultValueSql("'0.00'");
             entity.Property(e => e.tienePrecedencia).HasDefaultValueSql("'0'");

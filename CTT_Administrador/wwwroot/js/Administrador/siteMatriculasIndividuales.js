@@ -3,7 +3,7 @@ const modalEspere = new bootstrap.Modal(espere, {
     keyboard: false,
     backdrop: 'static'
 });
-
+let modulos = [];
 (async function () {
     $(idGrupoCurso).select2();
     $(idEstudiante).select2();
@@ -105,6 +105,7 @@ async function comboEstudiantes() {
 
 async function cargarModulos() {
     try {
+        modulos = [];
         tablaModulos.innerHTML = `<tr><td colspan="2" class="text-center">Seleccione un curso/diplomado</td></tr>`;
         const estudiante = idEstudiante.options[idEstudiante.selectedIndex];
         const idMatricula = estudiante.dataset.idMatricula;
@@ -113,7 +114,13 @@ async function cargarModulos() {
         const data = new FormData(frmDatos);
         data.append("idMatricula", idMatricula);
         const res = (await axios.post(url, data)).data;
-        let html = "";
+        modulos = res;
+        let html = `<tr class='bg-primary text-white'>
+                        <td></td>
+                        <td>Curso/Modulo</td>
+                        <td class='text-end'>Valor</td>
+                        <td class='text-end'>Deduda</td>
+                    </tr>`;
         res.forEach(item => {
             console.log(item);
             html += `
@@ -127,6 +134,12 @@ async function cargarModulos() {
                                 </label>
                             `}</td>
                             <td onclick='check${item.idCursoAsociado}.click()'>${item.curso}</td>
+                            <td class='text-end' data-precio='${item.precioCurso}'>$${parseFloat(item.precioCurso).toFixed(2)}</td>
+                            <td class='text-end' data-deuda='${item.deuda >= 0 ? parseFloat(0).toFixed(2) : item.deuda}'>$${item.deuda >= 0 ? parseFloat(0).toFixed(2) : item.deuda}</td>
+                        </tr>
+                        <tr>
+                        <td class='text-end' colspan="2"></td><td data-total-valor=""><b>Total Valor: $0</b></td>
+                        <td class='text-end' data-total-dauda="0"><b>Total Deuda: $0</b></td>
                         </tr>
                     `;
         });

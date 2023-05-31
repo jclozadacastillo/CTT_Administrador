@@ -26,7 +26,8 @@ namespace CTT_Administrador.Controllers.Administrador
             {
                 string sql = @"select c.* from cursos_mallas cm
                             inner join cursos c on c.idCurso = cm.idCursoAsociado
-                            where cm.idCurso = @idCursoDiplomado";
+                            where cm.idCurso = @idCursoDiplomado
+                            order by fechaRegistro ";
                 return Ok(await dapper.QueryAsync(sql, new { idCursoDiplomado }));
             }
             catch (Exception ex)
@@ -105,6 +106,8 @@ namespace CTT_Administrador.Controllers.Administrador
                 _data.idCategoria = cursoPadre.idCategoria;
                 if (_data.idCurso > 0)
                 {
+                    _data.fechaRegistro = await _context.cursos.AsNoTracking().Where(x => x.idCurso == idCursoDiplomado).Select(x => x.fechaRegistro).FirstOrDefaultAsync();
+                    _data.fechaActualizacion = DateTime.Now;
                     _context.cursos.Update(_data);
                     await _context.SaveChangesAsync();
                     var curso_malla = await _context.cursos_mallas.Where(x => x.idCurso == idCursoDiplomado && x.idCursoAsociado == _data.idCurso).FirstOrDefaultAsync();
@@ -117,6 +120,7 @@ namespace CTT_Administrador.Controllers.Administrador
                 }
                 else
                 {
+                    _data.fechaRegistro = DateTime.Now;
                     _context.cursos.Add(_data);
                     await _context.SaveChangesAsync();
                     _context.cursos_mallas.Add(new cursos_mallas

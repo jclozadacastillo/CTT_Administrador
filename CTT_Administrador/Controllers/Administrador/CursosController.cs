@@ -36,7 +36,7 @@ namespace CTT_Administrador.Controllers.Administrador
                             select cm.idCursoAsociado
                             from cursos_mallas cm
                             )
-                            ORDER BY c.curso";
+                            ORDER BY c.fechaRegistro desc";
                 return Ok(await dapper.QueryAsync(sql));
             }
             catch (Exception ex)
@@ -99,6 +99,8 @@ namespace CTT_Administrador.Controllers.Administrador
                               ";
                 if (_data.idCurso > 0)
                 {
+                    _data.fechaRegistro = await _context.cursos.AsNoTracking().Where(x => x.idCurso == _data.idCurso).Select(x => x.fechaRegistro).FirstOrDefaultAsync();
+                    _data.fechaActualizacion=DateTime.Now;
                     _context.cursos.Update(_data);
                     await _context.SaveChangesAsync();
                     if (_context.tiposcursos.Where(x => x.idTipoCurso == _data.idTipoCurso).FirstOrDefault()?.esDiplomado != 1)
@@ -122,6 +124,7 @@ namespace CTT_Administrador.Controllers.Administrador
                 }
                 else
                 {
+                    _data.fechaRegistro = DateTime.Now;
                     _context.cursos.Add(_data);
                     await _context.SaveChangesAsync();
                     if (_context.tiposcursos.Where(x => x.idTipoCurso == _data.idTipoCurso).FirstOrDefault()?.esDiplomado != 1)

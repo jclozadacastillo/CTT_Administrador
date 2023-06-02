@@ -321,7 +321,9 @@ var _v = $"?v={DateTime.Now.Ticks}";
                <ul id="navMatriculasUniandes" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                   <li>
                      <a href="~/Administrador/MatriculasUniandesMasivas" data-menu>
-                     <i class="bi bi-circle"></i><span>Carga Masiva</span>
+                                <i class="bi bi-circle"></i><span>
+                                    Carga Masiva <b class="text-danger" style="font-size:7px"> NO GENERA CRÉDITO</b>
+                                </span>
                      </a>
                   </li>
                   <li>
@@ -341,6 +343,26 @@ var _v = $"?v={DateTime.Now.Ticks}";
                   </li>
                </ul>
             </li>
+            }
+            @if (_auth.inRol("admin"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#navFinanciero" data-bs-toggle="collapse" href="#">
+                        <i class="bi bi-cash"></i><span>Financiero</span><i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="navFinanciero" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                        <li>
+                            <a href="~/Administrador/CreditosPendientes" data-menu>
+                                <i class="bi bi-circle"></i><span>Créditos Pendientes</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="~/Administrador/CreditosCancelados" data-menu>
+                                <i class="bi bi-circle"></i><span>Créditos Cancelados</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
             }
             @if (_auth.inRol("admin"))
             {

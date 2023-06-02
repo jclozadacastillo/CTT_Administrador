@@ -348,6 +348,45 @@ namespace CTT_Administrador.Controllers.Administrador
                     ";
                 await dapper.ExecuteAsync(sql, new { _data.idGrupoCurso, usuario, _data.paralelo });
                 dapper.Close();
+
+                //Creditos
+                //dapper.Open();
+                //sql = $@"SELECT DISTINCT(ca.idMatricula),ca.idCurso,c.precioCurso
+                //        FROM calificaciones ca
+                //        INNER JOIN cursos c ON c.idCurso = ca.idCurso
+                //        INNER JOIN matriculas m ON m.idMatricula = ca.idMatricula
+                //        INNER JOIN estudiantes e ON e.idEstudiante = m.idEstudiante
+                //        WHERE ca.idGrupoCurso = @idGrupoCurso
+                //        AND m.paralelo=@paralelo
+                //        AND c.precioCurso >0
+                //        AND e.documentoIdentidad in({_alumnosCedulas})";
+
+                //var listaCreditos = await dapper.QueryAsync(sql, new { _data.idGrupoCurso, _data.paralelo });
+                //if(listaCreditos.Count()> 0)
+                //{
+                //    foreach (var item in listaCreditos)
+                //    {
+                //        sql = @"SELECT idCredito FROM creditos WHERE idMatricula=@idMatricula";
+                //        int idCredito = await dapper.ExecuteScalarAsync<int>(sql, new { item.idMatricula });
+                //        idCredito = idCredito == null ? 0 : idCredito;
+                //        if (idCredito == 0)
+                //        {
+                //            sql = @"INSERT INTO creditos (fechaCredito, idMatricula, activo, fechaDesactivacion)
+                //                    VALUES(current_timestamp(),@idMatricula, 1, null);
+                //                    SELECT LAST_INSERT_ID();";
+                //            idCredito = await dapper.ExecuteScalarAsync<int>(sql, new { item.idMatricula });
+                //        }
+                //        if (idCredito > 0)
+                //        {
+                //            sql = $@"INSERT INTO detallecreditos (idCredito,idCurso,valor,valorPendiente,cancelado,activo,fechaDesactivacion,fechaRegistro)
+                //            SELECT @idCredito,idCurso,precioCurso,precioCurso,0,1,null,current_timestamp() FROM cursos
+                //            WHERE idCurso in({item.idCurso})";
+                //            await dapper.ExecuteAsync(sql, new { idCredito });
+                //        }
+                //    }
+
+                //}
+                //dapper.Close();
                 return generarPdfReporte(_data, _alumnosCedulas, usuario);
             }
             catch (Exception ex)

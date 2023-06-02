@@ -113,6 +113,18 @@ namespace CTT_Administrador.Controllers.Administrador
             return View();
         }
 
+        public IActionResult CreditosPendientes()
+        {
+            if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
+            return View();
+        }
+
+        public IActionResult CreditosCancelados()
+        {
+            if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> authorization(TokenTools.userData _data)

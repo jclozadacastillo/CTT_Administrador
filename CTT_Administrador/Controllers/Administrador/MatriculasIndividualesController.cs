@@ -180,12 +180,12 @@ namespace CTT_Administrador.Controllers.Administrador
                                 (select idMatricula from calificaciones ca
                                 where idMatricula=@idMatricula AND idGrupoCurso=@idGrupoCurso
                                 AND ca.idCurso=m.idCursoAsociado) as idMatricula,
-                                (select valor-valorPendiente from creditos c 
-                                inner join detalleCreditos dt on dt.idCredito=c.idCredito 
+                                (select valorPendiente from creditos cr
+                                inner join detalleCreditos dt on dt.idCredito=cr.idCredito
                                 and idMatricula=(select idMatricula from calificaciones ca
                                 where idMatricula=@idMatricula AND idGrupoCurso=@idGrupoCurso
                                 AND ca.idCurso=m.idCursoAsociado) and dt.idCurso=c.idCurso) as deuda
-                                FROM gruposcursos g 
+                                FROM gruposcursos g
                                 inner join cursos_mallas m on m.idCurso = g.idCurso
                                 inner join cursos c on c.idCurso = m.idCursoAsociado
                                 where g.idGrupoCurso = @idGrupoCurso
@@ -269,6 +269,33 @@ namespace CTT_Administrador.Controllers.Administrador
                         ) and m.idMatricula = @idMatricula
                     ";
                 await dapper.ExecuteAsync(sql, new { idMatricula });
+
+                //GENERAR CRÉDITO
+                sql = $@"SELECT sum(precioCurso)
+                        FROM cursos
+                        WHERE idCurso in({_modulos})";
+                var valor = await dapper.ExecuteScalarAsync<decimal>(sql);
+                valor = valor == null ? 0 : valor;
+                if (valor > 0)
+                {
+                    sql = @"SELECT idCredito FROM creditos WHERE idMatricula=@idMatricula";
+                    int idCredito = await dapper.ExecuteScalarAsync<int>(sql, new { idMatricula });
+                    idCredito = idCredito == null ? 0 : idCredito;
+                    if (idCredito == 0)
+                    {
+                        sql = @"INSERT INTO creditos (fechaCredito, idMatricula, activo, fechaDesactivacion)
+                        VALUES(current_timestamp(),@idMatricula, 1, null);
+                        SELECT LAST_INSERT_ID();";
+                        idCredito = await dapper.ExecuteScalarAsync<int>(sql, new { idMatricula });
+                    }
+                    if (idCredito > 0)
+                    {
+                        sql = $@"INSERT INTO detallecreditos (idCredito,idCurso,valor,valorPendiente,cancelado,activo,fechaDesactivacion,fechaRegistro)
+                            SELECT @idCredito,idCurso,precioCurso,precioCurso,0,1,null,current_timestamp() FROM cursos
+                            WHERE idCurso in({_modulos})";
+                        await dapper.ExecuteAsync(sql, new { idCredito });
+                    }
+                }
                 return Ok();
             }
             catch (Exception ex)

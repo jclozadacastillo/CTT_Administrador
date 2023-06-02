@@ -163,6 +163,7 @@ public partial class cttContext : DbContext
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
             entity.Property(e => e.cancelado).HasDefaultValueSql("'0'");
             entity.Property(e => e.fechaDesactivacion).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.fechaRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
         modelBuilder.Entity<estudiantes>(entity =>

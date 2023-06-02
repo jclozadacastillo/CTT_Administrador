@@ -115,41 +115,66 @@ async function cargarModulos() {
         data.append("idMatricula", idMatricula);
         const res = (await axios.post(url, data)).data;
         modulos = res;
-        let html = `<tr class='bg-primary text-white'>
+        modulos = modulos.map(x => {
+            console.log(x);
+            x.deuda = !x.deuda ? parseFloat(0) : x.deuda;
+            return x
+        });
+        let html = `<tr class='bg-primary text-white fw-bold'>
                         <td></td>
                         <td>Curso/Modulo</td>
                         <td class='text-end'>Valor</td>
                         <td class='text-end'>Deduda</td>
                     </tr>`;
-        res.forEach(item => {
-            console.log(item);
+        modulos.forEach(item => {
             html += `
                         <tr class='${parseInt(item.idMatricula) > 0 ? "alert alert-success" : ""}'>
                             <td valign='middle' width="10%" class='text-nowrap text-center'>${parseInt(item.idMatricula) > 0 ? "<span class='alert alert-success bg-white shadow-sm fs-xxxs' style='padding:1px 3px'><i class='bi-check-circle-fill me-1'></i>MATRICULADO</span>" : `
                              <label class="switch">
-                                       <input type="checkbox"
-                                            id="check${item.idCursoAsociado}" data-id-curso=${item.idCursoAsociado} checked="true"}
+                                       <input type="checkbox" onchange="sumarValores()"
+                                            id="check${item.idCursoAsociado}" data-id-curso="${item.idCursoAsociado}" checked="true"}
                                             />
                                         <span class="slider"></span>
                                 </label>
                             `}</td>
-                            <td onclick='check${item.idCursoAsociado}.click()'>${item.curso}</td>
-                            <td class='text-end' data-precio='${item.precioCurso}'>$${parseFloat(item.precioCurso).toFixed(2)}</td>
-                            <td class='text-end' data-deuda='${item.deuda >= 0 ? parseFloat(0).toFixed(2) : item.deuda}'>$${item.deuda >= 0 ? parseFloat(0).toFixed(2) : item.deuda}</td>
-                        </tr>
-                        <tr>
-                        <td class='text-end' colspan="2"></td><td data-total-valor=""><b>Total Valor: $0</b></td>
-                        <td class='text-end' data-total-dauda="0"><b>Total Deuda: $0</b></td>
+                            <td onclick='check${item.idCursoAsociado}.click(),sumarValores()'>${item.curso}</td>
+                            <td class='text-end ' data-precio='${item.precioCurso}'>$${parseFloat(item.precioCurso).toFixed(2)}</td>
+                            <td class='text-end ${parseFloat(item.deuda) > 0 ? "text-danger" : ""}' data-deuda='${parseFloat(item.deuda) >= 0 ? parseFloat(item.deuda).toFixed(2) : parseFloat(0).toFixed(2)}'>$${parseFloat(item.deuda) >= 0 ? parseFloat(item.deuda).toFixed(2) : parseFloat(0).toFixed(2) }</td>
                         </tr>
                     `;
         });
+        html +=`<tr>
+                 <td class="text-end" colspan="2"><b>Totales:</b></td>
+                 <td class='text-end' data-total-valor="0">$0.00</td>
+                 <td class='text-end' data-total-deuda="0">$0.00</td>
+               </tr>`
         tablaModulos.innerHTML = html;
         comboParalelos(_paralelo);
+        sumarValores();
     } catch (e) {
         handleError(e);
     }
 }
+function sumarValores() {
+    const valorModulos = modulos.reduce((sum, x) => {
+        let input = document.querySelector(`[data-id-curso='${x.idCursoAsociado}']`);
+        let precioCurso = !input || input?.checked ? x.precioCurso : 0;
+        return sum + precioCurso;
+    },0);
+    let tdValor = document.querySelector("[data-total-valor]");
+    tdValor.dataset.totalValor = parseFloat(valorModulos).toFixed(2);
+    tdValor.innerHTML = `$${tdValor.dataset.totalValor}`;
+    const valorDeuda = modulos.reduce((sum, x) => {
+    let input = document.querySelector(`[data-id-curso='${x.idCursoAsociado}']`);
+    let precioDeuda = !input || input?.checked || parseFloat(x.deuda)>0 ? x.deuda : 0;
+    return sum + precioDeuda;
+    }, 0);
+    let tdDeuda = document.querySelector("[data-total-deuda]");
+    tdDeuda.dataset.totalDeuda = parseFloat(valorDeuda).toFixed(2);
+    parseFloat(valorDeuda).toFixed(2) > 0? tdDeuda.classList.add("text-danger"): tdDeuda.classList.remove("text-danger");
+    tdDeuda.innerHTML = `$${tdDeuda.dataset.totalDeuda}`;
 
+}
 async function generarMatricula() {
     try {
         if (!await validarTodo(frmDatos)) throw new Error("Verifique los campos requeridos");

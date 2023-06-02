@@ -27,4 +27,7 @@ public partial class detallecreditos
 
     [Column(TypeName = "datetime")]
     public DateTime? fechaDesactivacion { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? fechaRegistro { get; set; }
 }

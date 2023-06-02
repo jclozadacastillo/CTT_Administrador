@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Calificaciones";
     Layout = "~/Views/Shared/_LayoutDocente.cshtml";
 }
@@ -39,23 +38,23 @@
             </div>
             <div class="col-sm-auto">
                 <br />
-                <button hidden type="button" class="btn btn-primary btn-sm" onclick="guardarTodo()" id="btnGuardarTodo"><i class="bi-save2 me-1"></i>Guardar Todo</button>  
+                <button hidden type="button" class="btn btn-primary btn-sm" onclick="guardarTodo()" id="btnGuardarTodo"><i class="bi-save2 me-1"></i>Guardar Todo</button>
             </div>
         </div>
     </form>
     <div class="table-responsive mt-4">
         <div class="col-sm-4 my-1 d-inline-flex">
-            <i class="bi-search me-3 fs-sm pt-1"></i><input class="form-control form-control-sm" placeholder="Busqueda" onkeyup="buscarEnTabla(this.value)"/>
+            <i class="bi-search me-3 fs-sm pt-1"></i><input class="form-control form-control-sm" placeholder="Busqueda" onkeyup="buscarEnTabla(this.value)" />
         </div>
         <table class="table table-sm table-condensed w-100
             table-light table-hover table-custom" id="tableDatos">
-             <thead>
-             </thead>
-             <tbody>
-                 <tr><td colspan="11" class="text-center">Lista vacia</td></tr>
-             </tbody>
-         </table>
+            <thead>
+            </thead>
+            <tbody>
+                <tr><td colspan="11" class="text-center">Lista vacia</td></tr>
+            </tbody>
+        </table>
     </div>
 
- </div>
+</div>
 <script defer src="~/js/Docente/siteCalificaciones.js?v=@DateTime.Now.Ticks"></script>

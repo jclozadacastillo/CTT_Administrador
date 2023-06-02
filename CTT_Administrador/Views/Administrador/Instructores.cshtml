@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Instructores";
     Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
 }
@@ -39,16 +38,16 @@
                             <div class="col-sm-4">
                                 <label class="fs-sm">Tipo de documento</label>
                                 <select class="form-select form-select-sm" id="tipoDocumento" name="tipoDocumento" onchange="handleTipoDocumento()">
-                                    <option value="">Espere...</option>  
-                                </select>  
+                                    <option value="">Espere...</option>
+                                </select>
                             </div>
                             <div class="col-sm-4">
                                 <label class="fs-sm">Documento</label>
                                 <input type="text" class="form-control form-control-sm" data-validate="cedula" id="documentoIdentidad" name="documentoIdentidad"
                                        maxlength="14">
-                                       <div class="invalid-feedback">
-                                           * Campo requerido
-                                       </div>
+                                <div class="invalid-feedback">
+                                    * Campo requerido
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -62,7 +61,7 @@
                                 <input type="text" class="form-control form-control-sm" data-validate="no-validate" id="segundoNombre" name="segundoNombre"
                                        maxlength="40">
                             </div>
-                                                        <div class="col-sm-3">
+                            <div class="col-sm-3">
                                 <label class="fs-sm">Primer Apellido</label>
                                 <input type="text" class="form-control form-control-sm" id="primerApellido" name="primerApellido"
                                        maxlength="40">
@@ -93,9 +92,9 @@
                                 <input type="text" class="form-control form-control-sm"
                                        data-validate="email" id="email" name="email"
                                        maxlength="100">
-                                       <div class="invalid-feedback">
-                                           * Campo requerido
-                                       </div>
+                                <div class="invalid-feedback">
+                                    * Campo requerido
+                                </div>
                             </div>
                             <div class="col-sm-4">
                                 <label class="fs-sm">Sexo</label>

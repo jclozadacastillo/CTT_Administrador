@@ -20,6 +20,7 @@ namespace CTT_Administrador.Controllers.Administrador
             _auth = auth;
         }
 
+        [AuthorizeAdministrador]
         [HttpGet]
         public async Task<IActionResult> listar()
         {
@@ -48,6 +49,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpGet]
         public async Task<IActionResult> comboPeriodos()
         {
@@ -88,6 +90,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> comboTiposCursos(int idPeriodo)
         {
@@ -127,6 +130,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> comboCursos(int idTipoCurso, int idPeriodo)
         {
@@ -167,6 +171,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> comboCursosAsociados(int idGrupoCurso)
         {
@@ -191,6 +196,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpGet]
         public async Task<IActionResult> comboInstructores()
         {
@@ -213,6 +219,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> unDato(int idAsignacion)
         {
@@ -241,6 +248,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> guardar(asignacionesinstructorescalificaciones _data)
         {
@@ -268,6 +276,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> activar(int idAsignacion)
         {

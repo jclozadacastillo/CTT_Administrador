@@ -18,6 +18,7 @@ namespace CTT_Administrador.Controllers.Administrador
             _context = context;
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> listar(int idPeriodo)
         {
@@ -41,6 +42,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpGet]
         public async Task<IActionResult> comboPeriodos()
         {
@@ -63,6 +65,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> comboCursos(int idPeriodo)
         {
@@ -98,6 +101,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpGet]
         public async Task<IActionResult> comboModalidades()
         {
@@ -119,6 +123,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> unDato(int idGrupoCurso)
         {
@@ -134,6 +139,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> guardar(gruposcursos _data)
         {
@@ -152,6 +158,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> activar(int idGrupoCurso)
         {

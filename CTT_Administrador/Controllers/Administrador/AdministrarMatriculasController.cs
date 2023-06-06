@@ -23,6 +23,7 @@ namespace CTT_Administrador.Controllers.Administrador
             _path = _env.WebRootPath;
         }
 
+        [AuthorizeAdministrador]
         [HttpGet]
         public async Task<IActionResult> comboPeriodos()
         {
@@ -64,6 +65,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> comboCursos(int idPeriodo)
         {
@@ -106,6 +108,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> comboCursosAsociados(int idGrupoCurso)
         {
@@ -132,6 +135,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         public async Task<IActionResult> comboParalelos(int idGrupoCurso, int idCurso)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
@@ -161,6 +165,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         public async Task<IActionResult> comboParalelosListado(int idGrupoCurso, int idCurso)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
@@ -187,6 +192,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         public async Task<IActionResult> listar(int idGrupoCurso, int idCurso, string paralelo)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
@@ -228,6 +234,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         public async Task<IActionResult> listarMatriculados(int idGrupoCurso, int idCurso, string paralelo)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
@@ -267,6 +274,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> suspender(int idGrupoCurso, int idCurso, int idMatricula)
         {
@@ -292,6 +300,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> eliminar(int idGrupoCurso, int idCurso, int idMatricula)
         {
@@ -316,6 +325,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> generarExcel(int idGrupoCurso, int idCurso, string paralelo)
         {
@@ -370,6 +380,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> generarExcelCertificados(int idGrupoCurso, int idCurso, string paralelo)
         {
@@ -420,6 +431,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public IActionResult generarPdfReporte(int idGrupoCurso, int idCurso, string paralelo)
         {

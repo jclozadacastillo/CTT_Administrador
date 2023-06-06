@@ -18,6 +18,7 @@ namespace CTT_Administrador.Controllers.Administrador
             _context = context;
         }
 
+        [AuthorizeAdministrador]
         [HttpGet]
         public async Task<IActionResult> listar()
         {
@@ -49,6 +50,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpGet]
         public async Task<IActionResult> comboCategorias()
         {
@@ -62,6 +64,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpGet]
         public async Task<IActionResult> comboTiposCursos()
         {
@@ -75,6 +78,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> unDato(int idCurso)
         {
@@ -88,6 +92,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> guardar(cursos _data)
         {
@@ -100,7 +105,7 @@ namespace CTT_Administrador.Controllers.Administrador
                 if (_data.idCurso > 0)
                 {
                     _data.fechaRegistro = await _context.cursos.AsNoTracking().Where(x => x.idCurso == _data.idCurso).Select(x => x.fechaRegistro).FirstOrDefaultAsync();
-                    _data.fechaActualizacion=DateTime.Now;
+                    _data.fechaActualizacion = DateTime.Now;
                     _context.cursos.Update(_data);
                     await _context.SaveChangesAsync();
                     if (_context.tiposcursos.Where(x => x.idTipoCurso == _data.idTipoCurso).FirstOrDefault()?.esDiplomado != 1)
@@ -155,6 +160,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> activar(int idCurso)
         {

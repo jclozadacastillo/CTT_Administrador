@@ -15,6 +15,7 @@ namespace CTT_Administrador.Controllers.Administrador
             _context = context;
         }
 
+        [AuthorizeAdministrador]
         [HttpGet]
         public async Task<IActionResult> listar()
         {
@@ -28,6 +29,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> unDato(int idTipoCurso)
         {
@@ -41,6 +43,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> guardar(tiposcursos _data)
         {
@@ -58,6 +61,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> activar(int idTipoCurso)
         {

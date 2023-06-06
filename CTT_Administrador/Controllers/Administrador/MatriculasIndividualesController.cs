@@ -21,6 +21,7 @@ namespace CTT_Administrador.Controllers.Administrador
             _path = _env.WebRootPath;
         }
 
+        [AuthorizeAdministrador]
         [HttpGet]
         public async Task<IActionResult> comboPeriodos()
         {
@@ -61,6 +62,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> comboTiposCursos(int idPeriodo)
         {
@@ -102,6 +104,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> comboCursos(int idTipoCurso, int idPeriodo)
         {
@@ -144,6 +147,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> comboEstudiantes(int idGrupoCurso)
         {
@@ -170,6 +174,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> cargarModulos(int idGrupoCurso, int idMatricula)
         {
@@ -202,6 +207,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> generarMatricula(matriculas _data, string _modulos, int idMatricula)
         {

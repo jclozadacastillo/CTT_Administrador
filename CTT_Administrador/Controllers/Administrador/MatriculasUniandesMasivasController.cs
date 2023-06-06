@@ -26,6 +26,7 @@ namespace CTT_Administrador.Controllers.Administrador
             _path = _env.WebRootPath;
         }
 
+        [AuthorizeAdministrador]
         [HttpGet]
         public async Task<IActionResult> comboPeriodos()
         {
@@ -66,6 +67,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> comboTiposCursos(int idPeriodo)
         {
@@ -107,6 +109,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> comboCursos(int idTipoCurso, int idPeriodo)
         {
@@ -161,6 +164,7 @@ namespace CTT_Administrador.Controllers.Administrador
             public string carrera { get; set; }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> cargarDatos(IFormFile archivo)
         {
@@ -253,6 +257,7 @@ namespace CTT_Administrador.Controllers.Administrador
             public string carrera { get; set; }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> generarMatriculas(string _alumnos, matriculas _data, string _alumnosCedulas)
         {
@@ -399,6 +404,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         public IActionResult generarPdfReporte(matriculas _data, string _alumnosCedulas, string usuario)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));

@@ -18,6 +18,7 @@ namespace CTT_Administrador.Controllers.Administrador
             _context = context;
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> listar(int idCursoDiplomado)
         {
@@ -40,6 +41,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpGet]
         public async Task<IActionResult> comboDiplomados()
         {
@@ -68,6 +70,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> datosDiplomado(int idCursoDiplomado)
         {
@@ -82,6 +85,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> unDato(int idCurso)
         {
@@ -96,6 +100,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> guardar(cursos _data, int idCursoDiplomado)
         {
@@ -140,6 +145,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> activar(int idCurso)
         {

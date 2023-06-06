@@ -23,8 +23,3 @@ async function authorization() {
         desbloquearBotones();
     }
 }
-(function () {
-    document.querySelectorAll("script").forEach(item => {
-        item.src = CryptoJS.AES.encrypt(item.src, "juancarloslozadacastillo.!191989");
-    });
-})();

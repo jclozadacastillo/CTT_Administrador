@@ -116,7 +116,6 @@ async function cargarModulos() {
         const res = (await axios.post(url, data)).data;
         modulos = res;
         modulos = modulos.map(x => {
-            console.log(x);
             x.deuda = !x.deuda ? parseFloat(0) : x.deuda;
             return x
         });

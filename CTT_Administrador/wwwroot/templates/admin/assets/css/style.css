@@ -1971,3 +1971,28 @@ table.table-hover tr td[colspan="11"]:hover {
         border: 1px solid var(--bs-secondary);
         padding: 3px 5px;
     }
+
+    .table-creditos{
+        font-size:12px;
+        text-transform:uppercase;
+    }
+
+.bg-primary-light-green {
+    background-color: #E5F6F3;
+}
+/*tr.bg-primary-light-green {
+    border: 1px solid #02A788; 
+}*/
+
+tr.collapse-bottom{
+    border-spacing:40px 10px !important;
+}
+
+tr td.empty{
+    border-right:none;
+    border-left:none;
+}
+
+tr:has(td.empty):last-child {
+    border-bottom: none;
+}

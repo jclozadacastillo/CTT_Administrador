@@ -355,11 +355,11 @@
                                 <i class="bi bi-circle"></i><span>Créditos Pendientes</span>
                             </a>
                         </li>
-                        <li>
+                        @*<li>
                             <a href="~/Administrador/CreditosCancelados" data-menu>
                                 <i class="bi bi-circle"></i><span>Créditos Cancelados</span>
                             </a>
-                        </li>
+                        </li>*@
                     </ul>
                 </li>
             }
@@ -390,6 +390,27 @@
                                 <i class="bi bi-circle"></i><span>Asignar Asistencias</span>
                             </a>
                         </li>
+                    </ul>
+                </li>
+            }
+
+            @if (_auth.inRol("admin"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#navReportes" data-bs-toggle="collapse" href="#">
+                        <i class="bi bi-file-pdf"></i><span>Reportes</span><i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="navReportes" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                        <li>
+                            <a href="~/Administrador/ListadoPorCurso" data-menu>
+                                <i class="bi bi-circle"></i><span>Notas Consolidado </span>
+                            </a>
+                        </li>
+                        @*<li>
+                    <a href="~/Administrador/CreditosCancelados" data-menu>
+                    <i class="bi bi-circle"></i><span>Créditos Cancelados</span>
+                    </a>
+                    </li>*@
                     </ul>
                 </li>
             }

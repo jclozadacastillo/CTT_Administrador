@@ -6,10 +6,49 @@
 
 <div class="container-fluid" id="content" hidden>
     <div class="row">
-        <div class="col-auto me-0 pe-0 form-title">
-            <h4>Administrar Matriculas</h4>
+        <div class="col-8 me-0 pe-0 form-title">
+            <h4>Créditos Pendientes</h4>
+        </div>
+        <div class="col-4 pe-2 me-0 pe-0 form-title text-end">
+            <h4 id="sumaTotal" class="text-danger">Total: $0.00</h4>
         </div>
     </div>
     <hr>
+    <div class="row mt-3">
+        <div class="col-sm-12">
+            <div class="table-responsive-sm">
+                <table class="table table-sm table-condensed w-100
+            table-light table-hover table-custom" id="tableDatos"></table>
+            </div>
+        </div>
+
+    </div>
 </div>
+<div class="modal fade" id="modalDatos" tabindex="-1" aria-labelledby="modalDatosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h1 class="modal-title" id="modalDatosLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="frmDatos">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-sm table-bordered table-creditos" id="tableCreditos">
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-cerrar
+                        data-bs-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="~/js/administrador/sitecreditospendientes.js?v=@DateTime.Now.Ticks"></script>
 

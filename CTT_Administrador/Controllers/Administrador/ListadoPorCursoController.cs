@@ -208,7 +208,8 @@ namespace CTT_Administrador.Controllers.Administrador
                         INNER JOIN cursos c ON c.idCurso = g.idCurso 
                         INNER JOIN cursos_mallas cm ON cm.idCurso = c.idCurso 
                         INNER JOIN cursos m ON m.idCurso = cm.idCursoAsociado 
-                        WHERE idGrupoCurso = @idGrupoCurso";
+                        WHERE idGrupoCurso = @idGrupoCurso
+                        ORDER BY m.numeroModulo";
                 var listaModulos = await dapper.QueryAsync(sql, new { idGrupoCurso });
                 //var modulos = ",0 as 'promedioGeneral'";
                 //foreach (var item in listaModulos)

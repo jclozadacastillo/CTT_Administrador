@@ -103,6 +103,7 @@ async function listar() {
                                 `;
                     }
                 },
+                {title:"#",data:"numeroModulo",class:"text-end"},
                 {
                     title: "Módulo",
                     data: "curso",

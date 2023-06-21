@@ -28,7 +28,7 @@ namespace CTT_Administrador.Controllers.Administrador
                 string sql = @"select c.* from cursos_mallas cm
                             inner join cursos c on c.idCurso = cm.idCursoAsociado
                             where cm.idCurso = @idCursoDiplomado
-                            order by fechaRegistro ";
+                            order by numeroModulo ";
                 return Ok(await dapper.QueryAsync(sql, new { idCursoDiplomado }));
             }
             catch (Exception ex)

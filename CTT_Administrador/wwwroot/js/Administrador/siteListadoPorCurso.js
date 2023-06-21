@@ -114,8 +114,11 @@ async function listar() {
             },
             {
                 title: "Estudiante",
-                data: "estudiante",
-                class: `${res.listaModulos.length > 1 ? "w-50" : "w-100"}`
+                data: "idMatricula",
+                class: `${res.listaModulos.length > 1 ? "w-50" : "w-100"}`,
+                render: (data, type, row) => {
+                    return `${row.primerApellido} ${row.segundoApellido || ""} ${row.primerNombre} ${row.segundoNombre || ""}`
+                }
             },
             { title: "Paralelo", data: "paralelo", class: "text-center" }
         ];
@@ -195,7 +198,7 @@ async function generarExcel() {
             const urlObject = window.URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = urlObject;
-            link.download = `REPORTE_MATRICULAS_${new Date().toISOString()}.xlsx`;
+            link.download = `CONSOLIDADO_NOTAS_${new Date().toISOString()}.xlsx`;
             link.click();
             window.URL.revokeObjectURL(urlObject);
             link.remove();
@@ -213,9 +216,21 @@ async function generarExcelCertificados() {
     try {
         return response = new Promise(async (resolve) => {
             let lista = $(tableDatos).DataTable().rows().data().toArray();
+            lista = lista.filter(x=>x.estado==="APROBADO").map(x => {
+                return {
+                    "Cédula": x.documentoIdentidad,
+                    primerNombre: x.primerNombre,
+                    segundoNombre: x.segundoNombre,
+                    primerApellido: x.primerApellido,
+                    segundoApellido: x.segundoApellido,
+                    Ciudad:x.centro,
+                    Carrera: x.carrera
+                };
+            }
+            );
             const url = `${baseUrl}generarExcelCertificados`;
             bloquearBotones();
-            const data = new FormData();
+            const data = new FormData(frmDatos);
             data.append("_lista", JSON.stringify(lista));
             let res = await axios({
                 method: "POST",
@@ -230,7 +245,7 @@ async function generarExcelCertificados() {
             const urlObject = window.URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = urlObject;
-            link.download = `REPORTE_MATRICULAS_${new Date().toISOString()}.xlsx`;
+            link.download = `CONSOLIDADO_CERTIFICADOS_${new Date().toISOString()}.xlsx`;
             link.click();
             window.URL.revokeObjectURL(urlObject);
             link.remove();
@@ -246,10 +261,23 @@ async function generarExcelCertificados() {
 
 async function generarPdf() {
     let lista = $(tableDatos).DataTable().rows().data().toArray();
+    lista=lista.map(x =>{ 
+        return {
+            centro: x.centro,
+            documentoIdentidad: x.documentoIdentidad,
+            primerApellido: x.primerApellido,
+            segundoApellido: x.segundoApellido,
+            nombres: `${x.primerNombre} ${x.segundoNombre || ""}`,
+            carrera: x.carrera,
+            estado:x.estado
+        };
+    }
+    );
     try {
         bloquearBotones();
         const url = `${baseUrl}generarPdfReporte`;
         const data = new FormData(frmDatos);
+        data.append("_lista", JSON.stringify(lista));
         const res = await axios({
             method: "POST",
             url,
@@ -272,7 +300,7 @@ async function downloadArchivo(res) {
             const urlObject = window.URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = urlObject;
-            link.download = `${"Matriculas_Calificaciones"}_${new Date().toISOString()}.pdf`;
+            link.download = `${"CONSOLIDADO_NOTAS"}_${new Date().toISOString()}.pdf`;
             link.click();
             window.URL.revokeObjectURL(urlObject);
             link.remove();

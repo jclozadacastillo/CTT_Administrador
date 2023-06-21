@@ -215,17 +215,30 @@ namespace CTT_Administrador.Controllers.Administrador
                 //{
                 //    modulos += $" ,0 as 'curso{item.idCurso}' ";
                 //}
-                sql = $@"select * from 
+                sql = $@"       select *,
+                                (SELECT c.carrera 
+                                FROM matriculas m
+                                LEFT JOIN carrerasuniandes c ON c.idCarrera = m.idCarrera 
+                                WHERE m.idMatricula=t1.idMatricula
+                                LIMIT 1
+                                ) as carrera,
+                                (SELECT ce.centro 
+                                FROM matriculas m
+                                LEFT JOIN centrosuniandes ce ON ce.idCentro = m.idCentro 
+                                WHERE m.idMatricula=t1.idMatricula
+                                LIMIT 1
+                                ) as centro
+                                from 
                                 (select distinct(m.idMatricula),e.documentoIdentidad,
-                                concat(e.primerApellido,' ',e.segundoApellido,' ',e.primerNombre,' ',e.segundoNombre) as estudiante,
-                                a.paralelo 
+                                e.primerApellido,e.segundoApellido,e.primerNombre,e.segundoNombre,
+                                a.paralelo
                                 from matriculas m
                                 inner join estudiantes e on e.idEstudiante = m.idEstudiante
                                 inner join calificaciones c on c.idMatricula = m.idMatricula
                                 inner join asignacionesinstructorescalificaciones a on a.idGrupoCurso = c.idGrupoCurso
                                 and m.paralelo = a.paralelo and a.idCurso = c.idCurso
                                 where m.idGrupoCurso = @idGrupoCurso {paralelos}) t1
-                                order by paralelo,estudiante
+                                order by paralelo,primerApellido,segundoApellido,primerNombre
                 ";
                 var listaEstudiantes = await dapper.QueryAsync(sql, new { idGrupoCurso, paralelo });
 
@@ -304,12 +317,12 @@ namespace CTT_Administrador.Controllers.Administrador
                 var listaCalificaciones=new List<dynamic>();
                 foreach (var item in listaInicial)
                 {
-                    dynamic exo = new System.Dynamic.ExpandoObject();
+                    dynamic objeto = new System.Dynamic.ExpandoObject();
                     foreach (var tipo in item)
                     {
-                        AddProperty(exo, tipo.Name, tipo.Value.Value);
+                        AddProperty(objeto, tipo.Name.ToString().ToUpper(), tipo.Value.Value);
                     }
-                    listaCalificaciones.Add(exo);
+                    listaCalificaciones.Add(objeto);
                 }
                 var excel = listaCalificaciones.ToExcel(op =>
                 {
@@ -338,40 +351,27 @@ namespace CTT_Administrador.Controllers.Administrador
 
         [AuthorizeAdministrador]
         [HttpPost]
-        public async Task<IActionResult> generarExcelCertificados(int idGrupoCurso, int idCurso, string paralelo)
+        public async Task<IActionResult> generarExcelCertificados(string _lista)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
-                string paralelos = paralelo == "TODOS" ? "" : "and m.paralelo = @paralelo";
-                string sql = @"select numeroNotas from cursos where idCurso=@idCurso";
-                int cantidadNotas = await dapper.ExecuteScalarAsync<int>(sql, new { idCurso });
-                string notas = "";
-                for (int i = 1; i <= cantidadNotas; i++)
+                var listaInicial = JsonConvert.DeserializeObject<List<dynamic>>(_lista);
+                var listaCalificaciones = new List<dynamic>();
+                foreach (var item in listaInicial)
                 {
-                    notas += $",nota{i}";
+                    dynamic objeto = new System.Dynamic.ExpandoObject();
+                    foreach (var tipo in item)
+                    {
+                        AddProperty(objeto, tipo.Name, tipo.Value.Value);
+                    }
+                    listaCalificaciones.Add(objeto);
                 }
-
-                sql = $@"select e.documentoIdentidad as 'Cédula',
-                         e.primerNombre,e.segundoNombre,e.primerApellido,e.segundoApellido,
-                         cen.centro as 'Ciudad',ca.carrera as 'Carrera'
-                         from matriculas m
-                         inner join estudiantes e on e.idEstudiante = m.idEstudiante
-                         inner join calificaciones c on c.idMatricula = m.idMatricula
-                         inner join cursos cu on cu.idCurso=@idCurso
-                         left join carrerasuniandes ca on ca.idCarrera=m.idCarrera
-                         left join centrosuniandes cen on cen.idCentro=m.idCentro
-                         inner join asignacionesinstructorescalificaciones a on a.idGrupoCurso = c.idGrupoCurso
-                         and m.paralelo = a.paralelo and a.idCurso = c.idCurso
-                         where m.idGrupoCurso = @idGrupoCurso and a.activo=1 and c.idCurso=@idCurso {paralelos}
-                         and aprobado=1
-                         order by a.paralelo,e.primerApellido,e.primerNombre
-                ";
-                var listaCalificaciones = await dapper.QueryAsync(sql, new { idGrupoCurso, idCurso, paralelo });
                 var excel = listaCalificaciones.ToExcel(op =>
                 {
                     op.SheetName("CERTIFICADOS");
                 });
+
 
                 var archivo = new FileContentResult(excel, "application/vnd.ms-excel");
                 archivo.FileDownloadName = $"REPORTE_{DateTime.Now.Ticks}.xlsx";
@@ -389,43 +389,26 @@ namespace CTT_Administrador.Controllers.Administrador
 
         [AuthorizeAdministrador]
         [HttpPost]
-        public IActionResult generarPdfReporte(int idGrupoCurso, int idCurso, string paralelo)
+        public IActionResult generarPdfReporte(int idGrupoCurso,string _lista)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
-                string paralelos = paralelo == "TODOS" ? "" : "and m.paralelo = @paralelo";
-                string sql = @"select numeroNotas from cursos where idCurso=@idCurso";
-                int cantidadNotas = dapper.ExecuteScalar<int>(sql, new { idCurso });
-                sql = @"SELECT curso FROM cursos WHERE idCurso=@idCurso";
-                var curso = dapper.ExecuteScalar<string>(sql, new { idCurso });
-                string notas = "";
-                for (int i = 1; i <= cantidadNotas; i++)
+                string sql = @"SELECT c.curso  FROM gruposcursos g
+                            INNER JOIN cursos c ON c.idCurso = g.idCurso 
+                            WHERE idGrupoCurso =@idGrupoCurso";
+                var curso = dapper.ExecuteScalar<string>(sql, new { idGrupoCurso });
+                var listaInicial = JsonConvert.DeserializeObject<List<dynamic>>(_lista);
+                var listado = new List<dynamic>();
+                foreach (var item in listaInicial)
                 {
-                    notas += $",nota{i}";
+                    dynamic objeto = new System.Dynamic.ExpandoObject();
+                    foreach (var tipo in item)
+                    {
+                        AddProperty(objeto, tipo.Name, tipo.Value.Value);
+                    }
+                    listado.Add(objeto);
                 }
-
-                sql = $@"select cen.centro,e.documentoIdentidad,
-                         e.primerApellido,e.segundoApellido,concat(e.primerNombre,' ',e.segundoNombre) as nombres,
-                         a.paralelo,c.promedioFinal{notas},c.faltas,
-                         ca.carrera,
-                         case when c.justificaFaltas=1 then 'SI' else 'NO' end as justificaFaltas,
-                         case when c.justificaFaltas = 1 then 'JUSTIFICADO'
-                         when c.justificaFaltas != 1 and c.aprobado =0 and suspendido != 1 then 'REPROBADO'
-                         when c.suspendido = 1 then 'SUSPENDIDO'
-                         when c.aprobado = 1 then 'APROBADO' end as estado
-                         from matriculas m
-                         inner join estudiantes e on e.idEstudiante = m.idEstudiante
-                         inner join calificaciones c on c.idMatricula = m.idMatricula
-                         inner join cursos cu on cu.idCurso=@idCurso
-                         left join carrerasuniandes ca on ca.idCarrera=m.idCarrera
-                         left join centrosuniandes cen on cen.idCentro=m.idCentro
-                         inner join asignacionesinstructorescalificaciones a on a.idGrupoCurso = c.idGrupoCurso
-                         and m.paralelo = a.paralelo and a.idCurso = c.idCurso
-                         where m.idGrupoCurso = @idGrupoCurso and a.activo=1 and c.idCurso=@idCurso {paralelos}
-                         order by e.primerApellido,e.segundoApellido,e.primerNombre
-                ";
-                var listado = dapper.Query(sql, new { idCurso, idGrupoCurso, paralelo });
                 return new ViewAsPdf("pdfReporte", new { error = "", listado, path = _path, cantidad = listado.Count(), curso })
                 {
                     FileName = "reporte.pdf",

@@ -1,0 +1,55 @@
+﻿@{
+    Layout = null;
+    var listado = Model.listado;
+    var error = Model.error;
+    var _path = Model.path;
+    var curso = Model.curso;
+    var cantidad = Model.cantidad;
+    int index = 1;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Reporte general de matriculas y calificaciones</title>
+    <link href="@_path\reportes\reportematriculas.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="fw-bold text-end">
+        @DateTime.Now.ToLongDateString()
+    </div>
+    <div class="fw-bold text-justify mt-1">@curso</div>
+    <table>
+        <thead>
+            <tr>
+                <th>N.</th>
+                <th>EXTENSIÓN</th>
+                <th>IDENTIFICACIÓN</th>
+                <th>PRIMER APELLIDO</th>
+                <th>SEGUNDO APELLIDO</th>
+                <th>NOMBRES</th>
+                <th>CARRERA</th>
+                <th>ESTADO</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in listado)
+            {
+                <tr class="no-break">
+                    <td>@index</td>
+                    <td>@item.centro</td>
+                    <td>@item.documentoIdentidad</td>
+                    <td>@item.primerApellido</td>
+                    <td>@item.segundoApellido</td>
+                    <td>@item.nombres</td>
+                    <td>@item.carrera</td>
+                    <td class="@(item.estado.ToUpper() == "REPROBADO" ? "text-danger" : "")">@item.estado</td>
+                </tr>
+                index++;
+            }
+        </tbody>
+    </table>
+</body>
+</html>

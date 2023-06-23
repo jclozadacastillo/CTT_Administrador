@@ -341,10 +341,10 @@ namespace CTT_Administrador.Controllers.Administrador
                     notas += $",nota{i}";
                 }
 
-                sql = $@"select cen.centro,e.documentoIdentidad,
+                sql = $@"select cen.centro,g.fechaInicioCurso,g.fechaFinCurso,cu.horasCurso as duracion,e.documentoIdentidad,
                          e.primerApellido,e.segundoApellido,concat(e.primerNombre,' ',e.segundoNombre) as nombres,
-                         a.paralelo{notas},c.faltas,c.promedioFinal,
                          ca.carrera,
+                         a.paralelo{notas},c.faltas,c.promedioFinal,
                          case when c.justificaFaltas=1 then 'SI' else 'NO' end as justificaFaltas,
                          case when c.justificaFaltas = 1 then 'JUSTIFICADO'
                          when c.justificaFaltas != 1 and c.aprobado =0 and suspendido != 1 then 'REPROBADO'
@@ -357,6 +357,7 @@ namespace CTT_Administrador.Controllers.Administrador
                          left join carrerasuniandes ca on ca.idCarrera=m.idCarrera
                          left join centrosuniandes cen on cen.idCentro=m.idCentro
                          inner join asignacionesinstructorescalificaciones a on a.idGrupoCurso = c.idGrupoCurso
+                         inner join gruposcursos g on g.idGrupoCurso=a.idGrupoCurso
                          and m.paralelo = a.paralelo and a.idCurso = c.idCurso
                          where m.idGrupoCurso = @idGrupoCurso and c.idCurso=@idCurso {paralelos}
                          order by a.paralelo,e.primerApellido,e.primerNombre
@@ -441,8 +442,18 @@ namespace CTT_Administrador.Controllers.Administrador
                 string paralelos = paralelo == "TODOS" ? "" : "and m.paralelo = @paralelo";
                 string sql = @"select numeroNotas from cursos where idCurso=@idCurso";
                 int cantidadNotas = dapper.ExecuteScalar<int>(sql, new { idCurso });
-                sql = @"SELECT curso FROM cursos WHERE idCurso=@idCurso";
-                var curso = dapper.ExecuteScalar<string>(sql, new { idCurso });
+                sql = $@"SELECT c.curso,i.documentoIdentidad,i.primerApellido,i.segundoApellido,  
+                        i.primerNombre, i.segundoNombre,g.fechaInicioCurso,g.fechaFinCurso,c.horasCurso,a.paralelo,
+                        i.abreviaturaTitulo
+                        FROM cursos c
+                        INNER JOIN gruposcursos g ON g.idCurso = c.idCurso 
+                        INNER JOIN asignacionesinstructorescalificaciones a ON a.idGrupoCurso = g.idGrupoCurso  
+                        INNER JOIN instructores i ON i.idInstructor = a.idInstructor 
+                        WHERE a.idGrupoCurso = @idGrupoCurso AND a.idCurso = @idCurso {paralelos.Replace("m.paralelo","a.paralelo")}
+                        ORDER BY a.paralelo
+                        ";
+                var cursos = dapper.Query(sql, new { idGrupoCurso,idCurso,paralelo });
+                var curso = cursos.FirstOrDefault();
                 string notas = "";
                 for (int i = 1; i <= cantidadNotas; i++)
                 {
@@ -470,7 +481,7 @@ namespace CTT_Administrador.Controllers.Administrador
                          order by e.primerApellido,e.segundoApellido,e.primerNombre
                 ";
                 var listado = dapper.Query(sql, new { idCurso, idGrupoCurso, paralelo });
-                return new ViewAsPdf("pdfReporte", new { error = "", listado, path = _path, cantidad = listado.Count(), curso })
+                return new ViewAsPdf("pdfReporte", new { error = "", listado, path = _path, cantidad = listado.Count(), cursos, curso })
                 {
                     FileName = "reporte.pdf",
                     PageSize = Rotativa.AspNetCore.Options.Size.A4,
@@ -486,7 +497,8 @@ namespace CTT_Administrador.Controllers.Administrador
                     error = ex.Message,
                     listado = new List<dynamic>(),
                     path = _path,
-                    curso = "",
+                    cursos = new List<dynamic>(),
+                    curso=new {},
                     cantidad = 0
                 };
                 return new ViewAsPdf("pdfReporte", data)

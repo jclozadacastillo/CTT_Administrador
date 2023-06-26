@@ -47,11 +47,6 @@ namespace CTT_Administrador.Controllers.Administrador
                                 c.idCurso not in(
                                 select idCursoAsociado
                                 from cursos_mallas cm))
-                                and c.activo =1 and g.activo=1
-                                and p.activo = 1 and m.activa = 1
-                                and datediff(current_date(),p.fechaInicio)>=0
-                                and datediff(p.fechaFin,current_date())>=0
-                                and a.activo=1
                 ";
                 return Ok(await dapper.QueryAsync(sql));
             }
@@ -67,7 +62,45 @@ namespace CTT_Administrador.Controllers.Administrador
 
         [AuthorizeAdministrador]
         [HttpPost]
-        public async Task<IActionResult> comboCursos(int idPeriodo)
+        public async Task<IActionResult> comboTiposCursos(int idPeriodo)
+        {
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
+            try
+            {
+                string sql = @"
+                                select distinct(t.idTipoCurso),t.tipoCurso
+                                from asignacionesinstructorescalificaciones a
+                                inner join gruposcursos g on g.idGrupoCurso = a.idGrupoCurso
+                                inner join cursos c on c.idCurso = g.idCurso
+                                inner join periodos p on p.idPeriodo = g.idPeriodo
+                                inner join modalidades m on m.idModalidad = g.idModalidad
+                                inner join tiposcursos t on t.idTipoCurso = c.idTipoCurso
+                                where
+                                (c.idCurso in(
+                                select idCurso
+                                from cursos_mallas cm
+                                where cm.idCursoAsociado = c.idCurso)
+                                or
+                                c.idCurso not in(
+                                select idCursoAsociado
+                                from cursos_mallas cm))
+                                and p.idPeriodo=@idPeriodo
+                ";
+                return Ok(await dapper.QueryAsync(sql, new {idPeriodo}));
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+            finally
+            {
+                dapper.Dispose();
+            }
+        }
+
+        [AuthorizeAdministrador]
+        [HttpPost]
+        public async Task<IActionResult> comboCursos(int idPeriodo, int idTipoCurso)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
@@ -89,14 +122,10 @@ namespace CTT_Administrador.Controllers.Administrador
                                 c.idCurso not in(
                                 select idCursoAsociado
                                 from cursos_mallas cm))
-                                and c.activo =1 and g.activo=1
-                                and p.activo = 1 and m.activa = 1
-                                and datediff(current_date(),p.fechaInicio)>=0
-                                and datediff(p.fechaFin,current_date())>=0
                                 and p.idPeriodo=@idPeriodo
-                                and a.activo=1
+                                and c.idTipoCurso=@idTipoCurso
                 ";
-                return Ok(await dapper.QueryAsync(sql, new { idPeriodo }));
+                return Ok(await dapper.QueryAsync(sql, new { idPeriodo,idTipoCurso }));
             }
             catch (Exception ex)
             {

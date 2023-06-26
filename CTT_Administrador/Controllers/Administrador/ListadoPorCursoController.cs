@@ -230,13 +230,16 @@ namespace CTT_Administrador.Controllers.Administrador
                                 LIMIT 1
                                 ) as centro
                                 from 
-                                (select distinct(m.idMatricula),e.documentoIdentidad,
+                                (select distinct(m.idMatricula),g.fechaInicioCurso,g.fechaFinCurso,cu.horasCurso as duracion,
+                                e.documentoIdentidad,
                                 e.primerApellido,e.segundoApellido,e.primerNombre,e.segundoNombre,
                                 a.paralelo
                                 from matriculas m
                                 inner join estudiantes e on e.idEstudiante = m.idEstudiante
                                 inner join calificaciones c on c.idMatricula = m.idMatricula
                                 inner join asignacionesinstructorescalificaciones a on a.idGrupoCurso = c.idGrupoCurso
+                                inner join gruposcursos g on g.idGrupoCurso=@idGrupoCurso
+                                inner join cursos cu on cu.idCurso=g.idCurso
                                 and m.paralelo = a.paralelo and a.idCurso = c.idCurso
                                 where m.idGrupoCurso = @idGrupoCurso {paralelos}) t1
                                 order by paralelo,primerApellido,segundoApellido,primerNombre
@@ -390,15 +393,17 @@ namespace CTT_Administrador.Controllers.Administrador
 
         [AuthorizeAdministrador]
         [HttpPost]
-        public IActionResult generarPdfReporte(int idGrupoCurso,string _lista)
+        public IActionResult generarPdfReporte(int idGrupoCurso,string _lista,string _listaMatriculas)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
             {
-                string sql = @"SELECT c.curso  FROM gruposcursos g
+                string sql = @"SELECT c.curso,g.fechaInicioCurso,g.fechaFinCurso,c.horasCurso
+                            FROM gruposcursos g
                             INNER JOIN cursos c ON c.idCurso = g.idCurso 
                             WHERE idGrupoCurso =@idGrupoCurso";
-                var curso = dapper.ExecuteScalar<string>(sql, new { idGrupoCurso });
+                var curso = dapper.QueryFirstOrDefault(sql, new { idGrupoCurso });
+
                 var listaInicial = JsonConvert.DeserializeObject<List<dynamic>>(_lista);
                 var listado = new List<dynamic>();
                 foreach (var item in listaInicial)
@@ -410,7 +415,18 @@ namespace CTT_Administrador.Controllers.Administrador
                     }
                     listado.Add(objeto);
                 }
-                return new ViewAsPdf("pdfReporte", new { error = "", listado, path = _path, cantidad = listado.Count(), curso })
+
+                sql =$@"SELECT distinct(i.documentoIdentidad),concat(REPLACE(i.abreviaturaTitulo,'.',''),'. ',i.primerApellido,' ',i.segundoApellido,' ',
+                        i.primerNombre,' ',i.segundoNombre) AS instructor,m.paralelo,c.curso
+                        FROM matriculas m 
+                        INNER JOIN asignacionesinstructorescalificaciones a ON a.idGrupoCurso = m.idGrupoCurso AND a.paralelo = m.paralelo
+                        INNER JOIN cursos c ON c.idCurso = a.idCurso 
+                        INNER JOIN instructores i ON i.idInstructor = a.idInstructor 
+                        WHERE idMatricula in({_listaMatriculas})";
+                var listadoDocentes = dapper.Query(sql);
+
+
+                return new ViewAsPdf("pdfReporte", new { error = "", listado, path = _path, cantidad = listado.Count(), curso,listadoDocentes })
                 {
                     FileName = "reporte.pdf",
                     PageSize = Rotativa.AspNetCore.Options.Size.A4,
@@ -426,8 +442,9 @@ namespace CTT_Administrador.Controllers.Administrador
                     error = ex.Message,
                     listado = new List<dynamic>(),
                     path = _path,
-                    curso = "",
-                    cantidad = 0
+                    curso = new {},
+                    cantidad = 0,
+                    listadoDocentes = new List<dynamic>(),
                 };
                 return new ViewAsPdf("pdfReporte", data)
                 {

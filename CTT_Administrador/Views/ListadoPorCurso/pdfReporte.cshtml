@@ -5,6 +5,7 @@
     var _path = Model.path;
     var curso = Model.curso;
     var cantidad = Model.cantidad;
+    var listadoDocentes = Model.listadoDocentes;
     int index = 1;
 }
 
@@ -18,9 +19,41 @@
 </head>
 <body>
     <div class="fw-bold text-end">
-        @DateTime.Now.ToLongDateString()
+        @DateTime.Now.ToLongDateString().ToUpper()
     </div>
-    <div class="fw-bold text-justify mt-1">@curso</div>
+    <div class="text-uppercase">
+        <b>Fecha Inicio: </b>@Convert.ToDateTime(curso.fechaInicioCurso).ToLongDateString().ToUpper()
+    </div>
+    <div class="text-uppercase">
+        <b>Fecha Fin: </b>@Convert.ToDateTime(curso.fechaFinCurso).ToLongDateString().ToUpper()
+    </div>
+    <div class="text-uppercase">
+        <b>Duración: </b>@curso.horasCurso HORAS
+    </div>
+    <div class="text-uppercase">
+        <table>
+            <thead>
+                <tr style="text-align:left">
+                    <th width="10%">PARALELO</th>
+                    <th width="40%">MÓDULO</th>
+                    <th>INSTRUCTOR</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in listadoDocentes)
+                {
+                    <tr>
+                        <td class="text-end">@item.paralelo</td>
+                        <td class="text-end">@item.curso</td>
+                        <td>@item.instructor</td>
+                    </tr>
+
+                }
+            </tbody>
+
+        </table>
+    </div>
+    <div class="fw-bold text-justify mt-1">@curso.curso</div>
     <table>
         <thead>
             <tr>
@@ -31,6 +64,7 @@
                 <th>SEGUNDO APELLIDO</th>
                 <th>NOMBRES</th>
                 <th>CARRERA</th>
+                <th>PROMEDIO</th>
                 <th>ESTADO</th>
             </tr>
         </thead>
@@ -45,6 +79,7 @@
                     <td>@item.segundoApellido</td>
                     <td>@item.nombres</td>
                     <td>@item.carrera</td>
+                    <td>@item.promedioFinal</td>
                     <td class="@(item.estado.ToUpper() == "REPROBADO" ? "text-danger" : "")">@item.estado</td>
                 </tr>
                 index++;

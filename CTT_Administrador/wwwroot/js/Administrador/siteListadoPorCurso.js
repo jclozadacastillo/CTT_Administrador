@@ -261,6 +261,10 @@ async function generarExcelCertificados() {
 
 async function generarPdf() {
     let lista = $(tableDatos).DataTable().rows().data().toArray();
+    let listaMatriculas = lista.map(x => {
+        return x.idMatricula;
+    });
+
     lista=lista.map(x =>{ 
         return {
             centro: x.centro,
@@ -269,15 +273,23 @@ async function generarPdf() {
             segundoApellido: x.segundoApellido,
             nombres: `${x.primerNombre} ${x.segundoNombre || ""}`,
             carrera: x.carrera,
+            promedioFinal:x.promedio,
             estado:x.estado
         };
     }
     );
+
+    let matriculas = "0";
+    listaMatriculas.forEach(item => {
+        matriculas += `,${item}`;
+    })
+
     try {
         bloquearBotones();
         const url = `${baseUrl}generarPdfReporte`;
         const data = new FormData(frmDatos);
         data.append("_lista", JSON.stringify(lista));
+        data.append("_listaMatriculas", matriculas);
         const res = await axios({
             method: "POST",
             url,

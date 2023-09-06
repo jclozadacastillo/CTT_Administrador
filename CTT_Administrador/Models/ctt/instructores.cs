@@ -51,13 +51,13 @@ public partial class instructores
     [StringLength(10)]
     public string? abreviaturaTitulo { get; set; }
 
-    [StringLength(500)]
+    [StringLength(1000)]
     public string? historialTitulo { get; set; }
 
-    [StringLength(500)]
+    [StringLength(1000)]
     public string? referencia { get; set; }
 
-    [StringLength(200)]
+    [StringLength(1000)]
     public string? historialLaboral { get; set; }
 
     [StringLength(400)]

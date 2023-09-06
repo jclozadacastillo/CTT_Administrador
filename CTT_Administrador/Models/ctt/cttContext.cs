@@ -15,6 +15,10 @@ public partial class cttContext : DbContext
     {
     }
 
+    public virtual DbSet<api_logs> api_logs { get; set; }
+
+    public virtual DbSet<api_usuarios> api_usuarios { get; set; }
+
     public virtual DbSet<asignacionesinstructorescalificaciones> asignacionesinstructorescalificaciones { get; set; }
 
     public virtual DbSet<calificaciones> calificaciones { get; set; }
@@ -66,6 +70,22 @@ public partial class cttContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<api_logs>(entity =>
+        {
+            entity.HasKey(e => e.idLog).HasName("PRIMARY");
+
+            entity.Property(e => e.error).HasDefaultValueSql("'0'");
+            entity.Property(e => e.fechaRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
+        modelBuilder.Entity<api_usuarios>(entity =>
+        {
+            entity.HasKey(e => e.idUsuario).HasName("PRIMARY");
+
+            entity.Property(e => e.activo).HasDefaultValueSql("'1'");
+            entity.Property(e => e.fechaRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
         modelBuilder.Entity<asignacionesinstructorescalificaciones>(entity =>
         {
             entity.HasKey(e => e.idAsignacion).HasName("PRIMARY");

@@ -213,8 +213,8 @@ namespace CTT_Administrador.Controllers.Administrador
                     if (string.IsNullOrEmpty(item.GetCell(0).ToString())
                         || string.IsNullOrEmpty(item.GetCell(1).ToString())
                         || string.IsNullOrEmpty(item.GetCell(3).ToString())
-                        || string.IsNullOrEmpty(item.GetCell(5).ToString())
-                        || string.IsNullOrEmpty(item.GetCell(6).ToString())
+                        //|| string.IsNullOrEmpty(item.GetCell(5).ToString())
+                        //|| string.IsNullOrEmpty(item.GetCell(6).ToString())
                         )
                     {
                         if (item.GetCell(0).ToString().Trim() == "" && item.GetCell(1).ToString().Trim() != "")

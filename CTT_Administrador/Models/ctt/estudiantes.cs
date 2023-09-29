@@ -46,4 +46,12 @@ public partial class estudiantes
     public string? sexo { get; set; }
 
     public sbyte? activo { get; set; }
+
+    public sbyte? confirmado { get; set; }
+
+    [StringLength(50)]
+    public string? clave { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? fechaConfirmacion { get; set; }
 }

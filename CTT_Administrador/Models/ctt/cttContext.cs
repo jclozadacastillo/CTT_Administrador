@@ -192,6 +192,7 @@ public partial class cttContext : DbContext
             entity.HasKey(e => e.idEstudiante).HasName("PRIMARY");
 
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
+            entity.Property(e => e.confirmado).HasDefaultValueSql("'0'");
             entity.Property(e => e.idTipoDocumento).IsFixedLength();
         });
 

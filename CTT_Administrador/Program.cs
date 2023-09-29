@@ -2,15 +2,20 @@ using CTT_Administrador.Auth;
 using CTT_Administrador.Auth.Administrador;
 using CTT_Administrador.Auth.Docente;
 using CTT_Administrador.Models.ctt;
+using CTT_Estudiante.Auth.Estudiante;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using MySql.Data.MySqlClient;
 using Rotativa.AspNetCore;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
+var cn = builder.Configuration.GetConnectionString("ctt");
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<cttContext>(op => op.UseMySQL(builder.Configuration.GetConnectionString("ctt")));
+builder.Services.AddDbContext<cttContext>(op => op.UseMySQL(cn));
+builder.Services.AddScoped<IDbConnection>(op => new MySqlConnection(cn));
 ConfigurationHelper.Initialize(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -21,6 +26,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 builder.Services.TryAddScoped<IAuthorizeAdministradorTools, AuthorizeAdministradorTools>();
 builder.Services.TryAddScoped<IAuthorizeDocenteTools, AuthorizeDocenteTools>();
+builder.Services.TryAddScoped<IAuthorizeEstudianteTools, AuthorizeEstudianteTools>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -40,6 +46,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Administrador}/{action=Index}/{id?}");
+    pattern: "{controller=Estudiantes}/{action=Index}/{id?}");
 RotativaConfiguration.Setup(app.Environment.WebRootPath);
 app.Run();

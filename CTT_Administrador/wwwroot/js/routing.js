@@ -1,0 +1,1 @@
+﻿const _route = top.location.href.toLowerCase().indexOf("localhost:") >= 0 ? "../../" : `../../../${top.location.pathname.split("/")[1] || "appCec"}/`;

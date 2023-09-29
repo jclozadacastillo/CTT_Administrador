@@ -966,6 +966,16 @@ const validarRangoFechas = (desde, hasta) => {
     });
 }
 
+function loaderShow(){
+    bloquearBotones();
+    document.querySelector("html").classList.add("loading");
+}
+
+function loaderHide() {
+    desbloquearBotones();
+    document.querySelector("html").classList.remove("loading");
+}
+
 function getHoraFormat(fecha) {
     if (am_pm == true);
 }
@@ -1058,7 +1068,7 @@ function limpiarValidadores(form) {
 
 function formToUpperCase(form) {
     if (!!form) form.querySelectorAll("input,select,textarea").forEach((item) => {
-        if (item.dataset?.validate == "email" || item.hasAttribute("password") || item.hasAttribute("no-uppercase")) return;
+        if (item.dataset?.validate == "email" || item.hasAttribute("password") || item.type=="password" || item.hasAttribute("no-uppercase")) return;
         item.value = item.value.toUpperCase()
     });
 }
@@ -1069,3 +1079,52 @@ function formToUpperCase(form) {
         item.src = CryptoJS.AES.encrypt(item.src, "juancarloslozadacastillo.!191989");
     });
 })();
+
+function crearPasswordPreview() {
+    document.querySelectorAll("[type='password']").forEach(item => {
+        let itemBounds = item.getBoundingClientRect();
+        item.addEventListener("keyup", () => {
+            const element = document.querySelector(`#_pvw_${item.id}`);
+            if (!element) {
+                const elementHTML = `<a id="_pvw_${item.id}" href='javascript:;' onclick='__handlePasswordView("${item.id}")' tabindex='-1'
+                style='position:absolute;left:${itemBounds.x -19}px;margin-top:-${((itemBounds.height / 1.3) + 1.72).toFixed(2)}px;z-index:99999'><i class='bi-eye-fill text-blue'></i></a>`;
+                item.insertAdjacentHTML("afterend", elementHTML);
+            } else {
+                item.value == "" ? element.hidden = true : element.removeAttribute("hidden");
+            }
+
+
+        })
+    });
+}
+
+function __handlePasswordView(item) {
+    try {
+        item = document.querySelector(`#${item}`);
+        if (!item) return;
+        const button = document.querySelector(`#_pvw_${item.id}`);
+        if (!button) return;
+        const icon = button.querySelector("i");
+        if (!!icon && icon.classList.contains("bi-eye-fill")) {
+            icon.classList.remove("bi-eye-fill");
+            icon.classList.add("bi-eye-slash-fill");
+            item.type = "text";
+        } else {
+            icon.classList.add("bi-eye-fill");
+            icon.classList.remove("bi-eye-slash-fill");
+            item.type = "password";
+        }
+    } catch (e) {
+        console.warn(e);
+    }
+}
+
+const jsonHeaders = {
+    headers: {
+        'Content-Type': 'application/json'
+    }
+};
+
+function toBase64(e) {
+    return CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(e));
+};

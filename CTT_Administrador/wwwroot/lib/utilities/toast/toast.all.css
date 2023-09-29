@@ -455,3 +455,8 @@ button.swal2-confirm[style*="background-color: red"] {
         background-color: #d10b1e !important;
         border-color: #d10b1e !important;
     }
+
+    html.loading{
+        cursor:wait;
+        pointer-events:none !important;
+    }

@@ -150,12 +150,16 @@ async function generarMatriculas() {
         modalEspere.show();
         const url = `${baseUrl}generarMatriculas`;
         const data = new FormData(frmDatos);
+        console.log(listaEstudiantes);
         listaEstudiantes = [...listaEstudiantes].map(x => {
             x.nombre = `${x.primerApellido} ${x.segundoApellido} ${x.primerNombre} ${x.segundoNombre}`;
             x.documentoIdentidad = x.documentoIdentidad.trim();
             x.documento = x.documentoIdentidad.trim();
+            x.idcentro = x.idcentro || "";
+            x.codigo_carrera = x.codigo_carrera || "";
             return x;
         });
+        console.log(listaEstudiantes);
         data.append("_alumnos", JSON.stringify(listaEstudiantes));
         data.append("_alumnosCedulas", await generarSubconsulta());
         const res = await axios({

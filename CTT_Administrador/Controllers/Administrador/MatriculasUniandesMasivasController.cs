@@ -251,10 +251,10 @@ namespace CTT_Administrador.Controllers.Administrador
         public class alumnosMigracion
         {
             public string documentoIdentidad { get; set; }
-            public string idcentro { get; set; }
-            public string centro_detalle { get; set; }
-            public string codigo_carrera { get; set; }
-            public string carrera { get; set; }
+            public string? idcentro { get; set; }
+            public string? centro_detalle { get; set; }
+            public string? codigo_carrera { get; set; }
+            public string? carrera { get; set; }
         }
 
         [AuthorizeAdministrador]

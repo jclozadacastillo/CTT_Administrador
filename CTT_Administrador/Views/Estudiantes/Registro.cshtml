@@ -1,0 +1,155 @@
+﻿@{
+    Layout = null;
+    var _v = $"?v={DateTime.Now.Ticks}";
+}
+
+<!DOCTYPE html>
+<html lang="es-ec">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>CTT ESTUDIANTES: Registro</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="shortcut icon" href="~/lib/utilities/toast/img/icon.png" />
+    <link async href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="~/templates/estudiantes/css/app.css@_v" rel="stylesheet">
+    <link href="~/lib/utilities/toast/toast.all.css@_v" rel="stylesheet" />
+    <script defer src="~/lib/utilities/axios/axios.min.js"></script>
+    <script defer src="~/templates/estudiantes/js/app.js@_v"></script>
+    <script defer src="~/lib/utilities/toast/toast.all.min.js@_v"></script>
+    <script defer src="~/js/routing.js"></script>
+    <script defer src="~/lib/utilities/forms.js@_v"></script>
+    <script defer src="~/js/Estudiantes/siteRegistro.js@_v"></script>
+</head>
+
+<body class="bg-login">
+    <main class="d-flex w-100">
+        <div class="container d-flex flex-column">
+            <div class="row vh-100">
+                <div class="col-sm-10 col-md-10 col-lg-10 col-xl-8 mx-auto d-table h-100">
+                    <div class="d-table-cell align-middle">
+
+                        <div class="text-center">
+                            <div class="text-center">
+                                <img src="~/templates/estudiantes/img/logo-blanco.png" width="370" />
+                            </div>
+                            <h3 class="text-uppercase text-white">Registrate</h3>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body">
+
+                                <div class="m-sm-3">
+                                    <form class="row form-uppercase" id="frmDatos">
+                                        <div class="col-sm-5">
+                                            <label class="form-label">Tipo de documento</label>
+                                            <select class="form-select" id="idTipoDocumento" name="idTipoDocumento">
+                                                <option>Espere</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <label class="form-label">Documento de identidad</label>
+                                            <input class="form-control" data-validate="cedula" type="text" id="documentoIdentidad" name="documentoIdentidad" maxlength="13" placeholder="Ingresa tú documento de identidad" />
+                                            <div class="invalid-feedback">
+                                                * Campo Requerido
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Primer Nombre</label>
+                                            <input class="form-control" id="primerNombre" name="primerNombre" maxlength="40" placeholder="Ingrese su primer nombre" />
+                                            <div class="invalid-feedback">
+                                                * Campo Requerido
+                                            </div>
+                                        </div>                                        
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Segundo Nombre</label>
+                                            <input class="form-control" id="segundoNombre" name="segundoNombre" data-validate="no-validate" maxlength="40" placeholder="Ingrese su segundo nombre" />
+                                            <div class="invalid-feedback">
+                                                * Campo Requerido
+                                            </div>
+                                        </div>                                        
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Primer Apellido</label>
+                                            <input class="form-control" id="primerApellido" name="primerApellido" maxlength="40" placeholder="Ingrese su primer apellido" />
+                                            <div class="invalid-feedback">
+                                                * Campo Requerido
+                                            </div>
+                                        </div>                                        
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Segundo Apellido</label>
+                                            <input class="form-control" id="segundoApellido" name="segundoApellido" data-validate="no-validate" maxlength="40" placeholder="Ingrese su segundo apellido" />
+                                            <div class="invalid-feedback">
+                                                * Campo Requerido
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <label class="form-label">Dirección</label>
+                                            <textarea class="form-control" id="direccion" name="direccion" maxlength="100" placeholder="Ingrese su dirección"></textarea>
+                                            <div class="invalid-feedback">
+                                                * Campo Requerido
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Sexo</label>
+                                            <select class="form-select" id="sexo" name="sexo">
+                                                <option value="MASCUILNO">MASCULINO</option>
+                                                <option value="FEMENINO">FEMENINO</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Celular</label>
+                                            <input class="form-control" id="celular" name="celular" data-validate="numeros" maxlength="10" placeholder="Ingrese su número de celular" />
+                                            <div class="invalid-feedback">
+                                                * Campo Requerido
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <label class="form-label">Email</label>
+                                            <input class="form-control" id="email" name="email" data-validate="email" maxlength="100" placeholder="Ingrese su correo electrónico" />
+                                            <div class="invalid-feedback">
+                                                * Campo Requerido
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Contraseña</label>
+                                            <input type="password" class="form-control" id="clave" name="clave" maxlength="50" placeholder="Ingrese una contraseña" />
+                                            <div class="invalid-feedback">
+                                                * Campo Requerido
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Confirmar contraseña</label>
+                                            <input type="password" class="form-control" id="confir" name="confir" maxlength="50" placeholder="Confirme su contraseña" />
+                                            <div class="invalid-feedback">
+                                                * Campo Requerido
+                                            </div>
+                                        </div>
+                                        <div class="d-grid gap-2 mt-3">
+                                            <button onclick="registar()" type="button" class="btn btn-lg btn-primary">Registrarme</button>
+                                        </div>
+
+                                        <div class="text-center mt-3">
+                                            Olvidaste tu contraseña? <a href="~/Estudiantes/Registro">Recuperar contraseña</a>
+                                        </div>
+
+                                        <div class="text-center mt-3">
+                                            Ya tienes una cuenta? <a href="~/Estudiantes/Login">Login</a>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+
+</body>
+
+</html>

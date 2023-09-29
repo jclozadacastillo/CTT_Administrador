@@ -100,7 +100,7 @@ namespace CTT_Administrador.Controllers.Administrador
 
         [AuthorizeAdministrador]
         [HttpPost]
-        public async Task<IActionResult> comboCursos(int idPeriodo, int idTipoCurso)
+        public async Task<IActionResult> comboCursos(int idPeriodo)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
@@ -123,9 +123,8 @@ namespace CTT_Administrador.Controllers.Administrador
                                 select idCursoAsociado
                                 from cursos_mallas cm))
                                 and p.idPeriodo=@idPeriodo
-                                and c.idTipoCurso=@idTipoCurso
                 ";
-                return Ok(await dapper.QueryAsync(sql, new { idPeriodo,idTipoCurso }));
+                return Ok(await dapper.QueryAsync(sql, new { idPeriodo }));
             }
             catch (Exception ex)
             {

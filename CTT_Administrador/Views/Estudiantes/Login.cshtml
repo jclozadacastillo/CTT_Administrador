@@ -1,0 +1,91 @@
+﻿@{
+    Layout = null;
+    var _v = $"?v={DateTime.Now.Ticks}";
+}
+
+<!DOCTYPE html>
+<html lang="es-ec">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>CTT ESTUDIANTES: Login</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="shortcut icon" href="~/lib/utilities/toast/img/icon.png" />
+    <link async href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="~/templates/estudiantes/css/app.css@_v" rel="stylesheet">
+    <link href="~/lib/utilities/toast/toast.all.css@_v" rel="stylesheet" />
+    <script defer src="~/templates/estudiantes/js/app.js@_v"></script>
+    <script defer src="~/lib/utilities/toast/toast.all.min.js@_v"></script>
+    <script defer src="~/js/routing.js"></script>
+    <script defer src="~/lib/utilities/forms.js@_v"></script>
+    <script defer src="~/js/Estudiantes/siteLogin.js@_v"></script>
+</head>
+
+<body class="bg-login">
+    <main class="d-flex w-100">
+        <div class="container d-flex flex-column">
+            <div class="row vh-100">
+                <div class="col-sm-10 col-md-8 col-lg-6 col-xl-5 mx-auto d-table h-100">
+                    <div class="d-table-cell align-middle">
+
+                        <div class="text-center">
+                            <div class="text-center">
+                                <img src="~/templates/estudiantes/img/logo-blanco.png" width="460" />
+                            </div>
+                            <h1 class="h1 text-uppercase text-white">Estudiantes</h1>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <h1 class="h2 text-primary">Bienvenido!</h1>
+                                    <p class="lead">
+                                        Ingresa tús credenciales para continuar
+                                    </p>
+                                </div>
+
+                                <div class="m-sm-3">
+                                    <form id="frmDatos">
+                                        <div class="mb-3">
+                                            <label class="form-label">Documento de identidad</label>
+                                            <input class="form-control form-control-lg" type="text" id="usuario" name="usuario" placeholder="Ingresa tú documento de identidad" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Contraseña</label>
+                                            <input class="form-control form-control-lg" type="password" id="clave" name="clave" placeholder="Ingresa tu contraseña" />
+                                        </div>
+                                        <div>
+                                            <div class="form-check align-items-center">
+                                                <input type="checkbox" class="form-check-input" value="true" id="persistent" name="persistent" checked>
+                                                <label class="form-check-label text-small" for="persistent">Recordar en este equipo</label>
+                                            </div>
+                                        </div>
+                                        <div class="d-grid gap-2 mt-3">
+                                            <a href="index.html" class="btn btn-lg btn-primary">Ingresar</a>
+                                        </div>
+
+                                        <div class="text-center mt-3">
+                                            Olvidaste tu contraseña? <a href="~/Estudiantes/Registro">Recuperar contraseña</a>
+                                        </div>
+
+                                        <div class="text-center mt-3">
+                                            No tienes una cuenta? <a href="~/Estudiantes/Registro">Registrate</a>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+
+</body>
+
+</html>

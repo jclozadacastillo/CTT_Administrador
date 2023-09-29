@@ -60,7 +60,7 @@
                 <tr class="no-break">
                     <td>@item.documentoIdentidad</td>
                     <td>@item.primerApellido @item.segundoApellido @item.primerNombre @item.segundoNombre</td>
-                    <td class="text-@(string.IsNullOrEmpty(item.idCentro)?"danger":"success")">@(string.IsNullOrEmpty(item.idCentro) ? "No matriculado" : "Ok")</td>
+                    <td class="text-@(string.IsNullOrEmpty(item.usuarioRegistro)?"danger":"success")">@(string.IsNullOrEmpty(item.usuarioRegistro) ? "No matriculado" : "Ok")</td>
                     <td>@item.fechaRegistro</td>
                     <td>@item.usuarioRegistro</td>
                 </tr>

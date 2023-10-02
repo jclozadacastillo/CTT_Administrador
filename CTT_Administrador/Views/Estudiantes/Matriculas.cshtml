@@ -12,7 +12,7 @@
         <div class="card-body pt-1">
             <div class="row">
                 <div class="col-sm-4">
-                    <select class="form-select" id="idTipoCurso" name="idTipoCurso">
+                    <select class="form-select" id="idTipoCurso" name="idTipoCurso" onchange="comboCategorias()">
                         <option value=''>Seleccione</option>
                     </select>
                 </div>
@@ -28,7 +28,7 @@
         <div class="card-body pt-1">
             <div class="row">
                 <div class="col-sm-4">
-                    <select class="form-select" id="idCategoria" name="idCategoria">
+                    <select class="form-select" id="idCategoria" name="idCategoria" onchange="comboGruposCursos()">
                         <option value=''>Seleccione</option>
                     </select>
                 </div>
@@ -44,7 +44,7 @@
                 </div>
             <div class="card-body pt-1">
                 <div class="row">
-                    <div class="col-sm-7">
+                    <div class="col-sm-10">
                         <select class="form-select" id="idGrupoCurso" name="idGrupoCurso">
                             <option value=''>Seleccione</option>
                         </select>

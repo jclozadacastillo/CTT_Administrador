@@ -1,8 +1,8 @@
 using CTT_Administrador.Auth;
 using CTT_Administrador.Auth.Administrador;
 using CTT_Administrador.Auth.Docente;
+using CTT_Administrador.Auth.Estudiante;
 using CTT_Administrador.Models.ctt;
-using CTT_Estudiante.Auth.Estudiante;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;

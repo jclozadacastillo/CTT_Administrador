@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MySql.Data.MySqlClient;
 
-namespace CTT_Estudiante.Auth.Estudiante
+namespace CTT_Administrador.Auth.Estudiante
 {
     [AttributeUsage(AttributeTargets.All)]
     public class AuthorizeEstudiante : Attribute, IAuthorizationFilter

@@ -1,8 +1,36 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
+﻿@{
+    ViewData["Title"] = "Portal Estudiantil";
     Layout = "~/Views/Shared/_LayoutEstudiantes.cshtml";
 }
 
-<h1>Index</h1>
+
+<div class="col-12 col-md-6">
+    <div class="card shadow">
+        <img class="card-img-top" src="~/templates/estudiantes/img/calificaciones.jpg" alt="Calificaciones">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Calificaciones</h5>
+        </div>
+        <div class="card-body">
+            <p class="card-text">
+                Revisa tus calificaciones.
+            </p>
+            <a href="~/Estudiantes/Calificaciones" class="btn btn-primary">Acceder</a>
+        </div>
+    </div>
+</div>
+
+<div class="col-12 col-md-6">
+    <div class="card shadow">
+        <img class="card-img-top" src="~/templates/estudiantes/img/matriculas.jpg" alt="Unsplash">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Matriculas</h5>
+        </div>
+        <div class="card-body">
+            <p class="card-text">
+                Matriculate en línea fácilmente.
+            </p>
+            <a href="~/Estudiantes/Matriculas" class="btn btn-primary">Acceder</a>
+        </div>
+    </div>
+</div>
 

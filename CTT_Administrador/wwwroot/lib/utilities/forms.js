@@ -1025,18 +1025,18 @@ function addAntiForgeryToken(_formData) {
 function handleError(e) {
     try {
         if (e?.response?.status == 404) {
-            toastError(`<b>404:</b> ${e.response.request.responseURL}`);
+            toastError(`${e.response.request.responseURL}`);
             return;
         }
         if (!e.response?.data.detail && !!e.message) {
             if (!!e.response?.status) {
-                toastError(`<b>${e.response?.status}:</b> ${e.response.request.response || e.code}`);
+                toastError(`${e.response.request.response || e.code}`);
             } else {
                 toastError(`${e.message}`);
             }
             return;
         }
-        let error = `${e.response ? `<b>${e.response?.status}:</b> ${e.response?.data.detail}` : `${e.message}`}`;
+        let error = `${e.response ? `${e.response?.data.detail}` : `${e.message}`}`;
         if (!e.message && !e.response?.data.detail) {
             error = e;
         }

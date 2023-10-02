@@ -1,6 +1,6 @@
 ﻿using CTT_Administrador.Auth;
 
-namespace CTT_Estudiante.Auth.Estudiante
+namespace CTT_Administrador.Auth.Estudiante
 {
     public interface IAuthorizeEstudianteTools
     {

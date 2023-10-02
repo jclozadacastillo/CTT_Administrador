@@ -19,11 +19,13 @@
     <script defer src="~/templates/estudiantes/js/app.js@_v"></script>
     <script defer src="~/lib/utilities/toast/toast.all.min.js@_v"></script>
     <script defer src="~/js/routing.js"></script>
+    <script src="~/lib/utilities/axios/axios.min.js"></script>
     <script defer src="~/lib/utilities/forms.js@_v"></script>
     <script defer src="~/js/Estudiantes/siteLogin.js@_v"></script>
 </head>
 
 <body class="bg-login">
+    @Html.AntiForgeryToken()
     <main class="d-flex w-100">
         <div class="container d-flex flex-column">
             <div class="row vh-100">
@@ -63,7 +65,7 @@
                                             </div>
                                         </div>
                                         <div class="d-grid gap-2 mt-3">
-                                            <a href="index.html" class="btn btn-lg btn-primary">Ingresar</a>
+                                            <button type="submit"class="btn btn-lg btn-primary">Ingresar</button>
                                         </div>
 
                                         <div class="text-center mt-3">

@@ -18,7 +18,7 @@ namespace CTT_Administrador.Controllers.Estudiantes
             _context = context;
         }
 
-        public  IActionResult ConfirmarCorreo()
+        public IActionResult ConfirmarCorreo()
         {
             return View();
         }
@@ -62,6 +62,29 @@ namespace CTT_Administrador.Controllers.Estudiantes
             catch (Exception ex)
             {
                 return Problem(ex.Message);
+            }
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> confirmarCuenta(int idEstudiante)
+        {
+            try
+            {
+                var estudiante = await _context.estudiantes.FindAsync(idEstudiante);
+                if (estudiante == null) throw new Exception("No hemos encontrado registros de su cuenta, el token puede ser incorrecto o haber caducado");
+                if (estudiante.confirmado == 1) return Ok(new { mensaje = "Su cuenta ya ha sido verificada" });
+                string sql = @"UPDATE Estudiantes set confirmado=1,fechaConfirmacion=current_timestamp() WHERE idEstudiante=@idEstudiante";
+                await _dapper.ExecuteAsync(sql, estudiante);
+                return Ok(new { mensaje = "ok" });
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+            finally
+            {
+                _dapper.Dispose();
             }
         }
     }

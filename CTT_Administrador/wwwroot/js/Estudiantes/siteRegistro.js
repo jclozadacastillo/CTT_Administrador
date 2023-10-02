@@ -39,7 +39,6 @@ function handleDocumento() {
     }
 }
 
-
 async function registar() {
     try {
         let valido = await validarClaves();

@@ -2,7 +2,7 @@
 using Dapper;
 using MySql.Data.MySqlClient;
 
-namespace CTT_Estudiante.Auth.Estudiante
+namespace CTT_Administrador.Auth.Estudiante
 {
     public class AuthorizeEstudianteTools : IAuthorizeEstudianteTools
     {

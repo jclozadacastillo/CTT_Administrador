@@ -1,0 +1,57 @@
+﻿
+@{
+    ViewData["Title"] = "Matriculas";
+    Layout = "~/Views/Shared/_LayoutEstudiantes.cshtml";
+}
+<form id="frmDatos">
+<div class="col-12 col-md-12">
+    <div class="card shadow">
+        <div class="card-header text-primary pb-0">
+                <i class="bi-1-circle-fill me-2 fs-xxl float-start"></i><h3 class="text-primary pt-card-header">Selecciona el <strong class="fs-lg">tipo</strong> de estudio</h3>
+        </div>
+        <div class="card-body pt-1">
+            <div class="row">
+                <div class="col-sm-4">
+                    <select class="form-select" id="idTipoCurso" name="idTipoCurso">
+                        <option value=''>Seleccione</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-12 col-md-12" id="categorias" hidden>
+    <div class="card shadow">
+        <div class="card-header text-primary pb-0">
+                <i class="bi-2-circle-fill me-2 fs-xxl float-start"></i><h3 class="text-primary pt-card-header">Selecciona la <strong class="fs-lg">categoría</strong> del <strong class="fs-lg" id="tipoCursoLabel"></strong></h3>
+        </div>
+        <div class="card-body pt-1">
+            <div class="row">
+                <div class="col-sm-4">
+                    <select class="form-select" id="idCategoria" name="idCategoria">
+                        <option value=''>Seleccione</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="col-12 col-md-12" id="cursos" hidden>
+        <div class="card shadow">
+            <div class="card-header text-primary pb-0">
+                <i class="bi-3-circle-fill me-2 fs-xxl float-start"></i><h3 class="text-primary pt-card-header">Selecciona el <strong class="fs-lg" id="tipoCursoCategoria"></strong> de <strong class="fs-lg" id="categoriaLabel"></strong> deseas estudiar</h3>
+                </div>
+            <div class="card-body pt-1">
+                <div class="row">
+                    <div class="col-sm-7">
+                        <select class="form-select" id="idGrupoCurso" name="idGrupoCurso">
+                            <option value=''>Seleccione</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script defer src="~/js/estudiantes/sitematriculas.js?v=@DateTime.Now.Ticks"></script>

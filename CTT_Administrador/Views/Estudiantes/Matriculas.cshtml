@@ -1,51 +1,17 @@
-﻿
-@{
-    ViewData["Title"] = "Matriculas";
+﻿@{
+    ViewData["Title"] = "<i class='bi-globe-americas me-3'></i> Matriculas en línea";
     Layout = "~/Views/Shared/_LayoutEstudiantes.cshtml";
 }
 <form id="frmDatos">
-<div class="col-12 col-md-12">
-    <div class="card shadow">
-        <div class="card-header text-primary pb-0">
-                <i class="bi-1-circle-fill me-2 fs-xxl float-start"></i><h3 class="text-primary pt-card-header">Selecciona el <strong class="fs-lg">tipo</strong> de estudio</h3>
-        </div>
-        <div class="card-body pt-1">
-            <div class="row">
-                <div class="col-sm-4">
-                    <select class="form-select" id="idTipoCurso" name="idTipoCurso" onchange="comboCategorias()">
-                        <option value=''>Seleccione</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="col-12 col-md-12" id="categorias" hidden>
-    <div class="card shadow">
-        <div class="card-header text-primary pb-0">
-                <i class="bi-2-circle-fill me-2 fs-xxl float-start"></i><h3 class="text-primary pt-card-header">Selecciona la <strong class="fs-lg">categoría</strong> del <strong class="fs-lg" id="tipoCursoLabel"></strong></h3>
-        </div>
-        <div class="card-body pt-1">
-            <div class="row">
-                <div class="col-sm-4">
-                    <select class="form-select" id="idCategoria" name="idCategoria" onchange="comboGruposCursos()">
-                        <option value=''>Seleccione</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-    <div class="col-12 col-md-12" id="cursos" hidden>
+    <div class="col-12 col-md-12">
         <div class="card shadow">
             <div class="card-header text-primary pb-0">
-                <i class="bi-3-circle-fill me-2 fs-xxl float-start"></i><h3 class="text-primary pt-card-header">Selecciona el <strong class="fs-lg" id="tipoCursoCategoria"></strong> de <strong class="fs-lg" id="categoriaLabel"></strong> deseas estudiar</h3>
-                </div>
+                <i class="bi-1-circle-fill me-2 fs-xxl float-start"></i><h3 class="text-primary pt-card-header">Selecciona el <strong class="fs-lg">tipo</strong> de estudio</h3>
+            </div>
             <div class="card-body pt-1">
                 <div class="row">
-                    <div class="col-sm-10">
-                        <select class="form-select" id="idGrupoCurso" name="idGrupoCurso">
+                    <div class="col-sm-4">
+                        <select class="form-select" id="idTipoCurso" name="idTipoCurso" onchange="comboCategorias()">
                             <option value=''>Seleccione</option>
                         </select>
                     </div>
@@ -53,5 +19,188 @@
             </div>
         </div>
     </div>
+    <div class="col-12 col-md-12" id="categorias" hidden>
+        <div class="card shadow">
+            <div class="card-header text-primary pb-0">
+                <i class="bi-2-circle-fill me-2 fs-xxl float-start"></i><h3 class="text-primary pt-card-header">Selecciona la <strong class="fs-lg">categoría</strong> del <strong class="fs-lg" id="tipoCursoLabel"></strong></h3>
+            </div>
+            <div class="card-body pt-1">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <select class="form-select" id="idCategoria" name="idCategoria" onchange="comboGruposCursos()">
+                            <option value=''>Seleccione</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-12" id="cursos" hidden>
+        <div class="card shadow">
+            <div class="card-header text-primary pb-0">
+                <i class="bi-3-circle-fill me-2 fs-xxl float-start"></i><h3 class="text-primary pt-card-header">Selecciona el <strong class="fs-lg" id="tipoCursoCategoria"></strong> de <strong class="fs-lg" id="categoriaLabel"></strong> deseas estudiar</h3>
+            </div>
+            <div class="card-body pt-1">
+                <div class="row">
+                    <div class="col-sm-10">
+                        <select class="form-select" id="idGrupoCurso" name="idGrupoCurso" onchange="cargarModulos()">
+                            <option value=''>Seleccione</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-12" id="modulos" hidden>
+        <div class="card shadow">
+            <div class="card-header text-primary pb-0">
+                <i class="bi-4-circle-fill me-2 fs-xxl float-start"></i><h3 class="text-primary pt-card-header">Selecciona los <strong class="fs-lg">módulos</strong> de <strong class="fs-lg" id="grupoCursoLabel"></strong> en los que te deseas matricular.</h3>
+            </div>
+            <div class="card-body pt-1">
+                <div class="row">
+                    <div class="col-sm-12" id="idCurso">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-12 mb-5" id="pagos" hidden>
+        <div class="card shadow">
+            <div class="card-header text-primary pb-0">
+                <i class="bi-5-circle-fill me-2 fs-xxl float-start"></i><h3 class="text-primary pt-card-header">Completa los <strong class="fs-lg">datos</strong> de tu <strong class="fs-lg">pago</strong>.</h3>
+            </div>
+            <div class="card-body pt-1">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label><b>VALOR A CANCELAR: </b><span id="costo">0.0</span></label>
+                    </div>
+                    <div class="col-sm-9">
+                        <label class="form-label">Banco</label>
+                        <select class="form-select" id="idCuenta" name="idCuenta">
+                            <option value="">Seleccione</option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-9">
+                        <label class="form-label">Forma de pago</label>
+                        <select class="form-select" id="idFormaPago" name="idFormaPago">
+                            <option value="">Seleccione</option>
+                        </select>
+                    </div>
+                    <div class="row" id="datosTarjeta" hidden>
+                        <div class="col-sm-4">
+                            <label class="form-label">Marca de tarjeta</label>
+                            <input class="form-control" id="tajetaMarca" name="tajetaMarca" maxlength="50" />
+                            <div class="invalid-feedback">
+                                * Campo requerido
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="form-label">Número de autorización</label>
+                            <input class="form-control text-end" id="tajetaAutorizacion" name="tajetaAutorizacion" maxlength="50" />
+                            <div class="invalid-feedback">
+                                * Campo requerido
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-9">
+                        <label class="form-label">Comprobante</label><span class="fs-xs ms-3 text-uppercase text-danger fw-bold">imagen o pdf de máximo 3mb</span>
+                        <input type="file" no-uppercase accept="application/pdf,image/png, image/jpg, image/jpeg" class="form-control" id="archivoComprobante" name="archivoComprobante" />
+                        <div class="invalid-feedback">
+                            * Campo requerido
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="form-label">Fecha Pago</label>
+                        <input type="date" class="form-control text-end" id="fechaPago" name="fechaPago" />
+                        <div class="invalid-feedback">
+                            * Campo requerido
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="form-label">Número de comprobante</label>
+                        <input class="form-control text-end" id="numeroComprobante" name="numeroComprobante" maxlength="50" />
+                        <div class="invalid-feedback">
+                            * Campo requerido
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="form-label">Valor de pago</label>
+                        <input class="form-control text-end" data-validate="decimal" id="valor" name="valor" maxlength="10" />
+                        <div class="invalid-feedback">
+                            * Campo requerido
+                        </div>
+                    </div>
+                    <div class="col-sm-10">
+                        <label class="form-label">Observaciones</label>
+                        <textarea class="form-control" data-validate="no-validate"
+                                  placeholder="En caso de haber llegado a un acuerdo con el asesor y su valor de depósito no es el mismo que el valor total a cancelar detalle su caso."
+                                  id="observaciones" name="observaciones" maxlength="200"></textarea>
+                        <div class="invalid-feedback">
+                            * Campo requerido
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-12 mb-5" id="facturacion" hidden>
+        <div class="card shadow">
+            <div class="card-header text-primary pb-0">
+                <i class="bi-6-circle-fill me-2 fs-xxl float-start"></i><h3 class="text-primary pt-card-header">Completa los <strong class="fs-lg">datos</strong> para tu <strong class="fs-lg">factura</strong>.</h3>
+            </div>
+            <div class="card-body pt-1">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label class="form-label">Forma de pago</label>
+                        <select class="form-select" id="idTipoDocumento" name="idTipoDocumento" onchange="handleTipoDocumento()">
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="form-label">Documento de identidad</label>
+                        <input class="form-control text-end" data-validate="cedula" id="documento" name="documento" maxlength="13" />
+                        <div class="invalid-feedback">
+                            * Campo requerido
+                        </div>
+                    </div>
+                    <div class="col-sm-10">
+                        <label class="form-label">Razón Social</label>
+                        <input class="form-control" id="nombre" name="nombre" maxlength="100" />
+                        <div class="invalid-feedback">
+                            * Campo requerido
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="form-label">Celular/Teléfono</label>
+                        <input class="form-control text-end" data-validate="numeros" id="telefono" name="telefono" maxlength="10" />
+                        <div class="invalid-feedback">
+                            * Campo requerido
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label">Email</label>
+                        <input class="form-control" data-validate="email" id="email" name="email" maxlength="100" />
+                        <div class="invalid-feedback">
+                            * Campo requerido
+                        </div>
+                    </div>
+
+                    <div class="col-sm-10">
+                        <label class="form-label">Dirección</label>
+                        <textarea class="form-control" id="direccion" name="direccion" maxlength="100" ></textarea>
+                        <div class="invalid-feedback">
+                            * Campo requerido
+                        </div>
+                    </div>
+                    <div class="col-sm-12 text-center mt-3">
+                        <button type="button" class="btn btn-primary" onclick="generarMatricula()">Matricularse</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </form>
 <script defer src="~/js/estudiantes/sitematriculas.js?v=@DateTime.Now.Ticks"></script>

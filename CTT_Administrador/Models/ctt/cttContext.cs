@@ -21,6 +21,8 @@ public partial class cttContext : DbContext
 
     public virtual DbSet<asignacionesinstructorescalificaciones> asignacionesinstructorescalificaciones { get; set; }
 
+    public virtual DbSet<bancos> bancos { get; set; }
+
     public virtual DbSet<calificaciones> calificaciones { get; set; }
 
     public virtual DbSet<carrerasuniandes> carrerasuniandes { get; set; }
@@ -33,13 +35,19 @@ public partial class cttContext : DbContext
 
     public virtual DbSet<creditos> creditos { get; set; }
 
+    public virtual DbSet<cuentasbancos> cuentasbancos { get; set; }
+
     public virtual DbSet<cursos> cursos { get; set; }
 
     public virtual DbSet<cursos_mallas> cursos_mallas { get; set; }
 
     public virtual DbSet<detallecreditos> detallecreditos { get; set; }
 
+    public virtual DbSet<estadospagos> estadospagos { get; set; }
+
     public virtual DbSet<estudiantes> estudiantes { get; set; }
+
+    public virtual DbSet<formaspagos> formaspagos { get; set; }
 
     public virtual DbSet<gruposcursos> gruposcursos { get; set; }
 
@@ -49,6 +57,8 @@ public partial class cttContext : DbContext
 
     public virtual DbSet<modalidades> modalidades { get; set; }
 
+    public virtual DbSet<pagosmatriculas> pagosmatriculas { get; set; }
+
     public virtual DbSet<periodos> periodos { get; set; }
 
     public virtual DbSet<roles> roles { get; set; }
@@ -56,6 +66,8 @@ public partial class cttContext : DbContext
     public virtual DbSet<rolesusuarios> rolesusuarios { get; set; }
 
     public virtual DbSet<temas> temas { get; set; }
+
+    public virtual DbSet<tiposcuentasbancos> tiposcuentasbancos { get; set; }
 
     public virtual DbSet<tiposcursos> tiposcursos { get; set; }
 
@@ -94,6 +106,13 @@ public partial class cttContext : DbContext
             entity.Property(e => e.atrasoNotas).HasDefaultValueSql("'0'");
             entity.Property(e => e.fechaRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.pasaFaltas).HasDefaultValueSql("'0'");
+        });
+
+        modelBuilder.Entity<bancos>(entity =>
+        {
+            entity.HasKey(e => e.idBanco).HasName("PRIMARY");
+
+            entity.Property(e => e.activo).HasDefaultValueSql("'1'");
         });
 
         modelBuilder.Entity<calificaciones>(entity =>
@@ -149,6 +168,17 @@ public partial class cttContext : DbContext
             entity.Property(e => e.fechaDesactivacion).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
+        modelBuilder.Entity<cuentasbancos>(entity =>
+        {
+            entity.HasKey(e => e.idCuenta).HasName("PRIMARY");
+
+            entity.Property(e => e.activo).HasDefaultValueSql("'1'");
+
+            entity.HasOne(d => d.idBancoNavigation).WithMany(p => p.cuentasbancos).HasConstraintName("cuentasbancos_ibfk_1");
+
+            entity.HasOne(d => d.idTipoCuentaBancoNavigation).WithMany(p => p.cuentasbancos).HasConstraintName("cuentasbancos_ibfk_2");
+        });
+
         modelBuilder.Entity<cursos>(entity =>
         {
             entity.HasKey(e => e.idCurso).HasName("PRIMARY");
@@ -187,6 +217,13 @@ public partial class cttContext : DbContext
             entity.Property(e => e.fechaRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
+        modelBuilder.Entity<estadospagos>(entity =>
+        {
+            entity.HasKey(e => e.idEstadoPago).HasName("PRIMARY");
+
+            entity.Property(e => e.activo).HasDefaultValueSql("'1'");
+        });
+
         modelBuilder.Entity<estudiantes>(entity =>
         {
             entity.HasKey(e => e.idEstudiante).HasName("PRIMARY");
@@ -194,6 +231,13 @@ public partial class cttContext : DbContext
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
             entity.Property(e => e.confirmado).HasDefaultValueSql("'0'");
             entity.Property(e => e.idTipoDocumento).IsFixedLength();
+        });
+
+        modelBuilder.Entity<formaspagos>(entity =>
+        {
+            entity.HasKey(e => e.idFormaPago).HasName("PRIMARY");
+
+            entity.Property(e => e.activo).HasDefaultValueSql("'1'");
         });
 
         modelBuilder.Entity<gruposcursos>(entity =>
@@ -217,6 +261,7 @@ public partial class cttContext : DbContext
 
             entity.Property(e => e.esUniandes).HasDefaultValueSql("'0'");
             entity.Property(e => e.fechaRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.legalizado).HasDefaultValueSql("'0'");
         });
 
         modelBuilder.Entity<modalidades>(entity =>
@@ -224,6 +269,19 @@ public partial class cttContext : DbContext
             entity.HasKey(e => e.idModalidad).HasName("PRIMARY");
 
             entity.Property(e => e.activa).HasDefaultValueSql("'1'");
+        });
+
+        modelBuilder.Entity<pagosmatriculas>(entity =>
+        {
+            entity.HasKey(e => e.idPagoMatricula).HasName("PRIMARY");
+
+            entity.HasOne(d => d.idClienteNavigation).WithMany(p => p.pagosmatriculas).HasConstraintName("pagosmatriculas_ibfk_4");
+
+            entity.HasOne(d => d.idCuentaNavigation).WithMany(p => p.pagosmatriculas).HasConstraintName("pagosmatriculas_ibfk_3");
+
+            entity.HasOne(d => d.idFormaPagoNavigation).WithMany(p => p.pagosmatriculas).HasConstraintName("pagosmatriculas_ibfk_2");
+
+            entity.HasOne(d => d.idMatriculaNavigation).WithMany(p => p.pagosmatriculas).HasConstraintName("pagosmatriculas_ibfk_1");
         });
 
         modelBuilder.Entity<periodos>(entity =>
@@ -259,6 +317,13 @@ public partial class cttContext : DbContext
             entity.Property(e => e.orden).HasDefaultValueSql("'1'");
 
             entity.HasOne(d => d.idCursoNavigation).WithMany(p => p.temas).HasConstraintName("temas_ibfk_1");
+        });
+
+        modelBuilder.Entity<tiposcuentasbancos>(entity =>
+        {
+            entity.HasKey(e => e.idTipoCuentaBanco).HasName("PRIMARY");
+
+            entity.Property(e => e.activo).HasDefaultValueSql("'1'");
         });
 
         modelBuilder.Entity<tiposcursos>(entity =>

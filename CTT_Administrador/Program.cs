@@ -16,7 +16,7 @@ var cn = builder.Configuration.GetConnectionString("ctt");
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<cttContext>(op => op.UseMySQL(cn));
 builder.Services.AddScoped<IDbConnection>(op => new MySqlConnection(cn));
-ConfigurationHelper.Initialize(builder.Configuration);
+ConfigurationHelper.Initialize(builder.Configuration,builder.Environment.ContentRootPath);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

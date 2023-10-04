@@ -35,4 +35,9 @@ public partial class matriculas
 
     [StringLength(20)]
     public string? usuarioRegistro { get; set; }
+
+    public sbyte? legalizado { get; set; }
+
+    [InverseProperty("idMatriculaNavigation")]
+    public virtual ICollection<pagosmatriculas> pagosmatriculas { get; set; } = new List<pagosmatriculas>();
 }

@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Archivos\Estudiantes\1803769759\Comprobantes\" />
     <Folder Include="Models\ctt\" />
     <Folder Include="wwwroot\js\Estudiantes\" />
   </ItemGroup>

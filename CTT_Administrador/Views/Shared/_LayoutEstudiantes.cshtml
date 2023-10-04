@@ -1,6 +1,13 @@
 ﻿@inject IAuthorizeEstudianteTools _auth;
 @{
 	var _v = $"?v={DateTime.Now.Ticks}";
+	string tituloPagina(dynamic? titulo)
+	{
+		if (titulo==null) return "";
+		titulo = titulo.ToString();
+		if (titulo.Contains("i>")) return titulo.Split("i>")[1];
+		return titulo;
+	}
 }
 <!DOCTYPE html>
 <html lang="es-ec">
@@ -9,7 +16,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>CTT ESTUDIANTES: @ViewData["Title"]</title>
+	<title>CTT ESTUDIANTES: @(tituloPagina(ViewData["Title"]))</title>
 	<link rel="preconnect" href="https://fonts.gstatic.com">
 	<link rel="shortcut icon" href="~/lib/utilities/toast/img/icon.png" />
 	<link async href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
@@ -29,7 +36,7 @@
 
 <body>
 	<div class="wrapper">
-		<nav id="sidebar" class="sidebar js-sidebar">
+		<nav id="sidebar" class="sidebar js-sidebar bg-gradient">
 			<div class="sidebar-content js-simplebar">
 				<a class="sidebar-brand" href="~/Estudiantes">
 					<img src="~/templates/estudiantes/img/logo-blanco190.png" />
@@ -162,8 +169,16 @@
 
 			<main class="content">
 				<div class="container-fluid p-0">
-
-					<h1 class="h3 mb-3"><strong>@ViewData["Title"]</strong></h1>
+					<div class="row py-0">
+						<div class="col-sm-12 py-0">
+							<div class="card py-0 bg-primary bg-gradient shadow">
+								<div class="card-body pb-1 pt-2">
+									<h3 class="text-white"><strong>@Html.Raw(ViewData["Title"])</strong></h3>
+								</div>
+							</div>
+						</div>
+					</div>
+					
 					<div class="row">
 						@RenderBody()
 					</div>

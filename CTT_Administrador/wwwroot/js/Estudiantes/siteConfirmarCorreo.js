@@ -1,4 +1,4 @@
-const baseUrl = `${_route}Registro/`;
+﻿const baseUrl = `${_route}Registro/`;
 (async function () {
     try {
         const token = (new URLSearchParams(window.location.search)).get("token");

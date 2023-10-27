@@ -1,4 +1,4 @@
-const baseUrl = `${_route}Estudiantes/`;
+﻿const baseUrl = `${_route}Estudiantes/`;
 frmDatos.addEventListener("submit", e => {
     e.preventDefault();
     authorization();

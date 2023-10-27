@@ -1,4 +1,4 @@
-const baseUrl = `${_route}Registro/`;
+﻿const baseUrl = `${_route}Registro/`;
 frmDatos.addEventListener("submit", e => {
     e.preventDefault();
 });
@@ -55,7 +55,7 @@ async function registar() {
         let jsonMail = {
             idConfiguracion: parseInt(params.idConfiguracion),
             destinatarios: persona.email,
-            asunto: "CTT DE LOS ANDES: CONFIRMACI�N DE CORREO",
+            asunto: "CTT DE LOS ANDES: CONFIRMACIÓN DE CORREO",
             htmlBase64: getMail(persona, params.urlConfirm),
             type: "info"
         }

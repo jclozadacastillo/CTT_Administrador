@@ -130,6 +130,11 @@ namespace CTT_Administrador.Controllers.Administrador
             if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
             return View();
         }
+        public IActionResult RecordAcademico()
+        {
+            if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
+            return View();
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

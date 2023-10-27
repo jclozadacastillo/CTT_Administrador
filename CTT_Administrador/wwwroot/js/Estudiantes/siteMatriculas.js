@@ -1,4 +1,4 @@
-const baseUrl = `${_route}Matriculas/`;
+﻿const baseUrl = `${_route}Matriculas/`;
 let valorPago = 0.0;
 let modulosLista = [];
 let modulosSeleccionados = "";
@@ -251,10 +251,10 @@ async function generarMatricula() {
         if (! await toastPreguntar(`
         <i class='fs-lg bi-exclamation-triangle-fill text-warning'></i>
         <div class='alert-secondary'>
-            �Esta seguro que desea continuar?
+            ¿Está seguro que desea continuar?
         </div>
         <div class='fs-sm text-danger'>
-        <i class='bi-exclamation-triangle-fill me-2'></i> No podr� cambiar los datos de facturaci�n una vez finalizado el proceso
+        <i class='bi-exclamation-triangle-fill me-2'></i> No podrá cambiar los datos de facturación una vez finalizado el proceso
         </div>
         `)); return;
         const url = `${baseUrl}generarMatricula`;
@@ -266,7 +266,7 @@ async function generarMatricula() {
         const res = (await axios.post(url, data)).data
         await toastPromise(`<div class='alert-success fs-md text-start'>
         Gracias por preferirnos, tu matricula se ha procesado exitosamente,
-        su pago sera validado antes de legalizar su matricula.
+        su pago será validado antes de legalizar su matricula.
         </div>`);
         top.location.href = `${_route}Estudiantes`;
     } catch (e) {

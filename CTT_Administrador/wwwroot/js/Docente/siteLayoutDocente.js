@@ -1,4 +1,4 @@
-async function _logout(){
+﻿async function _logout(){
     try {
         toastLogout(2000);
         const url=`${_route}Docente/logout`;

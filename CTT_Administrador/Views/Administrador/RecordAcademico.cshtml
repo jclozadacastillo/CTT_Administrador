@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewData["Title"] = "Record Académico";
+    Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+}
+
+<div class="container-fluid" id="content" hidden>
+    <div class="row">
+        <div class="col-auto me-0 pe-0 form-title">
+            <h4>Record Académico</h4>
+        </div>
+    </div>
+    <hr>
+    <form id="frmDatos" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-sm-10">
+                <label class="fs-sm">Seleccione un estudiante</label>
+                <select class="form-select form-select-sm" id="idEstudiante" name="idEstudiante" onchange="listar()">
+                    <option value="">Seleccione</option>
+                </select>
+            </div>
+        </div>
+    </form>
+    <div class="table-responsive mt-5">
+        <table class="table table-sm table-condensed w-100
+            table-light table-hover table-custom"
+               id="tableDatos"></table>
+    </div>
+
+</div>
+<script defer src="~/js/Administrador/siteRecordAcademico.js?v=@DateTime.Now.Ticks"></script>
+
+

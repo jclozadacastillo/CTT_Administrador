@@ -260,10 +260,10 @@ async function editar(_idAsignacion) {
         $(idPeriodo).val(res.idPeriodo).trigger("change");
         setTimeout(() => {
             $(idTipoCurso).val(res.idTipoCurso).trigger("change");
-        }, 100)
+        }, 250)
         setTimeout(() => {
             $(idGrupoCurso).val(res.idGrupoCurso).trigger("change");
-        }, 250);
+        }, 500);
         setTimeout(() => {
             $(idCurso).val(res.idCurso).trigger("change");
             $(idInstructor).val(res.idInstructor).trigger("change");
@@ -273,7 +273,7 @@ async function editar(_idAsignacion) {
             paralelo.disabled = true;
             idInstructor.disabled = true;
             idCurso.disabled = true;
-        }, 500);
+        }, 750);
         modal.show();
     } catch (e) {
         handleError(e);

@@ -24,9 +24,6 @@ namespace CTT_Administrador.Controllers.Estudiantes
             {
                 string sql = @"SELECT m.idMatricula,cu.curso,t.tipoCurso,mo.modalidad,
                                 YEAR(g.fechaFinCurso) AS 'year',g.fechaInicioCurso,g.fechaFinCurso,
-                                concat(REPLACE(i.abreviaturaTitulo,'.',''),'. ',
-                                i.primerApellido,' ',CASE WHEN LENGTH(i.segundoApellido)>0 THEN concat(i.segundoApellido,' ') ELSE ''END,
-                                i.primerNombre,CASE WHEN LENGTH(i.segundoNombre)>0 THEN concat(' ',i.segundoNombre) ELSE ''END) AS instructor,
                                 t.esDiplomado
                                 FROM calificaciones c
                                 INNER JOIN matriculas m ON m.idMatricula = c.idMatricula
@@ -34,8 +31,6 @@ namespace CTT_Administrador.Controllers.Estudiantes
                                 INNER JOIN cursos cu ON cu.idCurso = g.idCurso
                                 INNER JOIN modalidades mo ON g.idModalidad = mo.idModalidad
                                 INNER JOIN tiposcursos t ON t.idTipoCurso = cu.idTipoCurso
-                                INNER JOIN asignacionesinstructorescalificaciones a ON a.idGrupoCurso = g.idGrupoCurso AND m.paralelo = a.paralelo
-                                INNER JOIN instructores i ON i.idInstructor = a.idInstructor
                                 WHERE m.legalizado = 1
                                 AND m.idEstudiante = @idEstudiante
                                 ORDER BY idMatricula DESC;";
@@ -55,11 +50,15 @@ namespace CTT_Administrador.Controllers.Estudiantes
                 string sql = @"SELECT cu.idCurso,nota1,nota2,nota3,nota4,nota5,
                                 promedioFinal,faltas,justificaFaltas,
                                 cu.numeroNotas,aprobado,
-                                cu.curso AS modulo
+                                cu.curso AS modulo,
+                                concat(REPLACE(i.abreviaturaTitulo,'.',''),'. ',i.primerApellido,' ',CASE WHEN LENGTH(i.segundoApellido)>0 THEN concat(i.segundoApellido,' ') ELSE ''END,
+                                i.primerNombre,CASE WHEN LENGTH(i.segundoNombre)>0 THEN concat(' ',i.segundoNombre) ELSE ''END) AS instructor
                                 FROM calificaciones c
-                                INNER JOIN matriculas m ON m.idMatricula = c.idMatricula
-                                INNER JOIN gruposcursos g ON g.idGrupoCurso = c.idGrupoCurso
-                                INNER JOIN cursos cu ON cu.idCurso = c.idCurso
+                                INNER JOIN matriculas m ON m.idMatricula = c.idMatricula 
+                                INNER JOIN gruposcursos g ON g.idGrupoCurso = c.idGrupoCurso 
+                                INNER JOIN cursos cu ON cu.idCurso = c.idCurso 
+                                INNER JOIN asignacionesinstructorescalificaciones a ON a.idGrupoCurso = g.idGrupoCurso AND m.paralelo = a.paralelo AND a.idCurso = cu.idCurso
+                                INNER JOIN instructores i ON i.idInstructor = a.idInstructor 
                                 WHERE c.idMatricula = @idMatricula";
                 return Ok(await _dapper.QueryAsync(sql, new { idMatricula }));
             }

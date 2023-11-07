@@ -22,7 +22,7 @@ namespace CTT_Administrador.Controllers.Estudiantes
         {
             try
             {
-                string sql = @"SELECT m.idMatricula,cu.curso,t.tipoCurso,mo.modalidad,
+                string sql = @"SELECT distinct(m.idMatricula),cu.curso,t.tipoCurso,mo.modalidad,
                                 YEAR(g.fechaFinCurso) AS 'year',g.fechaInicioCurso,g.fechaFinCurso,
                                 t.esDiplomado
                                 FROM calificaciones c

@@ -1,4 +1,4 @@
-const baseUrl = `${_route}Calificaciones/`;
+﻿const baseUrl = `${_route}Calificaciones/`;
 let matriculas = [];
 (async function () {
     loaderShow();
@@ -43,7 +43,7 @@ async function mostrarCalificaciones() {
         res.forEach(item => {
             html += curso.esDiplomado != 1 ? "" : 
                 `<div class='col-sm-12'>
-                    <h5 class='text-primary fw-bold'>M�DULO</h5>
+                    <h5 class='text-primary fw-bold'>MÓDULO</h5>
                     <h5>${item.modulo}</h5>
                 </div>`
                 ;

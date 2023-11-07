@@ -44,7 +44,7 @@ async function registar() {
         let valido = await validarClaves();
         if (!!valido) throw new Error(valido);
         if (!await validarTodo(frmDatos)) throw new Error("Verifique los campos requeridos.");
-
+        loaderShow();
         let url = `${baseUrl}registrar`;
         formToUpperCase(frmDatos);
         const data = new FormData(frmDatos);

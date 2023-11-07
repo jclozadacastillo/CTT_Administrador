@@ -215,18 +215,16 @@ archivoComprobante.addEventListener("change", function () {
     }
 });
 
-
 documento.addEventListener("focusout", function () {
     if (!!this.value) cargarDatosCliente();
 });
 
 async function cargarDatosCliente() {
     try {
-
         const url = `${baseUrl}datosCliente`;
         const data = new FormData(frmDatos);
         const res = (await axios.post(url, data)).data;
-        if (!!res) cargarFormularioInForm(facturacion,res);
+        if (!!res) cargarFormularioInForm(facturacion, res);
     } catch (e) {
         console.warn(e);
     }
@@ -243,12 +241,35 @@ function handleTipoDocumento() {
     }
 }
 
+function handleBancos() {
+    const config = {
+        "tc": { label: "autorización", verNumeroComprobante: false, verBanco: false },
+        "tr": { label: "comprobante", verNumeroComprobante: true, verBanco: true },
+        "dp": { label: "depósito o transacción", verNumeroComprobante: true, verBanco: true }
+    }
+    const op = idFormaPago.options[idFormaPago.selectedIndex].dataset.tc?.toLowerCase();
+    labelComprobante.innerHTML = config[op].label;
+    config[op].verNumeroComprobante ? numeroComprobante.closest("div").removeAttribute("hidden") : numeroComprobante.closest("div").hidden = true;
+    if (config[op].verBanco) {
+        idCuenta.closest("div").removeAttribute("hidden");
+        idCuenta.removeAttribute("data-validate");
+    } else {
+        idCuenta.closest("div").hidden = true;
+        limpiarValidadores(idCuenta.closest("div"));
+        idCuenta.setAttribute("data-validate", "no-validate");
+    }
+    activarValidadores(idCuenta.closest("div"));
+}
+
 async function generarMatricula() {
     try {
+        if (idFormaPago.options[idFormaPago.selectedIndex].dataset.tc?.toLowerCase() == "tc") {
+            numeroComprobante.value = tajetaAutorizacion.value;
+        }
         if (! await validarTodo(frmDatos)) throw new Error("Verifique los campos requeridos");
         if (idCurso.querySelectorAll("input:checked").length == 0) throw new Error("Debe seleccionar al menos un modulo");
         if (!((parseFloat(parseFloat(valor.value.replaceAll(",", ".")).toFixed(2)) == parseFloat(valorPago.toFixed(2))))) throw new Error("Su pago no puede ser diferente al valor a cancelar.")
-        if (! await toastPreguntar(`
+        if (!await toastPreguntar(`
         <i class='fs-lg bi-exclamation-triangle-fill text-warning'></i>
         <div class='alert-secondary'>
             ¿Está seguro que desea continuar?
@@ -256,7 +277,7 @@ async function generarMatricula() {
         <div class='fs-sm text-danger'>
         <i class='bi-exclamation-triangle-fill me-2'></i> No podrá cambiar los datos de facturación una vez finalizado el proceso
         </div>
-        `)); return;
+        `)) return;
         const url = `${baseUrl}generarMatricula`;
         formToUpperCase(frmDatos);
         const data = new FormData(frmDatos);
@@ -264,6 +285,7 @@ async function generarMatricula() {
         data.append("idMatricula", idMatricula);
         loaderShow();
         const res = (await axios.post(url, data)).data
+        loaderHide();
         await toastPromise(`<div class='alert-success fs-md text-start'>
         Gracias por preferirnos, tu matricula se ha procesado exitosamente,
         su pago será validado antes de legalizar su matricula.

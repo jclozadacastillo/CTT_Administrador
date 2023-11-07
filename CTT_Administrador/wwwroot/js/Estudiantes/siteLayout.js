@@ -11,5 +11,5 @@
 (async function () {
     const url = window.location.pathname.toLowerCase();
     const a = sidebar.querySelector(`a[href^='${url}' i]`);
-    if (a.href != "/Estudiantes" && !!a) a.closest("li")?.classList.add("active");
+    if (a?.href != "/Estudiantes" && !!a) a.closest("li")?.classList.add("active");
 })();

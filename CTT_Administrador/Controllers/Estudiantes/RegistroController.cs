@@ -45,9 +45,22 @@ namespace CTT_Administrador.Controllers.Estudiantes
             {
                 var estudiante = await _context.estudiantes.AsNoTracking().Where(x => x.documentoIdentidad == _data.documentoIdentidad).FirstOrDefaultAsync();
                 if (estudiante != null && estudiante.confirmado != 1) throw new Exception("El usuario ya ha sido registrado con éxito pero no se ha confirmado el correo");
-                if (estudiante != null && estudiante.confirmado == 1) throw new Exception("El documento de identidad ya ha sido registrado y verificado");
-                _context.estudiantes.Add(_data);
-                await _context.SaveChangesAsync();
+                if (estudiante != null && estudiante.confirmado == 1 && !string.IsNullOrEmpty(estudiante.email)) throw new Exception("El documento de identidad ya ha sido registrado y verificado");
+                if (estudiante != null && string.IsNullOrEmpty(estudiante.email))
+                {
+                    estudiante.confirmado= 1;
+                    estudiante.fechaConfirmacion = DateTime.Now;
+                    estudiante.clave = estudiante.documentoIdentidad;
+                    _context.estudiantes.Update(estudiante);
+                    await _context.SaveChangesAsync();
+                    throw new Exception("Hemos preconfigurado tú cuenta, no olvides registrar tú correo electrónico en tú perfil.");
+                }
+                else
+                {
+                    _context.estudiantes.Add(_data);
+                    await _context.SaveChangesAsync();
+                }
+
                 return Ok(new
                 {
                     persona = _data,

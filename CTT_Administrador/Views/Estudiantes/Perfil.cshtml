@@ -1,0 +1,127 @@
+﻿@{
+    ViewData["Title"] = "<i class='bi-person me-2'></i>Perfil";
+    Layout = "~/Views/Shared/_LayoutEstudiantes.cshtml";
+}
+
+<div class="col-12 col-md-12">
+    <div class="card shadow">
+        <div class="card-body pt-1">
+            <div class="row mx-0 my-3">
+                <div class="col-sm-7">
+                    <div class="row ">
+                        @* <img class="bg-user" src="~/templates/estudiantes/img/user-image.png" /> *@
+                        
+                        <div class="col-6">
+                            <span class="fw-bold">Documento de identidad</span>
+                            <span id="documentoIdentidad" name="documentoIdentidad"></span>
+                        </div>
+                        <div class="col-6 mt-2 text-end">
+                            <button type="button" class="btn btn-warning btn-sm" onclick="mostrarModalClaves()"><i class="bi-shield me-2"></i>Cambiar contraseña</button>
+                        </div>
+                        <div class="col-sm-12">
+                            <span class="fw-bold">Primer Nombre</span>
+                            <span id="primerNombre" name="primerNombre"></span>
+                        </div>
+                        <div class="col-sm-12">
+                            <span class="fw-bold">Segundo Nombre</span>
+                            <span id="segundoNombre" name="segundoNombre"></span>
+                        </div>
+                        <div class="col-sm-12">
+                            <span class="fw-bold">Primer Apellido</span>
+                            <span id="primerApellido" name="primerApellido"></span>
+                        </div>
+                        <div class="col-sm-12">
+                            <span class="fw-bold">Segundo Apellido</span>
+                            <span id="segundoApellido" name="segundoApellido"></span>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="alert alert-warning">
+                                <i class="bi-exclamation-triangle-fill text-warning me-2"></i>Para modificar los campos superiores comunícate directamente con secretaría académica.
+                            </div>
+                        </div>
+                    </div>
+                    <form class="row" id="frmDatos">
+                        <div class="col-sm-12">
+                            <label class="form-label">Dirección</label>
+                            <textarea class="form-control" id="direccion" name="direccion" maxlength="100" placeholder="Ingrese su dirección"></textarea>
+                            <div class="invalid-feedback">
+                                * Campo Requerido
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label">Celular</label>
+                            <input class="form-control" id="celular" name="celular" data-validate="numeros" maxlength="10" placeholder="Ingrese su número de celular" />
+                            <div class="invalid-feedback">
+                                * Campo Requerido
+                            </div>
+                        </div>
+                        <div class="col-sm-6 ">
+                            <label class="form-label">Email</label>
+                            <input class="form-control" id="email" name="email" data-validate="email" maxlength="100" placeholder="Ingrese su email" />
+                            <div class="invalid-feedback">
+                                * Campo Requerido
+                            </div>
+                        </div>
+                        <div class="col-sm-12 mt-3 text-center mt-2">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="actualizarDatos()">Actualizar Datos</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal fade" id="modalClaves" tabindex="-1" aria-labelledby="modalClavesLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header py-2">
+                    <h5 class="modal-title fw-bold" id="modalClavesLabel">Cambio de contraseña</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmClaves">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label class="form-label">Contraseña Anterior</label>
+                                <input type="password" class="form-control form-control-sm" id="claveAnterior" name="claveAnterior" maxlength="50">
+                                <div class="invalid-feedback">
+                                    * Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <label class="form-label">Contraseña Nueva</label>
+                                <input type="password" class="form-control form-control-sm" id="clave" name="clave" maxlength="50">
+                                <div class="invalid-feedback">
+                                    * Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <label class="form-label">Confirmar Contraseña</label>
+                                <input type="password" class="form-control form-control-sm" id="confir" name="confir" maxlength="50">
+                                <div class="invalid-feedback">
+                                    * Campo requerido
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer py-2">
+                    <button type="button" class="btn btn-secondary btn-sm" data-cerrar
+                            data-bs-dismiss="modal">
+                        Cerrar
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" data-guardar
+                            onclick="actualizarClave()">
+                        Cambiar Contraseña
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script defer src="~/js/estudiantes/sitePerfil.js?v=@DateTime.Now.Ticks"></script>
+

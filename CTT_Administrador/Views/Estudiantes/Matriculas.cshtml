@@ -66,7 +66,7 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-md-12 mb-5" id="pagos" hidden>
+    <div class="col-12 col-md-12" id="pagos" hidden>
         <div class="card shadow">
             <div class="card-header text-primary pb-0">
                 <i class="bi-5-circle-fill me-2 fs-xxl float-start"></i><h3 class="text-primary pt-card-header">Completa los <strong class="fs-lg">datos</strong> de tu <strong class="fs-lg">pago</strong>.</h3>
@@ -77,29 +77,32 @@
                         <label><b>VALOR A CANCELAR: </b><span id="costo">0.0</span></label>
                     </div>
                     <div class="col-sm-9">
-                        <label class="form-label">Banco</label>
-                        <select class="form-select" id="idCuenta" name="idCuenta">
+                        <label class="form-label">Forma de pago</label>
+                        <select class="form-select" id="idFormaPago" name="idFormaPago" onchange="handleBancos()">
                             <option value="">Seleccione</option>
                         </select>
                     </div>
-
-                    <div class="col-sm-9">
-                        <label class="form-label">Forma de pago</label>
-                        <select class="form-select" id="idFormaPago" name="idFormaPago">
+                    <div class="col-sm-9" hidden>
+                        <label class="form-label">Banco</label>
+                        <select class="form-select" id="idCuenta" name="idCuenta">
                             <option value="">Seleccione</option>
                         </select>
                     </div>
                     <div class="row" id="datosTarjeta" hidden>
                         <div class="col-sm-4">
                             <label class="form-label">Marca de tarjeta</label>
-                            <input class="form-control" id="tajetaMarca" name="tajetaMarca" maxlength="50" />
-                            <div class="invalid-feedback">
-                                * Campo requerido
-                            </div>
+                            <select class="form-select" id="tajetaMarca" name="tajetaMarca">
+                                <option value="">Seleccione</option> 
+                                <option value="Visa">Visa</option>
+                                <option value="MasterCard">MasterCard</option>
+                                <option value="American Express">American Express</option>
+                                <option value="Discover">Discover</option>
+                                <option value="Diners Club">Diners Club</option>
+                            </select>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <label class="form-label">Número de autorización</label>
-                            <input class="form-control text-end" id="tajetaAutorizacion" name="tajetaAutorizacion" maxlength="50" />
+                            <input class="form-control text-end" id="tajetaAutorizacion" name="tajetaAutorizacion" maxlength="50" title="Ingrese el número de transacción o autorización enviado por la entidad bancaria" placeholder="Ingrese el número de transacción o autorización enviado por la entidad bancaria" />
                             <div class="invalid-feedback">
                                 * Campo requerido
                             </div>
@@ -120,7 +123,7 @@
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <label class="form-label">Número de comprobante</label>
+                        <label class="form-label">Número de <span id="labelComprobante">comprobante</span></label>
                         <input class="form-control text-end" id="numeroComprobante" name="numeroComprobante" maxlength="50" />
                         <div class="invalid-feedback">
                             * Campo requerido
@@ -128,12 +131,12 @@
                     </div>
                     <div class="col-sm-3">
                         <label class="form-label">Valor de pago</label>
-                        <input class="form-control text-end" data-validate="decimal" id="valor" name="valor" maxlength="10" />
+                        <input class="form-control text-end readonly" data-validate="decimal" id="valor" name="valor" maxlength="10" />
                         <div class="invalid-feedback">
                             * Campo requerido
                         </div>
                     </div>
-                    <div class="col-sm-10">
+@*                     <div class="col-sm-10">
                         <label class="form-label">Observaciones</label>
                         <textarea class="form-control" data-validate="no-validate"
                                   placeholder="En caso de haber llegado a un acuerdo con el asesor y su valor de depósito no es el mismo que el valor total a cancelar detalle su caso."
@@ -141,7 +144,7 @@
                         <div class="invalid-feedback">
                             * Campo requerido
                         </div>
-                    </div>
+                    </div> *@
                 </div>
             </div>
         </div>
@@ -154,7 +157,7 @@
             <div class="card-body pt-1">
                 <div class="row">
                     <div class="col-sm-4">
-                        <label class="form-label">Forma de pago</label>
+                        <label class="form-label">Tipo de documento</label>
                         <select class="form-select" id="idTipoDocumento" name="idTipoDocumento" onchange="handleTipoDocumento()">
                         </select>
                     </div>

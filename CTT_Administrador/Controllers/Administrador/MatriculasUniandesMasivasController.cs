@@ -298,12 +298,12 @@ namespace CTT_Administrador.Controllers.Administrador
                 sql = $@"
                         INSERT INTO matriculas
                         (idEstudiante, idCliente, idGrupoCurso, idTipoDescuento, paralelo,
-                        fechaRegistro, esUniandes, idCarrera, idCentro, usuarioRegistro)
+                        fechaRegistro, esUniandes, idCarrera, idCentro, usuarioRegistro,legalizado)
                         select distinct(e.idEstudiante),
                         (select cf.idCliente FROM clientesfacturas cf
                         WHERE  cf.documento=e.documentoIdentidad limit 1) as idCliente,
                         @idGrupoCurso,1 as idTipoDescuento,@paralelo,
-                        current_timestamp(),1,null,null,@usuario
+                        current_timestamp(),1,null,null,@usuario,1
                         from estudiantes e
                         where e.documentoIdentidad in({_alumnosCedulas})
                         and e.idEstudiante not in(select m.idEstudiante

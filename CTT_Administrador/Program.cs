@@ -46,6 +46,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Administrador}/{action=Index}/{id?}");
+    pattern: "{controller=Estudiantes}/{action=Index}/{id?}");
 RotativaConfiguration.Setup(app.Environment.WebRootPath);
 app.Run();

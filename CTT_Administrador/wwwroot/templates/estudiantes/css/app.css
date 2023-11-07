@@ -16235,4 +16235,11 @@ form.form-uppercase input::placeholder {
 .pt-card-header{
     padding-top:10px;
 }
+body{
+    overflow-y:auto !important;
+}
+html.loading{
+    pointer-events:none;
+    cursor:progress;
+}
 /*# sourceMappingURL=app.css.map*/

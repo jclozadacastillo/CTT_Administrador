@@ -154,10 +154,13 @@ async function listar() {
             title: "Estado",
             data: "idMatricula",
             class: "text-end",
-            render: data => {
+            render: (data, type, row) => {
+                const justificaFaltas = res.listaCalificaciones.filter(x => x.idMatricula == data).map(x => x.justificaFaltas);
                 const notas = res.listaCalificaciones.filter(x => x.idMatricula == data).map(x => x.promedioFinal);
                 const promedio = notas.length > 0 ? parseFloat(notas.reduce((a, b) => a + b, 0) / notas.length).toFixed(2) : parseFloat(0).toFixed(2);
                 res.listaEstudiantes.find(x => x.idMatricula == data)["estado"] = promedio >= 7 ? "APROBADO" : "REPROBADO";
+                res.listaEstudiantes.find(x => x.idMatricula == data)["estado"] = justificaFaltas == 1 ? "JUSTIFICADO" : res.listaEstudiantes.find(x => x.idMatricula == data)["estado"];
+                if (justificaFaltas == 1) return "<span class='badge rounded-phill bg-info text-white'>JUSTIFICADO</span>";
                 return promedio >= 7 ? "<span class='badge rounded-phill bg-success text-white'>APROBADO</span>" : "<span class='badge rounded-phill bg-danger text-white'>REPROBADO</span>"
             }
         });

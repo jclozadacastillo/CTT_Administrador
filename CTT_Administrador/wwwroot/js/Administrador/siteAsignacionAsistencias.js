@@ -154,7 +154,6 @@ function llenarTabla() {
                  </tr>`;
     header.innerHTML = htmlHeader;
     listaCalificaciones.forEach((item, index) => {
-        console.log(item);
         const allow = (item.tiempoLimite >= 0 || item.tiempoLimiteAtraso >= 0);
         editable = allow;
 

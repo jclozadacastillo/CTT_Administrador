@@ -137,7 +137,7 @@ function llenarTabla() {
         htmlHeader += `<th>Nota ${item.split("nota")[1]}</th>
         `
     });
-    htmlHeader += `<th>Faltas</th>
+    htmlHeader += `<th>Asistencia</th>
                  <th>Promedio</th>
                  <th>Estado</th>
                  </tr>`;

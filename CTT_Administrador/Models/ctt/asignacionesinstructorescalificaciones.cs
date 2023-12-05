@@ -20,13 +20,11 @@ public partial class asignacionesinstructorescalificaciones
     [StringLength(1)]
     public string? paralelo { get; set; }
 
-    [Column(TypeName = "date")]
-    public DateTime? fechaLimiteNotas { get; set; }
+    public DateOnly? fechaLimiteNotas { get; set; }
 
     public sbyte? atrasoNotas { get; set; }
 
-    [Column(TypeName = "date")]
-    public DateTime? fechaLimiteNotasAtraso { get; set; }
+    public DateOnly? fechaLimiteNotasAtraso { get; set; }
 
     [Column(TypeName = "timestamp")]
     public DateTime? fechaRegistro { get; set; }

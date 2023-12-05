@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
 
 namespace CTT_Administrador.Models.ctt;
 
@@ -32,6 +33,8 @@ public partial class cttContext : DbContext
     public virtual DbSet<centrosuniandes> centrosuniandes { get; set; }
 
     public virtual DbSet<clientesfacturas> clientesfacturas { get; set; }
+
+    public virtual DbSet<convenios> convenios { get; set; }
 
     public virtual DbSet<creditos> creditos { get; set; }
 
@@ -78,10 +81,14 @@ public partial class cttContext : DbContext
     public virtual DbSet<usuarios> usuarios { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseMySQL("name=ctt");
+        => optionsBuilder.UseMySql("name=ctt", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.33-mysql"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder
+            .UseCollation("utf8mb4_0900_ai_ci")
+            .HasCharSet("utf8mb4");
+
         modelBuilder.Entity<api_logs>(entity =>
         {
             entity.HasKey(e => e.idLog).HasName("PRIMARY");
@@ -117,7 +124,9 @@ public partial class cttContext : DbContext
 
         modelBuilder.Entity<calificaciones>(entity =>
         {
-            entity.HasKey(e => new { e.idMatricula, e.idGrupoCurso, e.idCurso }).HasName("PRIMARY");
+            entity.HasKey(e => new { e.idMatricula, e.idGrupoCurso, e.idCurso })
+                .HasName("PRIMARY")
+                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
             entity.Property(e => e.aprobado).HasDefaultValueSql("'0'");
             entity.Property(e => e.esExcento).HasDefaultValueSql("'0'");
@@ -157,6 +166,17 @@ public partial class cttContext : DbContext
             entity.HasKey(e => e.idCliente).HasName("PRIMARY");
 
             entity.Property(e => e.idTipoDocumento).IsFixedLength();
+        });
+
+        modelBuilder.Entity<convenios>(entity =>
+        {
+            entity.HasKey(e => e.idConvenio).HasName("PRIMARY");
+
+            entity.Property(e => e.activo).HasDefaultValueSql("'1'");
+            entity.Property(e => e.permanete).HasDefaultValueSql("'0'");
+            entity.Property(e => e.sinConvenio).HasDefaultValueSql("'0'");
+
+            entity.HasOne(d => d.idClienteNavigation).WithMany(p => p.convenios).HasConstraintName("convenios_ibfk_1");
         });
 
         modelBuilder.Entity<creditos>(entity =>
@@ -221,6 +241,7 @@ public partial class cttContext : DbContext
         {
             entity.HasKey(e => e.idEstadoPago).HasName("PRIMARY");
 
+            entity.Property(e => e.idEstadoPago).ValueGeneratedNever();
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
         });
 

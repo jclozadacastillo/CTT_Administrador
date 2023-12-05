@@ -31,5 +31,8 @@ public partial class clientesfacturas
     public string? email { get; set; }
 
     [InverseProperty("idClienteNavigation")]
+    public virtual ICollection<convenios> convenios { get; set; } = new List<convenios>();
+
+    [InverseProperty("idClienteNavigation")]
     public virtual ICollection<pagosmatriculas> pagosmatriculas { get; set; } = new List<pagosmatriculas>();
 }

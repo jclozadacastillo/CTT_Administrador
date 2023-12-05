@@ -17,8 +17,7 @@ public partial class pagosmatriculas
 
     public int? idMatricula { get; set; }
 
-    [Column(TypeName = "date")]
-    public DateTime? fechaPago { get; set; }
+    public DateOnly? fechaPago { get; set; }
 
     [StringLength(25)]
     public string? numeroFactura { get; set; }
@@ -29,7 +28,7 @@ public partial class pagosmatriculas
 
     public int? idCliente { get; set; }
 
-    [Precision(10)]
+    [Precision(10, 2)]
     public decimal? valor { get; set; }
 
     [StringLength(50)]

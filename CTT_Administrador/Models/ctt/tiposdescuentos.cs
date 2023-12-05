@@ -14,7 +14,7 @@ public partial class tiposdescuentos
     [StringLength(100)]
     public string? nombreDescuento { get; set; }
 
-    [Precision(10)]
+    [Precision(10, 2)]
     public decimal? porcentaje { get; set; }
 
     public sbyte? activo { get; set; }

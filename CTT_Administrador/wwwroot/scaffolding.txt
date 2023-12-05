@@ -1,2 +1,3 @@
 ﻿Scaffold-DbContext name=ctt MySql.EntityFrameworkCore -OutputDir Models/ctt -f -UseDatabaseNames -NoPluralize -DataAnnotations -Context cttContext
 dotnet ef dbcontext scaffold name=ctt MySql.EntityFrameworkCore -o Models/ctt -f --no-pluralize --use-database-names -c cttContext
+Scaffold-DbContext name=ctt Pomelo.EntityFrameworkCore.MySql -OutputDir Models/ctt -f -UseDatabaseNames -NoPluralize -DataAnnotations -Context cttContext

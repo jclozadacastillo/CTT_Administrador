@@ -57,7 +57,9 @@ namespace CTT_Administrador.Controllers.Administrador
             try
             {
                 string sql = @"
-                SELECT distinct(p.idPeriodo),p.detalle
+                SELECT distinct(p.idPeriodo),p.detalle,
+                (datediff(current_date(),p.fechaInicio)>=0 AND
+                datediff(p.fechaFin,current_date())>=0) as vigente
                 FROM gruposcursos g
                 inner join cursos c on c.idCurso = g.idCurso
                 inner join periodos p on p.idPeriodo = g.idPeriodo
@@ -74,8 +76,6 @@ namespace CTT_Administrador.Controllers.Administrador
                 from cursos_mallas cm))
                 and c.activo =1 and g.activo=1
                 and p.activo = 1 and m.activa = 1
-                and datediff(current_date(),p.fechaInicio)>=0
-                and datediff(p.fechaFin,current_date())>=0
                 and (c.esVisible = 0 or c.esVisible is null)
                 ";
                 return Ok(await dapper.QueryAsync(sql));

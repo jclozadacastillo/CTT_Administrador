@@ -6,6 +6,7 @@ const modal = new bootstrap.Modal(modalDatos, {
 let idAsignacion = 0;
 let activo = 1;
 const mayusculas = true;
+let listaPeriodos = [];
 (async function () {
     if (mayusculas) frmDatos.classList.add("to-uppercase");
     activarValidadores(frmDatos);
@@ -15,7 +16,7 @@ const mayusculas = true;
     $(idInstructor).select2({ dropdownParent: modalDatos });
     $(idCurso).select2({ dropdownParent: modalDatos });
     await listar();
-    await comboPeriodos();
+    await listarPeriodos();
     await comboInstructores();
     loader.hidden = true;
     content.hidden = false;
@@ -30,6 +31,7 @@ function nuevo() {
     idCurso.removeAttribute("disabled");
     idAsignacion = 0;
     activo = true;
+    comboPeriodos();
     limpiarForm(frmDatos);
     modal.show();
     modalDatosLabel.innerHTML = "Nuevo registro";
@@ -122,18 +124,23 @@ async function listar() {
     }
 }
 
-async function comboPeriodos() {
+async function listarPeriodos() {
     try {
         const url = `${baseUrl}comboPeriodos`;
         const res = (await axios.get(url)).data;
-        let html = "<option value=''>Seleccione</option>";
-        res.forEach(item => {
-            html += `<option value='${item.idPeriodo}'>${item.detalle}</option>`
-        });
-        idPeriodo.innerHTML = html;
+        listaPeriodos = res;
     } catch (e) {
         handleError(e);
     }
+}
+
+async function comboPeriodos() {
+    let html = "<option value=''>Seleccione</option>";
+    const periodos = idAsignacion == 0 ? [...listaPeriodos].filter(x => x.vigente == 1) : listaPeriodos;
+    periodos.forEach(item => {
+        html += `<option value='${item.idPeriodo}'>${item.detalle}</option>`
+    });
+    idPeriodo.innerHTML = html;
 }
 
 async function comboInstructores() {
@@ -254,6 +261,7 @@ async function editar(_idAsignacion) {
         if (!res) throw new Error("No se han encontrado los datos del elemento seleccionado.");
         modalDatosLabel.innerHTML = "Editar registro";
         idAsignacion = res.idAsignacion;
+        await comboPeriodos();
         activo = res.activo == 1 || res.activo == true ? 1 : 0;
         cargarFormularioInFormNoSelect2(frmDatos, res);
         pasaFaltas.checked = res.pasaFaltas == 1;

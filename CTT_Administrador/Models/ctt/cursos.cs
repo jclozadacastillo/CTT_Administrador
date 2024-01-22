@@ -23,7 +23,7 @@ public partial class cursos
     [StringLength(100)]
     public string? imagen { get; set; }
 
-    [Precision(10, 2)]
+    [Precision(10)]
     public decimal? precioCurso { get; set; }
 
     [StringLength(100)]

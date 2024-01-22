@@ -17,7 +17,7 @@ public partial class cursos_mallas
 
     public int? idCursoAsociado { get; set; }
 
-    [Precision(10, 2)]
+    [Precision(10)]
     public decimal? valor { get; set; }
 
     public sbyte? activo { get; set; }

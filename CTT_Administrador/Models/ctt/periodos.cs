@@ -14,9 +14,11 @@ public partial class periodos
     [StringLength(100)]
     public string? detalle { get; set; }
 
-    public DateOnly? fechaInicio { get; set; }
+    [Column(TypeName = "date")]
+    public DateTime? fechaInicio { get; set; }
 
-    public DateOnly? fechaFin { get; set; }
+    [Column(TypeName = "date")]
+    public DateTime? fechaFin { get; set; }
 
     public sbyte? activo { get; set; }
 }

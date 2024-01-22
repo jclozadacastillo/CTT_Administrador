@@ -14,8 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var cn = builder.Configuration.GetConnectionString("ctt");
 builder.Services.AddControllersWithViews();
-var serverVersion = new MySqlServerVersion(new Version(8, 0,32));
-builder.Services.AddDbContext<cttContext>(op => op.UseMySql(cn,serverVersion));
+//var serverVersion = new MySqlServerVersion(new Version(8, 0,32));
+//builder.Services.AddDbContext<cttContext>(op => op.UseMySql(cn,serverVersion));
+builder.Services.AddDbContextPool<cttContext>(op => op.UseMySQL(cn));
 builder.Services.AddScoped<IDbConnection>(op => new MySqlConnection(cn));
 ConfigurationHelper.Initialize(builder.Configuration, builder.Environment.ContentRootPath);
 builder.Services.AddHttpContextAccessor();

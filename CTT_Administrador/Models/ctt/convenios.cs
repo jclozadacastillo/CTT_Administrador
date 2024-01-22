@@ -14,15 +14,17 @@ public partial class convenios
 
     public int? idCliente { get; set; }
 
-    public DateOnly? fechaInicio { get; set; }
+    [Column(TypeName = "date")]
+    public DateTime? fechaInicio { get; set; }
 
-    public DateOnly? fechaFin { get; set; }
+    [Column(TypeName = "date")]
+    public DateTime? fechaFin { get; set; }
 
     public sbyte? permanete { get; set; }
 
     public sbyte? sinConvenio { get; set; }
 
-    [Precision(5, 2)]
+    [Precision(5)]
     public decimal? porcentaje { get; set; }
 
     public sbyte? activo { get; set; }

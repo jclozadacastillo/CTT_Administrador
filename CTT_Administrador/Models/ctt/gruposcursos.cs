@@ -20,13 +20,17 @@ public partial class gruposcursos
     [StringLength(100)]
     public string? horario { get; set; }
 
-    public DateOnly? fechaInicioMatricula { get; set; }
+    [Column(TypeName = "date")]
+    public DateTime? fechaInicioMatricula { get; set; }
 
-    public DateOnly? fechaFinMatricula { get; set; }
+    [Column(TypeName = "date")]
+    public DateTime? fechaFinMatricula { get; set; }
 
-    public DateOnly? fechaInicioCurso { get; set; }
+    [Column(TypeName = "date")]
+    public DateTime? fechaInicioCurso { get; set; }
 
-    public DateOnly? fechaFinCurso { get; set; }
+    [Column(TypeName = "date")]
+    public DateTime? fechaFinCurso { get; set; }
 
     public int? cupoMinimo { get; set; }
 

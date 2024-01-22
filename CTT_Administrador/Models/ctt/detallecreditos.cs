@@ -15,10 +15,10 @@ public partial class detallecreditos
 
     public int? idCurso { get; set; }
 
-    [Precision(10, 2)]
+    [Precision(10)]
     public decimal? valor { get; set; }
 
-    [Precision(10, 2)]
+    [Precision(10)]
     public decimal? valorPendiente { get; set; }
 
     public sbyte? cancelado { get; set; }

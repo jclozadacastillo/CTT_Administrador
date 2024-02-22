@@ -1,0 +1,147 @@
+﻿@using CTT_Administrador.Auth.Asesor;
+@inject IAuthorizeAsesorTools _auth;
+@{
+    var _v = $"?v={DateTime.Now.Ticks}";
+}
+<!DOCTYPE html>
+<html lang="es-ec">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>CTT DE LOS ANDES: Asesor Comercial @ViewData["Title"]</title>
+    <meta content="ctt,uniandes,andes,language,center" name="description">
+    <meta content="ctt,uniandes,andes,language,center" name="keywords">
+    <!-- Favicons -->
+    <link href="~/lib/utilities/toast/img/icon.png" rel="icon">
+    <link href="~/lib/utilities/toast/img/icon.png" rel="apple-touch-icon">
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
+    <link href="~/templates/asesores/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/templates/asesores/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="~/templates/asesores/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="~/templates/asesores/assets/css/style.css@_v" rel="stylesheet">
+    <link href="~/lib/utilities/datatables/datatables.b5.css" rel="stylesheet" />
+    <link href="~/lib/utilities/select2.css@_v" rel="stylesheet" />
+    <link href="~/lib/utilities/toast/toast.all.css@_v" rel="stylesheet" />
+    <script>const _route = top.location.href.toLowerCase().indexOf("localhost:") >= 0 ? "../../" : "../../../appCec/"</script>
+    <script defer src="~/lib/utilities/jquery-3.6.4.min.js"></script>
+    <script defer src="~/lib/utilities/toast/toast.all.min.js"></script>
+    <script defer src="~/lib/utilities/datatables/datatables.b5.es.min.js"></script>
+    <script defer src="~/templates/asesores/assets/vendor/bootstrap/js/bootstrap.bundle.min.js@_v"></script>
+    <script defer src="~/templates/asesores/assets/js/main.js@_v"></script>
+    <script defer src="~/lib/utilities/select2.js@_v"></script>
+    <script defer src="~/lib/utilities/axios/axios.min.js"></script>
+    <script defer src="~/lib/utilities/forms.js@_v"></script>
+    <script defer src="~/js/Asesores/siteLayoutAsesores.js@_v"></script>
+</head>
+<body>
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center bg-primary">
+        <div class="d-flex align-items-center justify-content-between">
+            <i class="bi bi-list toggle-sidebar-btn text-white"></i>
+            <a href="~/Asesores" class="logo d-flex align-items-center ms-2">
+                <img src="~/lib/utilities/toast/img/logo-blanco910.png" alt="">
+            </a>
+        </div>
+        <!-- End Logo -->
+        <div class="search-bar" hidden>
+            <form class="search-form d-flex align-items-center" method="POST" action="#">
+                <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+                <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+            </form>
+        </div>
+        <!-- End Search Bar -->
+        <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+                <li class="nav-item dropdown pe-3">
+                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                        <img src="~/templates/asesores/assets/img/user-icon.jpg" style="filter:brightness(1.19)" alt="Profile" class="rounded-circle me-1">
+                        <span class="d-none d-md-block dropdown-toggle ps-2 text-white">@_auth.getName()</span>
+                    </a><!-- End Profile Iamge Icon -->
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile" style="font-size:13px">
+                        <li class="dropdown-header ">
+                            <div class="text-center mb-3">
+                                <img src="~/templates/asesores/assets/img/user-icon.jpg" width="64" class="rounded-circle" />
+                            </div>
+                            <h6 style="font-size:14px">@_auth.getName()</h6>
+                            <span>Asesor Comercial</span>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li hidden>
+                            <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                                <i class="bi bi-person"></i>
+                                <span>My Profile</span>
+                            </a>
+                        </li>
+                        <li hidden>
+                            <hr class="dropdown-divider">
+                        </li>
+                        @*
+                        <li hidden>
+                        <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                        <i class="bi bi-gear"></i>
+                        <span>Account Settings</span>
+                        </a>
+                        </li>
+                        <li hidden>
+                        <hr class="dropdown-divider">
+                        </li>
+                        <li hidden>
+                        <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                        <i class="bi bi-question-circle"></i>
+                        <span>Need Help?</span>
+                        </a>
+                        </li>
+                        <li>
+                        <hr class="dropdown-divider">
+                        </li>
+                        *@
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="javascript:;" onclick="_logout()">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Sign Out</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- End Profile Dropdown Items -->
+                </li>
+                <!-- End Profile Nav -->
+            </ul>
+        </nav>
+        <!-- End Icons Navigation -->
+    </header>
+    <!-- End Header -->
+    <!-- ======= Sidebar ======= -->
+    <aside id="sidebar" class="sidebar">
+        <ul class="sidebar-nav" id="sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#navReportes" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-pencil"></i><span>Académico</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="navReportes" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="~/Asesores/Estudiantes" data-menu>
+                            <i class="bi bi-circle"></i><span>Estudiantes</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </aside>
+    <main id="main" class="main">
+        <div class="main-container">
+            <div class="loader" id="loader" hidden>
+                <span class="spinner-border text-primary" role="status"></span>
+            </div>
+            @RenderBody()
+        </div>
+    </main>
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center">
+        <i class="bi bi-arrow-up-short"></i>
+    </a>
+</body>
+</html>

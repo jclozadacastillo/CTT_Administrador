@@ -1,8 +1,10 @@
 using CTT_Administrador.Auth;
 using CTT_Administrador.Auth.Administrador;
+using CTT_Administrador.Auth.Asesor;
 using CTT_Administrador.Auth.Docente;
 using CTT_Administrador.Auth.Estudiante;
 using CTT_Administrador.Models.ctt;
+using CTT_Administrador.Utilities;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -11,6 +13,7 @@ using Rotativa.AspNetCore;
 using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+Tools.Initialize(builder.Configuration, builder.Environment.WebRootPath);
 // Add services to the container.
 var cn = builder.Configuration.GetConnectionString("ctt");
 builder.Services.AddControllersWithViews();
@@ -29,6 +32,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.TryAddScoped<IAuthorizeAdministradorTools, AuthorizeAdministradorTools>();
 builder.Services.TryAddScoped<IAuthorizeDocenteTools, AuthorizeDocenteTools>();
 builder.Services.TryAddScoped<IAuthorizeEstudianteTools, AuthorizeEstudianteTools>();
+builder.Services.TryAddScoped<IAuthorizeAsesorTools, AuthorizeAsesorTools>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -48,6 +52,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Administrador}/{action=Index}/{id?}");
+    pattern: "{controller=Asesores}/{action=Index}/{id?}");
 RotativaConfiguration.Setup(app.Environment.WebRootPath);
 app.Run();

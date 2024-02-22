@@ -33,10 +33,23 @@ async function comboTiposDocumentos() {
 async function listar() {
     try {
         const url = `${baseUrl}listar`;
-        const res = (await axios.get(url)).data;
         await $(tableDatos).DataTable({
             bDestroy: true,
-            data: res,
+            serverSide: true,
+            processing:false,
+            ajax: async function (_data, resolve) {
+                try {
+                    const res = (await axios.post(url, _data,{
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })).data;
+                    resolve(res);
+                } catch (e) {
+                    handleError(e);
+                    resolve([]);
+                }
+            },
             columns: [
                 {
                     data: "idEstudiante",
@@ -87,21 +100,35 @@ async function listar() {
                     }
                 },
                 { title: "Documento", data: "documentoIdentidad", class: "w-cedula" },
-                { title: "Primer Apellido", data: "primerApellido", class: "w-25" },
-                { title: "Segundo Apellido", data: "segundoApellido", class: "w-25" },
-                { title: "Primer Nombre", data: "primerNombre", class: "w-25" },
-                { title: "Segundo Nombre", data: "segundoNombre", class: "w-25" },
+                { title: "Estudiante", data: "estudiante",class:"text-nowrap" },
+                {
+                    title: "Celular",
+                    data: "celular",
+                    render: (data) => {
+                        return data||"<small class='text-muted'>SIN REGISTRO</small>"
+                    }
+                },
+                {
+                    title: "Email",
+                    data: "email",
+                    class: "w-50",
+                    render: (data) => {
+                        return data || "<small class='text-muted'>SIN REGISTRO</small>"
+                    }
+                }
             ],
             columnDefs: [
                 { targets: [0, 1], orderable: false }
             ],
-            aaSorting: []
+            order: [[3, "ASC"]],
         })
     } catch (e) {
         handleError(e);
     }
 }
-
+function reloadDataTable() {
+    setTimeout(function(){$(tableDatos).DataTable().ajax.reload();}, 100);
+}
 function nuevo() {
     idEstudiante = 0;
     activo = true;
@@ -122,7 +149,7 @@ async function guardar() {
         await axios.post(url, data);
         toastSuccess("<b>Guardado</b> con éxito");
         modal.hide();
-        listar();
+        reloadDataTable();
     } catch (e) {
         handleError(e);
     } finally {

@@ -104,6 +104,7 @@ async function listar() {
                 {
                     title: "Celular",
                     data: "celular",
+                    class:"text-nowrap",
                     render: (data) => {
                         return data||"<small class='text-muted'>SIN REGISTRO</small>"
                     }
@@ -111,7 +112,7 @@ async function listar() {
                 {
                     title: "Email",
                     data: "email",
-                    class: "w-50",
+                    class: "w-50 text-nowrap",
                     render: (data) => {
                         return data || "<small class='text-muted'>SIN REGISTRO</small>"
                     }

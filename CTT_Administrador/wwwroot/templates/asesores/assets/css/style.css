@@ -2009,3 +2009,9 @@ table.table-custom-asesores thead tr th {
 .modal-header .modal-title{
     color:white !important;
 }
+
+.nav-link.active{
+    background-color: rgba(var(--primary-rgb), 0.10);
+    color: black;
+    font-weight: 600;
+}

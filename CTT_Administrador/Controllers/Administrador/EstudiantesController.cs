@@ -1,4 +1,5 @@
 ﻿using CTT_Administrador.Auth.Administrador;
+using CTT_Administrador.Auth.Asesor;
 using CTT_Administrador.Models.ctt;
 using CTT_Administrador.Utilities;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CTT_Administrador.Controllers.Administrador
 {
-    [AuthorizeAdministrador]
+
     public class EstudiantesController : Controller
     {
         private readonly cttContext _context;
@@ -17,7 +18,6 @@ namespace CTT_Administrador.Controllers.Administrador
             _context = context;
         }
 
-        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> listar([FromBody] Tools.DataTableModel _params)
         {
@@ -44,7 +44,6 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
-        [AuthorizeAdministrador]
         [HttpGet]
         public async Task<IActionResult> comboTiposDocumentos()
         {
@@ -58,7 +57,6 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
-        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> unDato(int idEstudiante)
         {
@@ -72,7 +70,6 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
-        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> guardar(estudiantes _data)
         {
@@ -101,7 +98,6 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
-        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> activar(int idEstudiante)
         {

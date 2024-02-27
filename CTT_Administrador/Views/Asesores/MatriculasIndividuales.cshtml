@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Matriculas Individuales";
+    Layout = "~/Views/Shared/_LayoutAsesor.cshtml";
+}
+<div class="container-fluid" id="content">
+    <div class="row">
+        <div class="col-auto me-0 pe-0 form-title">
+            <h4>Matriculas Individuales</h4>
+        </div>
+    </div>
+    <hr>
+    <form class="row" id="frmFiltros">
+        <div class="col-sm-4">
+            <label class="fs-sm">Periodo</label>
+            <select class="form-select form-select-sm" id="idPeriodo" name="idPeriodo" onchange="listar()"></select>
+        </div>
+        <div class="col-sm-4">
+            <label class="fs-sm">Tipo</label>
+            <select class="form-select form-select-sm" id="idTipoCurso" name="idTipoCurso" onchange="listar()"></select>
+        </div>
+        <div class="col-sm-4" id="containerBtn">
+        </div>
+    </form>
+
+    <div class="table-responsive p-1 mt-4">
+        <table class="table table-sm w-100 table-custom-asesores" id="tableDatos"></table>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDatos" tabindex="-1" aria-labelledby="modalDatosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h1 class="modal-title text-white" id="modalDatosLabel">Modal title</h1>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="row" id="frmDatos">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <label class="fs-sm">Estudiante</label>
+                            <select class="form-select form-select-sm" id="idEstudiante" name="idEstudiante" onchange="handleCursos()"></select>
+                            <div class="invalid-feedback">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label class="fs-sm" id="labelGrupoCurso"></label>
+                        <select class="form-select form-select-sm" id="idGrupoCurso" name="idGrupoCurso"></select>
+                        <div class="invalid-feedback">
+                            * Campo requerido
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-cerrar
+                        data-bs-dismiss="modal">
+                    Cerrar
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" data-guardar
+                        onclick="guardar()">
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script defer src="~/js/asesores/siteMatriculasIndividuales.js?v=@DateTime.Now.Ticks"></script>

@@ -219,7 +219,6 @@ const cargarFormularioInForm = (form, datos) => {
     }
 }
 
-
 const cargarFormularioInFormNoSelect2 = (form, datos) => {
     try {
         if (!datos) throw new Error("No se han enviado los datos o el form");
@@ -240,7 +239,7 @@ const cargarFormularioInFormNoSelect2 = (form, datos) => {
                 }
                 element.value = datos[key];
                 //if ($(element).data('select2')) {
-                //   $(element).val(datos[key]).trigger('change.select2');      
+                //   $(element).val(datos[key]).trigger('change.select2');
                 //    return;
                 //}
                 if (element.getAttribute("type") == "date") {
@@ -548,18 +547,18 @@ const decimal = async (e) => {
         e.classList.remove("is-invalid");
         const msg = e.parentElement.querySelector(".invalid-feedback");
         let valido = true;
-        if(!!msg)msg.innerText = "* Campo requerido";
+        if (!!msg) msg.innerText = "* Campo requerido";
         if (e.value.trim() == "") {
             e.classList.add("is-invalid");
             valido = false;
         }
         if (e.value.split(",")[1] == "") {
-        if (!!msg) msg.innerText = "* Valor inválido";
+            if (!!msg) msg.innerText = "* Valor inválido";
             e.classList.add("is-invalid");
             valido = false;
         }
         if (parseFloat(e.value.replaceAll(",", ".")) < 0) {
-        if (!!msg) msg.innerText = "* Mínimo 0";
+            if (!!msg) msg.innerText = "* Mínimo 0";
             e.classList.add("is-invalid");
             valido = false;
         }
@@ -966,7 +965,7 @@ const validarRangoFechas = (desde, hasta) => {
     });
 }
 
-function loaderShow(){
+function loaderShow() {
     bloquearBotones();
     document.querySelector("html").classList.add("loading");
 }
@@ -1068,7 +1067,7 @@ function limpiarValidadores(form) {
 
 function formToUpperCase(form) {
     if (!!form) form.querySelectorAll("input,select,textarea").forEach((item) => {
-        if (item.dataset?.validate == "email" || item.hasAttribute("password") || item.type=="password" || item.hasAttribute("no-uppercase")) return;
+        if (item.dataset?.validate == "email" || item.hasAttribute("password") || item.type == "password" || item.hasAttribute("no-uppercase")) return;
         item.value = item.value.toUpperCase()
     });
 }
@@ -1087,13 +1086,11 @@ function crearPasswordPreview() {
             const element = document.querySelector(`#_pvw_${item.id}`);
             if (!element) {
                 const elementHTML = `<a id="_pvw_${item.id}" href='javascript:;' onclick='__handlePasswordView("${item.id}")' tabindex='-1'
-                style='position:absolute;left:${itemBounds.x -19}px;margin-top:-${((itemBounds.height / 1.3) + 1.72).toFixed(2)}px;z-index:99999'><i class='bi-eye-fill text-blue'></i></a>`;
+                style='position:absolute;left:${itemBounds.x - 19}px;margin-top:-${((itemBounds.height / 1.3) + 1.72).toFixed(2)}px;z-index:99999'><i class='bi-eye-fill text-blue'></i></a>`;
                 item.insertAdjacentHTML("afterend", elementHTML);
             } else {
                 item.value == "" ? element.hidden = true : element.removeAttribute("hidden");
             }
-
-
         })
     });
 }
@@ -1128,3 +1125,43 @@ const jsonHeaders = {
 function toBase64(e) {
     return CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(e));
 };
+
+async function formToJsonTypes(form) {
+    return new Promise(async (resolve) => {
+        let obj = {};
+        try {
+            const referencias = ["numeros", "decimal", "numeros-no-cero", "numeros-no-validate"];
+            let entradas = Array.from(form);
+            let numeros = await new Promise((res) => {
+                let numericos = [];
+                for (let index = 0; index < entradas.length; index++) {
+                    try {
+                        const element = entradas[index];
+                        const validate = element?.dataset?.validate;
+                        if (!!validate && !element?.dataset?.telefono) {
+                            if (!!referencias.find((x) => x == validate)) numericos.push(index);
+                        }
+                    } catch (e) {
+                        console.warn(e);
+                    }
+                    if (entradas.length - 1 == index) res(numericos);
+                }
+            });
+            let formData = form;
+            let list = Array.from(formData);
+            for (let index = 0; index < list.length; index++) {
+                const key = list[index].name;
+                const value = list[index].value;
+                obj[key] = numeros.findIndex((x) => x == index) >= 0 ? parseFloat(value.replaceAll(",", ".")) : value == "" ? null : value;
+                if (index == list.length - 1) resolve(obj);
+            }
+        } catch (e) {
+            console.warn(e);
+            resolve(obj);
+        }
+    });
+}
+function capitalize(s) {
+    s = s.toLocaleLowerCase();
+    return s && s[0].toUpperCase() + s.slice(1);
+}

@@ -1,12 +1,12 @@
 ﻿@{
-    ViewData["Title"] = "Estudiantes";
+    ViewData["Title"] = "Clientes Facturas";
     Layout = "~/Views/Shared/_LayoutAsesor.cshtml";
 }
 
 <div class="container-fluid" id="content" hidden>
     <div class="row">
         <div class="col-auto me-0 pe-0 form-title">
-            <h4>Estudiantes</h4>
+            <h4>Clientes Facturas</h4>
         </div>
         <div class="col-auto ">
             <button class="btn btn-sm btn-success text-white btn-new" title="Nuevo registro" onclick="nuevo()">
@@ -42,7 +42,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <label class="fs-sm">Documento</label>
-                                <input type="text" class="form-control form-control-sm" data-validate="cedula" id="documentoIdentidad" name="documentoIdentidad"
+                                <input type="text" class="form-control form-control-sm" data-validate="cedula" id="documento" name="documento"
                                        maxlength="14">
                                 <div class="invalid-feedback">
                                     * Campo requerido
@@ -50,25 +50,10 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-3">
-                                <label class="fs-sm">Primer Nombre</label>
-                                <input type="text" class="form-control form-control-sm" id="primerNombre" name="primerNombre"
-                                       maxlength="40">
-                            </div>
-                            <div class="col-sm-3">
-                                <label class="fs-sm">Segundo Nombre</label>
-                                <input type="text" class="form-control form-control-sm" id="segundoNombre" name="segundoNombre" data-validate="no-validate"
-                                       maxlength="40">
-                            </div>
-                            <div class="col-sm-3">
-                                <label class="fs-sm">Primer Apellido</label>
-                                <input type="text" class="form-control form-control-sm" id="primerApellido" name="primerApellido"
-                                       maxlength="40">
-                            </div>
-                            <div class="col-sm-3">
-                                <label class="fs-sm">Segundo Apellido</label>
-                                <input type="text" class="form-control form-control-sm" id="segundoApellido" name="segundoApellido"
-                                       maxlength="40" data-validate="no-validate">
+                            <div class="col-sm-12">
+                                <label class="fs-sm">Razón Social</label>
+                                <input type="text" class="form-control form-control-sm" id="nombre" name="nombre"
+                                       maxlength="100">
                             </div>
                             <div class="col-sm-12">
                                 <label class="fs-sm">Dirección</label>
@@ -77,8 +62,8 @@
                             <div class="col-sm-3">
                                 <label class="fs-sm">Celular</label>
                                 <input type="text" class="form-control form-control-sm text-end"
-                                       id="celular" name="celular"
-                                       maxlength="10">
+                                       id="telefono" name="telefono"
+                                       maxlength="10" data-validate="no-validate">
                             </div>
                             <div class="col-sm-6">
                                 <label class="fs-sm">Correo</label>
@@ -88,17 +73,6 @@
                                 <div class="invalid-feedback">
                                     * Campo requerido
                                 </div>
-                            </div>
-                            <div class="col-sm-4">
-                                <label class="fs-sm">Sexo</label>
-                                <select class="form-select form-select-sm">
-                                    <option value="MASCULINO">MASCULINO</option>
-                                    <option value="FEMENINO">FEMENINO</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-12">
-                                <label class="fs-sm">Observaciones</label>
-                                <textarea class="form-control form-control-sm" id="observacion" name="observacion" data-validate="no-validate" maxlength="400"></textarea>
                             </div>
                         </div>
                     </form>
@@ -118,4 +92,4 @@
     </div>
 </div>
 
-<script defer src="~/js/administrador/siteEstudiantes.js?v=@DateTime.Now.Ticks"></script>
+<script defer src="~/js/Asesores/siteClientes.js?v=@DateTime.Now.Ticks"></script>

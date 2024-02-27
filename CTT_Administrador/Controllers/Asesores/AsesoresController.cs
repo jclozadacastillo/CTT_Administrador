@@ -28,7 +28,30 @@ namespace CTT_Administrador.Controllers.Asesores
             if (!_auth.validateToken()) return RedirectToAction("Login", "Asesores");
             return View();
         }
+
         public IActionResult Estudiantes()
+        {
+            if (!_auth.validateToken()) return RedirectToAction("Login", "Asesores");
+            return View();
+        }
+        public IActionResult Clientes()
+        {
+            if (!_auth.validateToken()) return RedirectToAction("Login", "Asesores");
+            return View();
+        }
+
+        public IActionResult MatriculasIndividuales()
+        {
+            if (!_auth.validateToken()) return RedirectToAction("Login", "Asesores");
+            return View();
+        }
+
+        public IActionResult MatriculasInHouse()
+        {
+            if (!_auth.validateToken()) return RedirectToAction("Login", "Asesores");
+            return View();
+        }
+        public IActionResult Recaudacion()
         {
             if (!_auth.validateToken()) return RedirectToAction("Login", "Asesores");
             return View();

@@ -39,4 +39,7 @@ public partial class gruposcursos
     public sbyte? esVisible { get; set; }
 
     public sbyte? activo { get; set; }
+
+    [StringLength(50)]
+    public string? cohorte { get; set; }
 }

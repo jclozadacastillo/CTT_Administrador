@@ -38,6 +38,9 @@ public partial class matriculas
 
     public sbyte? legalizado { get; set; }
 
+    [Precision(12)]
+    public decimal? deuda { get; set; }
+
     [InverseProperty("idMatriculaNavigation")]
     public virtual ICollection<pagosmatriculas> pagosmatriculas { get; set; } = new List<pagosmatriculas>();
 }

@@ -1926,11 +1926,10 @@ table.table-hover tr td[colspan="11"]:hover {
     appearance: none !important;
 }
 
-    #tableDatos_length select:hover > option {
-        background: #012970 !important;
-        color: white !important;
-        font-size: 50px !important;
-    }
+    /*#tableDatos_length select:hover > option {*/
+        /*background: #012970 !important;*/
+        /*color: white !important;
+    }*/
 
 @media (max-width:700px) {
     #tableDatos_length {
@@ -2002,6 +2001,12 @@ table.table-custom-asesores thead tr th {
     color:white;
 }
 
+table.table-custom-asesores tbody tr:hover {
+    -webkit-box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.10);
+    -moz-box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.10);
+    box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.10);
+}
+
 .btn-close.btn-close-white{
     filter:invert(100%) !important
 }
@@ -2014,4 +2019,27 @@ table.table-custom-asesores thead tr th {
     background-color: rgba(var(--primary-rgb), 0.10);
     color: black;
     font-weight: 600;
+}
+.w-btn{
+    width:37px;
+}
+
+.btn-option-table{
+    border:none;
+    background:none;
+    box-shadow:none;
+    width:auto;
+    height:auto;
+    padding:0;
+}
+
+.btn-option-table i{
+    font-size:14px
+}
+
+.btn-option-table:hover{
+    filter:brightness(1.5);
+}
+.w-fecha{
+    width:73px !important;
 }

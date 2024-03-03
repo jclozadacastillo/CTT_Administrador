@@ -117,6 +117,7 @@ public partial class cttContext : DbContext
             entity.Property(e => e.aprobado).HasDefaultValueSql("'0'");
             entity.Property(e => e.esExcento).HasDefaultValueSql("'0'");
             entity.Property(e => e.faltas).HasDefaultValueSql("'0.00'");
+            entity.Property(e => e.fechaRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.justificaFaltas).HasDefaultValueSql("'0'");
             entity.Property(e => e.nota1).HasDefaultValueSql("'0.00'");
             entity.Property(e => e.nota2).HasDefaultValueSql("'0.00'");

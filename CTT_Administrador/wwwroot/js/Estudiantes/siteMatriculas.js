@@ -268,7 +268,7 @@ async function generarMatricula() {
         }
         if (! await validarTodo(frmDatos)) throw new Error("Verifique los campos requeridos");
         if (idCurso.querySelectorAll("input:checked").length == 0) throw new Error("Debe seleccionar al menos un modulo");
-        if (!((parseFloat(parseFloat(valor.value.replaceAll(",", ".")).toFixed(2)) == parseFloat(valorPago.toFixed(2))))) throw new Error("Su pago no puede ser diferente al valor a cancelar.")
+        if (!((parseFloat(parseFloat(valor.value.replaceAll(",", ".")).toFixed(2)) == parseFloat(valorPago.toFixed(2))))) throw new Error("Su pago no puede ser diferente al valor a cancelar.");
         if (!await toastPreguntar(`
         <i class='fs-lg bi-exclamation-triangle-fill text-warning'></i>
         <div class='alert-secondary'>

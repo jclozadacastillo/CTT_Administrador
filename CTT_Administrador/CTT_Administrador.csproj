@@ -26,9 +26,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Archivos\Estudiantes\1803769759\Comprobantes\" />
     <Folder Include="Models\ctt\mysql\" />
     <Folder Include="wwwroot\js\Estudiantes\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Archivos\Estudiantes\1800849331\Comprobantes\4.pdf" />
+    <None Include="wwwroot\Archivos\Estudiantes\1803769759\Comprobantes\2.pdf" />
+    <None Include="wwwroot\Archivos\Estudiantes\1803769759\Comprobantes\3.pdf" />
+    <None Include="wwwroot\Archivos\Pagos\Asesoradmin\Comprobantes\1803769759\Matricula_4456\5.pdf" />
+    <None Include="wwwroot\Archivos\Pagos\Asesoradmin\Comprobantes\1803769759\Matricula_4459\6.png" />
+    <None Include="wwwroot\Archivos\Pagos\Asesoradmin\Comprobantes\1803769759\Matricula_4460\7.pdf" />
   </ItemGroup>
 
   <ItemGroup>

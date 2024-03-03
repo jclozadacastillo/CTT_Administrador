@@ -2043,3 +2043,29 @@ table.table-custom-asesores tbody tr:hover {
 .w-fecha{
     width:73px !important;
 }
+
+.alert.alert-light {
+    /* From https://css.glass */
+    background: rgba(255, 255, 255, 1);
+    border-radius: 5.5px;
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(7.8px);
+    -webkit-backdrop-filter: blur(7.8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin-top:3px;
+    margin-bottom:3px;
+}
+
+.form-check-label{
+    font-size:14px !important;
+}
+
+
+.fs-xs{
+    font-size:10px !important;
+}
+
+.btn-sm{
+    font-size:13px !important;
+    padding:4px 9px !important;
+}

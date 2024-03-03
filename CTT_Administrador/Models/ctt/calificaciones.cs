@@ -54,4 +54,7 @@ public partial class calificaciones
     public sbyte? justificaFaltas { get; set; }
 
     public sbyte? suspendido { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? fechaRegistro { get; set; }
 }

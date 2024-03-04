@@ -41,6 +41,10 @@ public partial class matriculas
     [Precision(12)]
     public decimal? deuda { get; set; }
 
+    public sbyte? inHouse { get; set; }
+
+    public int? idGrupoInHouse { get; set; }
+
     [InverseProperty("idMatriculaNavigation")]
     public virtual ICollection<pagosmatriculas> pagosmatriculas { get; set; } = new List<pagosmatriculas>();
 }

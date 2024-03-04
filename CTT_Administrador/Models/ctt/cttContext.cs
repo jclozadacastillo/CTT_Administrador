@@ -11,6 +11,8 @@ public partial class cttContext : DbContext
     {
     }
 
+    public virtual DbSet<__efmigrationshistory> __efmigrationshistory { get; set; }
+
     public virtual DbSet<api_logs> api_logs { get; set; }
 
     public virtual DbSet<api_usuarios> api_usuarios { get; set; }
@@ -49,6 +51,10 @@ public partial class cttContext : DbContext
 
     public virtual DbSet<gruposcursos> gruposcursos { get; set; }
 
+    public virtual DbSet<gruposinhouse> gruposinhouse { get; set; }
+
+    public virtual DbSet<gruposinhousemodulos> gruposinhousemodulos { get; set; }
+
     public virtual DbSet<instructores> instructores { get; set; }
 
     public virtual DbSet<matriculas> matriculas { get; set; }
@@ -77,6 +83,11 @@ public partial class cttContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<__efmigrationshistory>(entity =>
+        {
+            entity.HasKey(e => e.MigrationId).HasName("PRIMARY");
+        });
+
         modelBuilder.Entity<api_logs>(entity =>
         {
             entity.HasKey(e => e.idLog).HasName("PRIMARY");
@@ -255,6 +266,20 @@ public partial class cttContext : DbContext
             entity.Property(e => e.esVisible).HasDefaultValueSql("'1'");
         });
 
+        modelBuilder.Entity<gruposinhouse>(entity =>
+        {
+            entity.HasKey(e => e.idGrupoInHouse).HasName("PRIMARY");
+
+            entity.Property(e => e.fechaRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
+        modelBuilder.Entity<gruposinhousemodulos>(entity =>
+        {
+            entity.HasKey(e => e.idGrupoInHouseModulo).HasName("PRIMARY");
+
+            entity.HasOne(d => d.idGrupoInHouseNavigation).WithMany(p => p.gruposinhousemodulos).HasConstraintName("gruposinhousemodulos_ibfk_1");
+        });
+
         modelBuilder.Entity<instructores>(entity =>
         {
             entity.HasKey(e => e.idInstructor).HasName("PRIMARY");
@@ -268,6 +293,7 @@ public partial class cttContext : DbContext
 
             entity.Property(e => e.esUniandes).HasDefaultValueSql("'0'");
             entity.Property(e => e.fechaRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.inHouse).HasDefaultValueSql("'0'");
             entity.Property(e => e.legalizado).HasDefaultValueSql("'0'");
         });
 

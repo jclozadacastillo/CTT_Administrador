@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Matriculas In-House";
     Layout = "~/Views/Shared/_LayoutAsesor.cshtml";
 }
@@ -8,6 +7,9 @@
     <div class="row">
         <div class="col-auto me-0 pe-0 form-title">
             <h4>Matriculas In-House</h4>
+        </div>
+        <div class="col-auto">
+            <a class="btn btn-success btn-sm" download="ctt_plantilla_in_house.xlsx" href="~/resources/ctt_plantilla_in_house.xlsx"><i class="bi-file-excel me-1"></i>Plantilla</a>
         </div>
     </div>
     <hr>
@@ -29,3 +31,136 @@
     </div>
 </div>
 
+<div class="modal fade" id="modalDatos" tabindex="-1" aria-labelledby="modalDatosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h1 class="modal-title text-white" id="modalDatosLabel">Modal title</h1>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body bg-light px-2">
+                <form class="row mx-0 px-3" id="frmDatos">
+                    <div class="row mx-0 px-1 alert alert-light">
+                        <div class="col-8">
+                            <label class="fs-6 fw-bold">Cliente</label>
+                            <select class="form-select form-select-sm col-sm-6" id="idCliente" name="idCliente" onchange="handleCursos()"></select>
+                            <div class="invalid-feedback">
+                            </div>
+                        </div>
+                        <div class="col-4 pt-4">
+                            <a class="btn btn-success btn-sm" href="~/Asesores/Clientes" target="_blank">Registrar Cliente</a>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="fs-sm">Descuento</label>
+                            <select class="form-select form-select-sm" id="idTipoDescuento" name="idTipoDescuento"></select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 alert alert-light" id="gruposcursos" hidden>
+                        <label class="fs-6 fw-bold" id="labelGrupoCurso"></label>
+                        <select class="form-select form-select-sm" id="idGrupoCurso" name="idGrupoCurso" onchange="cargarModulos()"></select>
+                        <div class="invalid-feedback">
+                            * Campo requerido
+                        </div>
+                    </div>
+                    <div class="col-sm-12 alert alert-light" id="modulos" hidden>
+                        <label class="fs-6">Seleccione los <strong class="fs-lg">módulos</strong> de <strong class="fs-lg text-uppercase" id="grupoCursoLabel"></strong> en los que se va a realizar la matricula.</label>
+                        <div class="row">
+                            <div class="col-sm-12" id="idCurso">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 alert alert-light" id="participantes" hidden>
+                        <label class="fs-6 fw-bold">Participantes</label>
+                        <div class="col-sm-6">
+                            <label class="fs-sm">Suba la plantilla de excel</label>
+                            <input type="file" accept=".xlsx" class="form-control form-control-sm" id="archivoParticipantes" name="archivoParticipantes" />
+                            <div class="invalid-feedback">
+                                * Campo requerido
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="row mx-0 px-3">
+                    <div class="col-sm-12 alert alert-light" id="participantesTabla" hidden>
+                        <div class="table-responsive p-1" style="min-height:40.6vh">
+                            <table class="table table-sm w-100 table-custom-asesores" id="tableParticipantes"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-cerrar
+                        data-bs-dismiss="modal">
+                    Cerrar
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" data-guardar
+                        onclick="generarMatricula()">
+                    Generar Matriculas
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDetalle" tabindex="-1" aria-labelledby="modalDetalleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h1 class="modal-title text-white" id="modalDetalleLabel">Modal title</h1>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row px-4 alert alert-light my-0 mx-2">
+                    <div class="col-sm-12 text-end">
+                        <label class="fs-6 fw-bold">DEUDA PENDIENTE: <strong id="deudaDetalleMatricula">0.0</strong></label>
+                    </div>
+                    <div class="col-sm-12 fs-sm">
+                        <label id="documentoIdentidadDetalleMatricula"></label>
+                    </div>
+                    <div class="col-sm-12 fs-sm">
+                        <label id="estudianteDetalleMatricula"></label>
+                    </div>
+                    <div class="col-sm-12 fs-sm">
+                        <label class="fw-bold" id="tipoCursoDetalleMatricula"></label>
+                    </div>
+                    <div class="col-sm-12 fs-sm">
+                        <label id="cursoDetalleMatricula"></label>
+                    </div>
+                    <div class="col-sm-12" id="detalleMatriculaModulos">
+                    </div>
+                    <div class="col-sm-12 fs-sm">
+                        <label class="fw-bold">DETALLE DE PAGOS</label>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <table class="fs-sm table table-striped w-100">
+                                <thead class="bg-primary text-white">
+                                    <tr>
+                                        <th></th>
+                                        <th>FECHA</th>
+                                        <th>CUENTA</th>
+                                        <th>#DOCUMENTO</th>
+                                        <th>TIPO</th>
+                                        <th>VALOR</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="detallePagosMatricula">
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-cerrar
+                        data-bs-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script defer src="~/js/asesores/siteMatriculasInHouse.js?v=@DateTime.Now.Ticks"></script>

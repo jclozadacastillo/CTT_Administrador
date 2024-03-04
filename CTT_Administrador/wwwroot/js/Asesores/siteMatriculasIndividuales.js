@@ -358,10 +358,10 @@ function handleBancos() {
         "tr": { label: "comprobante", verNumeroComprobante: true, verBanco: true },
         "dp": { label: "depósito o transacción", verNumeroComprobante: true, verBanco: true }
     }
-    const op = idFormaPago.options[idFormaPago.selectedIndex].dataset.tc?.toLowerCase();
-    labelComprobante.innerHTML = config[op].label;
+    const op = idFormaPago.options[idFormaPago.selectedIndex].dataset.tc.toLowerCase();
+    labelComprobante.innerHTML = config[op]?.label;
     config[op].verNumeroComprobante ? numeroComprobante.closest("div").removeAttribute("hidden") : numeroComprobante.closest("div").hidden = true;
-    if (config[op].verBanco) {
+    if (config[op]?.verBanco) {
         idCuenta.closest("div").removeAttribute("hidden");
         idCuenta.removeAttribute("data-validate");
     } else {
@@ -421,6 +421,7 @@ async function verDetalle(_idMatricula) {
         const pagos = res.pagos;
         modalDetalleLabel.innerText = `MATRICULA #${matricula.idMatricula.toString().padStart(6, "0")}`;
         deudaDetalleMatricula.innerHTML = `<b class='text-${matricula.deuda > 0 ? 'danger' : 'success'}'>$${matricula.deuda.toFixed(2)}</b>`;
+        documentoIdentidadDetalleMatricula.innerHTML = matricula.documentoIdentidad;
         estudianteDetalleMatricula.innerHTML = matricula.estudiante;
         cursoDetalleMatricula.innerHTML = matricula.curso;
         tipoCursoDetalleMatricula.innerHTML = matricula.tipoCurso;
@@ -452,7 +453,7 @@ async function verDetalle(_idMatricula) {
         pagos.forEach(item => {
             html += `<tr>
                         <td class='w-btn'>
-                            <a class='btn-option-table text-danger' target='_blank' href='${_route}${item.imagenComprobante}?v=${(new Date()).getTime()}'><i class='bi-file-pdf-fill'></i></a>
+                            <a class='btn-option-table text-primary' target='_blank' href='${_route}${item.imagenComprobante}?v=${(new Date()).getTime()}'><i class='bi-receipt'></i></a>
                         </td>
                         <td>${item.fechaPago.substring(0,10)}</td>
                         <td>${item.numero} - ${item.banco}</td>

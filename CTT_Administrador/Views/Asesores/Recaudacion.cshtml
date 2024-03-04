@@ -1,8 +1,145 @@
-﻿
-@{
-    ViewData["Title"] = "Recaudacion";
+﻿@{
+    ViewData["Title"] = "Recaudación";
     Layout = "~/Views/Shared/_LayoutAsesor.cshtml";
 }
 
-<h1>Recaudacion</h1>
+<div class="container-fluid" id="content">
+    <div class="row">
+        <div class="col-auto me-0 pe-0 form-title">
+            <h4>Recaudación</h4>
+        </div>
+    </div>
+    <hr>
+    <div class="table-responsive p-1 mt-4">
+        <table class="table table-sm w-100 table-custom-asesores" id="tableDatos"></table>
+    </div>
+</div>
 
+<div class="modal fade" id="modalDetalle" tabindex="-1" aria-labelledby="modalDetalleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h1 class="modal-title text-white" id="modalDetalleLabel">Modal title</h1>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row px-4 alert alert-light my-0 mx-2">
+                    <div class="col-sm-12 text-end">
+                        <label class="fs-6 fw-bold">DEUDA PENDIENTE: <strong id="deudaDetalleMatricula">0.0</strong></label>
+                    </div>
+                    <div class="col-sm-12 fs-sm">
+                        <label id="documentoIdentidadDetalleMatricula"></label>
+                    </div>
+                    <div class="col-sm-12 fs-sm">
+                        <label id="estudianteDetalleMatricula"></label>
+                    </div>
+                    <div class="col-sm-12 fs-sm">
+                        <label class="fw-bold" id="tipoCursoDetalleMatricula"></label>
+                    </div>
+                    <div class="col-sm-12 fs-sm">
+                        <label id="cursoDetalleMatricula"></label>
+                    </div>
+                    <div class="col-sm-12" id="detalleMatriculaModulos">
+                    </div>
+                    <div class="col-12 col-md-12" id="divPagos">
+                        <form class="row" id="frmDatos">
+                            <div class="col-sm-9">
+                                <label class="fs-sm">Forma de pago</label>
+                                <select class="form-select" id="idFormaPago" name="idFormaPago" onchange="handleBancos()">
+                                    <option value="">Seleccione</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-9" hidden>
+                                <label class="fs-sm">Banco</label>
+                                <select class="form-select" id="idCuenta" name="idCuenta">
+                                    <option value="">Seleccione</option>
+                                </select>
+                            </div>
+                            <div class="row" id="datosTarjeta" hidden>
+                                <div class="col-sm-4">
+                                    <label class="fs-sm">Marca de tarjeta</label>
+                                    <select class="form-select" id="tajetaMarca" name="tajetaMarca">
+                                        <option value="">Seleccione</option>
+                                        <option value="Visa">Visa</option>
+                                        <option value="MasterCard">MasterCard</option>
+                                        <option value="American Express">American Express</option>
+                                        <option value="Discover">Discover</option>
+                                        <option value="Diners Club">Diners Club</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="fs-sm">Número de autorización</label>
+                                    <input class="form-control text-end" id="tajetaAutorizacion" name="tajetaAutorizacion" maxlength="50" title="Ingrese el número de transacción o autorización enviado por la entidad bancaria" placeholder="Ingrese el número de transacción o autorización enviado por la entidad bancaria" />
+                                    <div class="invalid-feedback">
+                                        * Campo requerido
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <label class="fs-sm">Comprobante</label><span class="fs-xs ms-3 text-uppercase text-danger fw-bold">imagen o pdf de máximo 3mb</span>
+                                <input type="file" no-uppercase accept="application/pdf,image/png, image/jpg, image/jpeg" class="form-control form-control-sm" id="archivoComprobante" name="archivoComprobante" />
+                                <div class="invalid-feedback">
+                                    * Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="fs-sm">Fecha Pago</label>
+                                <input type="date" class="form-control form-control-sm" id="fechaPago" name="fechaPago" />
+                                <div class="invalid-feedback">
+                                    * Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="fs-sm">Número de <span id="labelComprobante">comprobante</span></label>
+                                <input class="form-control form-control-sm text-end" id="numeroComprobante" name="numeroComprobante" maxlength="50" />
+                                <div class="invalid-feedback">
+                                    * Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <label class="fs-sm">Valor de pago</label>
+                                <input class="form-control form-control-sm text-end readonly" data-validate="decimal" id="valor" name="valor" maxlength="10" />
+                                <div class="invalid-feedback">
+                                    * Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-12 text-center mt-3">
+                                <button type="button" class="btn btn-sm btn-success" onclick="agregarPago()">Agregar Pago</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-sm-12 fs-sm mt-4">
+                        <label class="fw-bold">DETALLE DE PAGOS</label>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <table class="fs-sm table table-striped w-100" id="tablePagos">
+                                <thead class="bg-primary text-white">
+                                    <tr>
+                                        <th class="w-btn"></th>
+                                        <th>FECHA</th>
+                                        <th>CUENTA</th>
+                                        <th>#DOCUMENTO</th>
+                                        <th>TIPO</th>
+                                        <th>VALOR</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="detallePagosMatricula">
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-cerrar
+                        data-bs-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="~/js/asesores/siteRecaudacion.js?v=@DateTime.Now.Ticks"></script>

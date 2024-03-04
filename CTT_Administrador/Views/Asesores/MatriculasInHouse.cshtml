@@ -1,8 +1,31 @@
 ﻿
 @{
-    ViewData["Title"] = "MatriculasInHouse";
+    ViewData["Title"] = "Matriculas In-House";
     Layout = "~/Views/Shared/_LayoutAsesor.cshtml";
 }
 
-<h1>MatriculasInHouse</h1>
+<div class="container-fluid" id="content">
+    <div class="row">
+        <div class="col-auto me-0 pe-0 form-title">
+            <h4>Matriculas In-House</h4>
+        </div>
+    </div>
+    <hr>
+    <form class="row" id="frmFiltros">
+        <div class="col-sm-4">
+            <label class="fs-sm">Periodo</label>
+            <select class="form-select form-select-sm" id="idPeriodo" name="idPeriodo" onchange="listar()"></select>
+        </div>
+        <div class="col-sm-4">
+            <label class="fs-sm">Tipo</label>
+            <select class="form-select form-select-sm" id="idTipoCurso" name="idTipoCurso" onchange="listar()"></select>
+        </div>
+        <div class="col-sm-4" id="containerBtn">
+        </div>
+    </form>
+
+    <div class="table-responsive p-1 mt-4">
+        <table class="table table-sm w-100 table-custom-asesores" id="tableDatos"></table>
+    </div>
+</div>
 

@@ -51,7 +51,6 @@ namespace CTT_Administrador.Controllers.Asesores
             catch (Exception ex)
             {
                 return Tools.handleError(ex);
-                throw;
             }
         }
 

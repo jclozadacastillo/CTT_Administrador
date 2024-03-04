@@ -12,7 +12,7 @@ const modalDetalleMatricula = new bootstrap.Modal(modalDetalle, {
 let valorPago = 0.0;
 let modulosLista = [];
 let modulosSeleccionados = "";
-let idMatricula = 0;
+let idGrupoInHouse = 0;
 let listaParticipantes = [];
 const btnTemplate = `<button type="button" class="btn btn-sm btn-primary btn-new mt-lg-4 mt-2" title="Nuevo registro de matricula" onclick="nuevo()">
                 <i class="bi-plus"></i> Nueva Matricula
@@ -222,14 +222,14 @@ async function cargarModulos() {
             grupoCursoLabel.innerHTML = idGrupoCurso.options[idGrupoCurso.selectedIndex].text?.toLowerCase();
         }
         modulosLista = [];
-        idMatricula = 0;
+        idGrupoInHouse = 0;
         const url = `${baseUrl}cargarModulos`;
         const data = new FormData(frmDatos);
         const res = (await axios.post(url, data)).data;
         let html = "";
         modulosSeleccionados = "";
         modulosLista = res.listaModulos;
-        idMatricula = res.idMatricula;
+        idGrupoInHouse = res.idGrupoInHouse;
         res.listaModulos.forEach(item => {
             html += `
                     <label class="form-check ms-2 my-1">
@@ -331,57 +331,58 @@ async function generarMatricula() {
     }
 }
 
-async function verDetalle(_idMatricula) {
+async function verDetalle(_idGrupoInHouse) {
     try {
-        const url = `${baseUrl}detalleMatricula/${_idMatricula}`;
+        const url = `${baseUrl}detalleMatriculas/${_idGrupoInHouse}`;
         const res = (await axios.get(url)).data;
-        const matricula = res.matricula;
-        const modulos = res.modulos;
-        const pagos = res.pagos;
-        modalDetalleLabel.innerText = `MATRICULA #${matricula.idMatricula.toString().padStart(6, "0")}`;
-        deudaDetalleMatricula.innerHTML = `<b class='text-${matricula.deuda > 0 ? 'danger' : 'success'}'>$${matricula.deuda.toFixed(2)}</b>`;
-        documentoIdentidadDetalleMatricula.innerHTML = matricula.documentoIdentidad;
-        estudianteDetalleMatricula.innerHTML = matricula.estudiante;
-        cursoDetalleMatricula.innerHTML = matricula.curso;
-        tipoCursoDetalleMatricula.innerHTML = matricula.tipoCurso;
-        if (matricula.esDiplomado == 1) {
-            let html = "";
-            detalleMatriculaModulos.removeAttribute("hidden");
-            html = `<div class='col-sm-12'><label class='fs-sm mt-3 fw-bold'>MÓDULOS</label></div>
-                    <div class='table-responsive'>
-                    <table class='fs-sm table table-striped w-100'>
-                    <thead class='bg-primary text-white'>
-                        <tr>
-                            <th>FECHA MATRICULA</th>
-                            <th>MÓDULO</th>
-                        </tr>
-                    </thead>
-                    `;
-            modulos.forEach(item => {
-                html += `<tr>
-                            <td>${item.fechaRegistro.replaceAll("T", " ").substring(0, item.fechaRegistro.length - 3)}</td>
-                            <td>${item.curso}</td>
-                        </tr>`
-            });
-            detalleMatriculaModulos.innerHTML = html + "</div></table>";
-        } else {
-            detalleMatriculaModulos.innerHTML = "";
-            detalleMatriculaModulos.hidden = true;
-        }
-        html = "";
-        pagos.forEach(item => {
-            html += `<tr>
-                        <td class='w-btn'>
-                            <a class='btn-option-table text-primary' target='_blank' href='${_route}${item.imagenComprobante}?v=${(new Date()).getTime()}'><i class='bi-receipt'></i></a>
-                        </td>
-                        <td>${item.fechaPago.substring(0, 10)}</td>
-                        <td>${item.numero} - ${item.banco}</td>
-                        <td>${item.numeroComprobante}</td>
-                        <td>${item.formaPago}</td>
-                        <td class='text-end'>${item.valor.toFixed(2)}</td>
-                    </tr>`
-        });
-        detallePagosMatricula.innerHTML = html;
+        console.log(res);
+        //const matricula = res.matricula;
+        //const modulos = res.modulos;
+        //const pagos = res.pagos;
+        //modalDetalleLabel.innerText = `MATRICULA #${matricula.idGrupoInHouse.toString().padStart(6, "0")}`;
+        //deudaDetalleMatricula.innerHTML = `<b class='text-${matricula.deuda > 0 ? 'danger' : 'success'}'>$${matricula.deuda.toFixed(2)}</b>`;
+        //documentoIdentidadDetalleMatricula.innerHTML = matricula.documentoIdentidad;
+        //estudianteDetalleMatricula.innerHTML = matricula.estudiante;
+        //cursoDetalleMatricula.innerHTML = matricula.curso;
+        //tipoCursoDetalleMatricula.innerHTML = matricula.tipoCurso;
+        //if (matricula.esDiplomado == 1) {
+        //    let html = "";
+        //    detalleMatriculaModulos.removeAttribute("hidden");
+        //    html = `<div class='col-sm-12'><label class='fs-sm mt-3 fw-bold'>MÓDULOS</label></div>
+        //            <div class='table-responsive'>
+        //            <table class='fs-sm table table-striped w-100'>
+        //            <thead class='bg-primary text-white'>
+        //                <tr>
+        //                    <th>FECHA MATRICULA</th>
+        //                    <th>MÓDULO</th>
+        //                </tr>
+        //            </thead>
+        //            `;
+        //    modulos.forEach(item => {
+        //        html += `<tr>
+        //                    <td>${item.fechaRegistro.replaceAll("T", " ").substring(0, item.fechaRegistro.length - 3)}</td>
+        //                    <td>${item.curso}</td>
+        //                </tr>`
+        //    });
+        //    detalleMatriculaModulos.innerHTML = html + "</div></table>";
+        //} else {
+        //    detalleMatriculaModulos.innerHTML = "";
+        //    detalleMatriculaModulos.hidden = true;
+        //}
+        //html = "";
+        //pagos.forEach(item => {
+        //    html += `<tr>
+        //                <td class='w-btn'>
+        //                    <a class='btn-option-table text-primary' target='_blank' href='${_route}${item.imagenComprobante}?v=${(new Date()).getTime()}'><i class='bi-receipt'></i></a>
+        //                </td>
+        //                <td>${item.fechaPago.substring(0, 10)}</td>
+        //                <td>${item.numero} - ${item.banco}</td>
+        //                <td>${item.numeroComprobante}</td>
+        //                <td>${item.formaPago}</td>
+        //                <td class='text-end'>${item.valor.toFixed(2)}</td>
+        //            </tr>`
+        //});
+        //detallePagosMatricula.innerHTML = html;
         modalDetalleMatricula.show();
     } catch (e) {
         handleError(e);

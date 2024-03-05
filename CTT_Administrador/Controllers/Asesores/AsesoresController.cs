@@ -56,6 +56,11 @@ namespace CTT_Administrador.Controllers.Asesores
             if (!_auth.validateToken()) return RedirectToAction("Login", "Asesores");
             return View();
         }
+        public IActionResult RecaudacionInHouse()
+        {
+            if (!_auth.validateToken()) return RedirectToAction("Login", "Asesores");
+            return View();
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

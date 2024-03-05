@@ -10,13 +10,13 @@ namespace CTT_Administrador.Controllers.Asesores
 {
     [AuthorizeAsesor]
     [Route("Asesores/{controller}/{action}")]
-    public class RecaudacionController : Controller
+    public class RecaudacionInHouseController : Controller
     {
         private readonly cttContext _context;
         private readonly IDbConnection _dapper;
         private readonly IAuthorizeAsesorTools _auth;
 
-        public RecaudacionController(cttContext context, IAuthorizeAsesorTools auth)
+        public RecaudacionInHouseController(cttContext context, IAuthorizeAsesorTools auth)
         {
             _context = context;
             _dapper = _context.Database.GetDbConnection();
@@ -28,18 +28,19 @@ namespace CTT_Administrador.Controllers.Asesores
         {
             try
             {
-                string sql = @"SELECT idMatricula,date_format(m.fechaRegistro,'%d-%m-%Y') AS fechaRegistro,
-                            e.documentoIdentidad,REPLACE(concat(e.primerApellido,' ',
-                            CASE WHEN e.segundoApellido IS NULL THEN '' ELSE e.segundoApellido END,' ',
-                            e.primerNombre,' ',
-                            CASE WHEN e.segundoNombre  IS NULL THEN '' ELSE e.segundoNombre  END
-                            ),'  ',' ')AS estudiante,
-                            curso,legalizado,deuda,paralelo
-                            FROM matriculas m
+                string sql = @"SELECT idGrupoInHouse,date_format(m.fechaRegistro,'%d-%m-%Y') AS fechaRegistro,
+                            e.documento,nombre cliente,
+                            curso,valorSinDescuento,t.nombreDescuento,m.porcentaje,
+                            valorSinDescuento-((valorSinDescuento*m.porcentaje)/100)-
+                            CASE WHEN (SELECT sum(valor) FROM pagosinhouse WHERE idGrupoInHouse=m.idGrupoInHouse)IS NULL THEN 0
+                            ELSE (SELECT sum(valor) FROM pagosinhouse WHERE idGrupoInHouse=m.idGrupoInHouse) END
+                            as deuda
+                            FROM gruposinhouse m
                             INNER JOIN gruposcursos g ON g.idGrupoCurso = m.idGrupoCurso
-                            INNER JOIN estudiantes e ON e.idEstudiante = m.idEstudiante
+                            INNER JOIN clientesfacturas e ON e.idCliente= m.idCliente
                             INNER JOIN cursos c ON c.idCurso = g.idCurso
-                            WHERE usuarioRegistro=@usuario AND inHouse=0
+                            INNER JOIN tiposDescuentos t on t.idTipoDescuento = m.idTipoDescuento
+                            WHERE usuarioRegistro=@usuario
                                 ";
                 return Ok(await Tools.DataTableMySql(new Tools.DataTableParams
                 {
@@ -116,36 +117,28 @@ namespace CTT_Administrador.Controllers.Asesores
         }
 
         [HttpPost]
-        public async Task<IActionResult> agregarPago(pagosmatriculas _pago, IFormFile archivoComprobante)
+        public async Task<IActionResult> agregarPago(pagosinhouse _pago, IFormFile archivoComprobante)
         {
             try
             {
-                string sql = @"SELECT * FROM Matriculas WHERE idMatricula=@idMatricula";
-                var _data = await _dapper.QueryFirstOrDefaultAsync<matriculas>(sql, _pago);
-                sql = @"SELECT * FROM estudiantes WHERE idEstudiante=@idEstudiante";
-                var estudiante = await _dapper.QueryFirstOrDefaultAsync<estudiantes>(sql, _data);
-                _pago.idMatricula = _data.idMatricula;
+                string sql = @"SELECT * FROM gruposinhouse WHERE idGrupoInHouse=@idGrupoInHouse";
+                var _data = await _dapper.QueryFirstOrDefaultAsync<gruposinhouse>(sql, _pago);
+                sql = @"SELECT * FROM clientesfacturas WHERE idCliente=@idCliente";
+                var cliente = await _dapper.QueryFirstOrDefaultAsync<clientesfacturas>(sql, _data);
+                _pago.idGrupoInHouse = _data.idGrupoInHouse;
                 _pago.idEstado = 1;
-                _pago.idCliente = _data.idCliente;
-                _context.pagosmatriculas.Add(_pago);
+                _context.pagosinhouse.Add(_pago);
                 await _context.SaveChangesAsync();
                 if (archivoComprobante != null)
                 {
-                    var path = $"Archivos/Pagos/Asesor{_auth.getUser()}/Comprobantes/{estudiante.documentoIdentidad}/Matricula_{_data.idMatricula}/";
+                    var path = $"Archivos/Pagos/Asesor{_auth.getUser()}/Comprobantes/{cliente.documento}/MatriculaInHouse_{_data.idGrupoInHouse}/";
                     var fullPath = $"{Tools.rootPath}/{path}";
                     if (!Directory.Exists(fullPath)) Directory.CreateDirectory(fullPath);
-                    using (FileStream fs = System.IO.File.Create($"{fullPath}{_pago.idPagoMatricula}.{archivoComprobante.FileName.Split(".").Last()}")) archivoComprobante.CopyTo(fs);
-                    _pago.imagenComprobante = $"{path}{_pago.idPagoMatricula}.{archivoComprobante.FileName.Split(".").Last()}";
-                    _context.pagosmatriculas.Update(_pago);
+                    using (FileStream fs = System.IO.File.Create($"{fullPath}{_pago.idPago}.{archivoComprobante.FileName.Split(".").Last()}")) archivoComprobante.CopyTo(fs);
+                    _pago.imagenComprobante = $"{path}{_pago.idPago}.{archivoComprobante.FileName.Split(".").Last()}";
+                    _context.pagosinhouse.Update(_pago);
                     await _context.SaveChangesAsync();
                 }
-                sql = @"UPDATE Matriculas set deuda=deuda-@valor WHERE idMatricula=@idMatricula";
-                await _dapper.ExecuteAsync(sql, _pago);
-                sql = @"SELECT sum(deuda) FROM Matriculas WHERE idMatricula=@idMatricula";
-                sql = await _dapper.ExecuteScalarAsync<decimal>(sql, _data) == 0 ?
-                @"UPDATE Matriculas SET legalizado=1 WHERE idMatricula=@idMatricula" :
-                @"UPDATE Matriculas SET legalizado=0 WHERE idMatricula=@idMatricula";
-                await _dapper.ExecuteAsync(sql, _data);
                 return Ok();
             }
             catch (Exception ex)
@@ -154,49 +147,53 @@ namespace CTT_Administrador.Controllers.Asesores
             }
         }
 
-        [HttpGet("{idMatricula}")]
-        public async Task<IActionResult> detalleMatricula(int idMatricula)
+        [HttpGet("{idGrupoInHouse}")]
+        public async Task<IActionResult> detalleMatriculas(int idGrupoInHouse)
         {
             try
             {
-                string sql = @"SELECT m.idMatricula,date_format(m.fechaRegistro,'%d-%m-%Y') AS fechaRegistro,
-                            e.documentoIdentidad,REPLACE(concat(e.primerApellido,' ',
+                string sql = @"SELECT m.idMatricula,e.documentoIdentidad,
+                            LTRIM(REPLACE(concat(e.primerApellido,' ',
                             CASE WHEN e.segundoApellido IS NULL THEN '' ELSE e.segundoApellido END,' ',
                             e.primerNombre,' ',
                             CASE WHEN e.segundoNombre  IS NULL THEN '' ELSE e.segundoNombre  END
-                            ),'  ',' ')AS estudiante,
-                            curso,legalizado,deuda,paralelo,t.esDiplomado,
-                            t.tipoCurso
+                            ),'  ',' '))AS estudiante
                             FROM matriculas m
                             INNER JOIN estudiantes e ON e.idEstudiante = m.idEstudiante
-                            INNER JOIN gruposcursos g ON g.idGrupoCurso = m.idGrupoCurso
-                            INNER JOIN cursos c ON c.idCurso = g.idCurso
-                            INNER JOIN tiposcursos t ON t.idTipoCurso = c.idTipoCurso
-                            WHERE idMatricula = @idMatricula";
-                var matricula = await _dapper.QueryFirstOrDefaultAsync(sql, new { idMatricula });
-                sql = @"SELECT cu.idCurso,cu.curso,c.fechaRegistro
-                        FROM calificaciones c
-                        INNER JOIN cursos cu ON cu.idCurso = c.idCurso
-                        WHERE idMatricula = @idMatricula
-                        ";
-                var modulos = await _dapper.QueryAsync(sql, new { idMatricula });
-                sql = @"SELECT idPagoMatricula,fechaPago,
+                            WHERE idGrupoInHouse=@idGrupoInHouse;
+                            ";
+                var alumnos = await _dapper.QueryAsync(sql, new { idGrupoInHouse });
+                sql = @"SELECT curso  FROM gruposinhousemodulos gm
+                        INNER JOIN cursos c ON c.idCurso = gm.idCurso
+                        WHERE idGrupoInHouse = @idGrupoInHouse";
+                var modulos = await _dapper.QueryAsync(sql, new { idGrupoInHouse });
+                sql = @"SELECT gi.idGrupoInHouse,c.documento,c.nombre,
+                        cu.curso,t.tipoCurso,gi.porcentaje,gi.valorSinDescuento,esDiplomado,
+                        (select sum(valor) FROM pagosinhouse WHERE idGrupoInHouse=gi.idGrupoInHouse) as valorPagado
+                        FROM gruposinhouse gi
+                        INNER JOIN gruposcursos g ON g.idGrupoCurso = gi.idGrupoCurso
+                        INNER JOIN clientesfacturas c ON c.idCliente = gi.idCliente
+                        INNER JOIN cursos cu ON cu.idCurso = g.idCurso
+                        INNER JOIN tiposcursos t ON t.idTipoCurso = cu.idTipoCurso
+                        WHERE gi.idGrupoInHouse = @idGrupoInHouse";
+                var info = await _dapper.QueryFirstOrDefaultAsync(sql, new { idGrupoInHouse });
+                sql = @"SELECT idPago,fechaPago,
                         b.banco,c.numero,t.tipo,valor,
                         p.imagenComprobante,p.numeroComprobante,fr.formaPago,tarjetaAutorizacion,tarjetaMarca
-                        FROM pagosmatriculas p
+                        FROM pagosinhouse p
                         INNER JOIN formaspagos f ON f.idFormaPago = p.idFormaPago
                         LEFT JOIN cuentasbancos c ON c.idCuenta = p.idCuenta
                         LEFT JOIN bancos b ON b.idBanco =c.idBanco
                         LEFT JOIN tiposcuentasbancos t ON t.idTipoCuentaBanco = c.idTipoCuentaBanco
                         INNER JOIN formaspagos fr ON fr.idFormaPago = p.idFormaPago
-                        WHERE idMatricula = @idMatricula
-                        ORDER BY p.idPagoMatricula desc";
-                var pagos = await _dapper.QueryAsync(sql, new { idMatricula });
-                return Ok(new { matricula, modulos, pagos });
+                        WHERE idGrupoInHouse = @idGrupoInHouse
+                        ORDER BY p.idPago desc";
+                var pagos = await _dapper.QueryAsync(sql, new { idGrupoInHouse });
+                return Ok(new { alumnos, modulos, info, pagos });
             }
             catch (Exception ex)
             {
-                return Tools.handleError(ex);
+                return Problem(ex.Message);
             }
         }
     }

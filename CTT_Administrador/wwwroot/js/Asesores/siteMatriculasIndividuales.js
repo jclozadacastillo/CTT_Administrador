@@ -244,6 +244,13 @@ function calcularTotal() {
         });
         costo.innerHTML = `$${valorPago.toFixed(2)}`;
         valor.value = valorPago.toFixed(2).replaceAll(".", ",");
+        valor.addEventListener("focusout", () => {
+            const valorIngresado = parseFloat(parseFloat(valor.value.replaceAll(",", ".")).toFixed(2));
+            if (valorIngresado > valorPago) {
+                toastWarning(`El valor de pago no puede ser mayor a ${valorPago}`);
+                valor.value = valorPago.toString().replaceAll(".", ",");
+            }
+        });
     } catch (e) {
         console.warn(e);
     }
@@ -375,7 +382,7 @@ function handleBancos() {
 async function generarMatricula() {
     try {
         if (idFormaPago.options[idFormaPago.selectedIndex].dataset.tc?.toLowerCase() == "tc") {
-            numeroComprobante.value = tajetaAutorizacion.value;
+            numeroComprobante.value = tarjetaAutorizacion.value;
         }
         if (! await validarTodo(frmDatos)) throw new Error("Verifique los campos requeridos");
         if (idCurso.querySelectorAll("input:checked").length == 0) throw new Error("Debe seleccionar al menos un modulo");
@@ -451,13 +458,14 @@ async function verDetalle(_idMatricula) {
         }       
         html = "";
         pagos.forEach(item => {
+            const banco = !!item.banco ? `${item.numero} - ${item.banco}` : item.tarjetaMarca;
             html += `<tr>
-                        <td class='w-btn'>
+                        <td class='w-btn text-center'>
                             <a class='btn-option-table text-primary' target='_blank' href='${_route}${item.imagenComprobante}?v=${(new Date()).getTime()}'><i class='bi-receipt'></i></a>
                         </td>
-                        <td>${item.fechaPago.substring(0,10)}</td>
-                        <td>${item.numero} - ${item.banco}</td>
-                        <td>${item.numeroComprobante}</td>
+                        <td>${item.fechaPago.substring(0, 10)}</td>
+                        <td>${banco}</td>
+                        <td>${item.numeroComprobante || item.tarjetaAutorizacion}</td>
                         <td>${item.formaPago}</td>
                         <td class='text-end'>${item.valor.toFixed(2)}</td>
                     </tr>`

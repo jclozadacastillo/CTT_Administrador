@@ -31,22 +31,8 @@ namespace CTT_Administrador.Controllers.Administrador
             try
             {
                 string sql = @"
-                                select distinct(p.idPeriodo),detalle
-                                from asignacionesinstructorescalificaciones a
-                                inner join gruposcursos g on g.idGrupoCurso = a.idGrupoCurso
-                                inner join cursos c on c.idCurso = g.idCurso
-                                inner join periodos p on p.idPeriodo = g.idPeriodo
-                                inner join modalidades m on m.idModalidad = g.idModalidad
-                                inner join tiposcursos t on t.idTipoCurso = c.idTipoCurso
-                                where
-                                (c.idCurso in(
-                                select idCurso
-                                from cursos_mallas cm
-                                where cm.idCursoAsociado = c.idCurso)
-                                or
-                                c.idCurso not in(
-                                select idCursoAsociado
-                                from cursos_mallas cm))
+                                select distinct(idPeriodo),detalle
+                                from periodos where activo=1
                 ";
                 return Ok(await dapper.QueryAsync(sql));
             }
@@ -69,22 +55,12 @@ namespace CTT_Administrador.Controllers.Administrador
             {
                 string sql = @"
                                 select distinct(t.idTipoCurso),t.tipoCurso
-                                from asignacionesinstructorescalificaciones a
-                                inner join gruposcursos g on g.idGrupoCurso = a.idGrupoCurso
+                                from gruposcursos 
                                 inner join cursos c on c.idCurso = g.idCurso
                                 inner join periodos p on p.idPeriodo = g.idPeriodo
                                 inner join modalidades m on m.idModalidad = g.idModalidad
                                 inner join tiposcursos t on t.idTipoCurso = c.idTipoCurso
-                                where
-                                (c.idCurso in(
-                                select idCurso
-                                from cursos_mallas cm
-                                where cm.idCursoAsociado = c.idCurso)
-                                or
-                                c.idCurso not in(
-                                select idCursoAsociado
-                                from cursos_mallas cm))
-                                and p.idPeriodo=@idPeriodo
+                                where p.idPeriodo=@idPeriodo
                 ";
                 return Ok(await dapper.QueryAsync(sql, new {idPeriodo}));
             }
@@ -107,22 +83,12 @@ namespace CTT_Administrador.Controllers.Administrador
             {
                 string sql = @"
                                 select distinct(g.idGrupoCurso),concat(curso,' (',m.modalidad,')') as curso
-                                from asignacionesinstructorescalificaciones a
-                                inner join gruposcursos g on g.idGrupoCurso = a.idGrupoCurso
+                                from gruposcursos g 
                                 inner join cursos c on c.idCurso = g.idCurso
                                 inner join periodos p on p.idPeriodo = g.idPeriodo
                                 inner join modalidades m on m.idModalidad = g.idModalidad
                                 inner join tiposcursos t on t.idTipoCurso = c.idTipoCurso
-                                where
-                                (c.idCurso in(
-                                select idCurso
-                                from cursos_mallas cm
-                                where cm.idCursoAsociado = c.idCurso)
-                                or
-                                c.idCurso not in(
-                                select idCursoAsociado
-                                from cursos_mallas cm))
-                                and p.idPeriodo=@idPeriodo
+                                where p.idPeriodo=@idPeriodo
                 ";
                 return Ok(await dapper.QueryAsync(sql, new { idPeriodo }));
             }
@@ -229,7 +195,9 @@ namespace CTT_Administrador.Controllers.Administrador
                 string paralelos = paralelo == "TODOS" ? "" : "and m.paralelo = @paralelo";
                 string sql = $@"
                                 select c.*,e.documentoIdentidad,
-                                concat(e.primerApellido,' ',e.segundoApellido,' ',e.primerNombre,' ',e.segundoNombre) as estudiante,
+                                concat(e.primerApellido,' ',
+                                (CASE WHEN e.segundoApellido IS NULL THEN '' ELSE e.segundoApellido END),' ',e.primerNombre,' ',
+                                (CASE WHEN e.segundoNombre IS NULL THEN '' ELSE e.segundoNombre END)) as estudiante,
                                 datediff(fechaLimiteNotas,current_timestamp()) as tiempoLimite,
                                 datediff(fechaLimiteNotasAtraso,current_timestamp()) as tiempoLimiteAtraso,a.paralelo
                                 from matriculas m
@@ -271,7 +239,9 @@ namespace CTT_Administrador.Controllers.Administrador
                 string paralelos = paralelo == "TODOS" ? "" : "and m.paralelo = @paralelo";
                 string sql = $@"
                                 select c.*,e.documentoIdentidad,
-                                concat(e.primerApellido,' ',e.segundoApellido,' ',e.primerNombre,' ',e.segundoNombre) as estudiante,
+                                concat(e.primerApellido,' ',
+                                (CASE WHEN e.segundoApellido IS NULL THEN '' ELSE e.segundoApellido END),' ',e.primerNombre,' ',
+                                (CASE WHEN e.segundoNombre IS NULL THEN '' ELSE e.segundoNombre END)) as estudiante,
                                 0 as tiempoLimite,
                                 0 as tiempoLimiteAtraso,m.paralelo
                                 from matriculas m

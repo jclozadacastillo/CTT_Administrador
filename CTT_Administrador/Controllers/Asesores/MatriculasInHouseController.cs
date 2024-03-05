@@ -290,6 +290,7 @@ namespace CTT_Administrador.Controllers.Asesores
                 dataGrupo.porcentaje = descuento.porcentaje;
                 dataGrupo.valorSinDescuento = valorTotalModulos * estudiantes.Count();
                 dataGrupo.idGrupoCurso = _matricula.idGrupoCurso;
+                dataGrupo.usuarioRegistro = _auth.getUser();
                 var modulosGrupo = new List<gruposinhousemodulos>();
                 foreach (var item in listaModulos)
                 {
@@ -349,7 +350,8 @@ namespace CTT_Administrador.Controllers.Asesores
                         WHERE idGrupoInHouse = @idGrupoInHouse";
                 var modulos = await _dapper.QueryAsync(sql, new { idGrupoInHouse });
                 sql = @"SELECT gi.idGrupoInHouse,c.documento,c.nombre,
-                        cu.curso,t.tipoCurso,gi.porcentaje,gi.valorSinDescuento,esDiplomado
+                        cu.curso,t.tipoCurso,gi.porcentaje,gi.valorSinDescuento,esDiplomado,
+                        (select sum(valor) FROM pagosinhouse WHERE idGrupoInHouse=gi.idGrupoInHouse) as valorPagado
                         FROM gruposinhouse gi
                         INNER JOIN gruposcursos g ON g.idGrupoCurso = gi.idGrupoCurso
                         INNER JOIN clientesfacturas c ON c.idCliente = gi.idCliente
@@ -359,12 +361,12 @@ namespace CTT_Administrador.Controllers.Asesores
                 var info = await _dapper.QueryFirstOrDefaultAsync(sql, new { idGrupoInHouse });
                 sql = @"SELECT idPago,fechaPago,
                         b.banco,c.numero,t.tipo,valor,
-                        p.imagenComprobante,p.numeroComprobante,fr.formaPago
+                        p.imagenComprobante,p.numeroComprobante,fr.formaPago,tarjetaAutorizacion,tarjetaMarca
                         FROM pagosinhouse p
                         INNER JOIN formaspagos f ON f.idFormaPago = p.idFormaPago
-                        INNER JOIN cuentasbancos c ON c.idCuenta = p.idCuenta
-                        INNER JOIN bancos b ON b.idBanco =c.idBanco
-                        INNER JOIN tiposcuentasbancos t ON t.idTipoCuentaBanco = c.idTipoCuentaBanco
+                        LEFT JOIN cuentasbancos c ON c.idCuenta = p.idCuenta
+                        LEFT JOIN bancos b ON b.idBanco =c.idBanco
+                        LEFT JOIN tiposcuentasbancos t ON t.idTipoCuentaBanco = c.idTipoCuentaBanco
                         INNER JOIN formaspagos fr ON fr.idFormaPago = p.idFormaPago 
                         WHERE idGrupoInHouse = @idGrupoInHouse
                         ORDER BY p.idPago desc";

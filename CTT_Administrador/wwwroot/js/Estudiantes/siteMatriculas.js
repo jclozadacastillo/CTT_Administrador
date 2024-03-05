@@ -264,7 +264,7 @@ function handleBancos() {
 async function generarMatricula() {
     try {
         if (idFormaPago.options[idFormaPago.selectedIndex].dataset.tc?.toLowerCase() == "tc") {
-            numeroComprobante.value = tajetaAutorizacion.value;
+            numeroComprobante.value = tarjetaAutorizacion.value;
         }
         if (! await validarTodo(frmDatos)) throw new Error("Verifique los campos requeridos");
         if (idCurso.querySelectorAll("input:checked").length == 0) throw new Error("Debe seleccionar al menos un modulo");

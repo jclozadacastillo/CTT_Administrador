@@ -351,12 +351,12 @@ namespace CTT_Administrador.Controllers.Asesores
                 var modulos = await _dapper.QueryAsync(sql, new { idMatricula });
                 sql = @"SELECT idPagoMatricula,fechaPago,
                         b.banco,c.numero,t.tipo,valor,
-                        p.imagenComprobante,p.numeroComprobante,fr.formaPago
+                        p.imagenComprobante,p.numeroComprobante,fr.formaPago,tarjetaAutorizacion,tarjetaMarca
                         FROM pagosmatriculas p
                         INNER JOIN formaspagos f ON f.idFormaPago = p.idFormaPago
-                        INNER JOIN cuentasbancos c ON c.idCuenta = p.idCuenta
-                        INNER JOIN bancos b ON b.idBanco =c.idBanco
-                        INNER JOIN tiposcuentasbancos t ON t.idTipoCuentaBanco = c.idTipoCuentaBanco
+                        LEFT JOIN cuentasbancos c ON c.idCuenta = p.idCuenta
+                        LEFT JOIN bancos b ON b.idBanco =c.idBanco
+                        LEFT JOIN tiposcuentasbancos t ON t.idTipoCuentaBanco = c.idTipoCuentaBanco
                         INNER JOIN formaspagos fr ON fr.idFormaPago = p.idFormaPago 
                         WHERE idMatricula = @idMatricula
                         ORDER BY p.idPagoMatricula desc";

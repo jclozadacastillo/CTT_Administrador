@@ -341,17 +341,18 @@ async function verDetalle(_idGrupoInHouse) {
         const pagos = res.pagos;
         modalDetalleLabel.innerText = `MATRICULA IN-HOUSE #${info.idGrupoInHouse.toString().padStart(6, "0")}`;
         const valorSinDescuento = info.valorSinDescuento;
-        const valorConDescuento = parseInt(((info.valorSinDescuento) - (info.valorSinDescuento * info.porcentaje)).toFixed(2));
-        deudaDetalleMatricula.innerHTML = `<b class='text-${valorConDescuento > 0 ? 'danger' : 'success'}'>$${valorConDescuento.toFixed(2)}</b>`;
+        const valorConDescuento = parseInt(((info.valorSinDescuento) - ((info.valorSinDescuento * (info.porcentaje)) / 100)).toFixed(2));
+        const deuda = valorConDescuento - (info.valorPagado > 0 ? info.valorPagado : 0);
+        deudaDetalleMatricula.innerHTML = `<b class='text-${deuda > 0 ? 'danger' : 'success'}'>$${deuda.toFixed(2)}</b>`;
         documentoIdentidadDetalleMatricula.innerHTML = info.documento;
         estudianteDetalleMatricula.innerHTML = info.nombre;
         cursoDetalleMatricula.innerHTML = info.curso;
         tipoCursoDetalleMatricula.innerHTML = info.tipoCurso;
-        if (info.esDiplomado != 1) {
+        if (info.esDiplomado == 1) {
             divModulos.innerHTML = "";
             let html = "<label class='fw-bold'>MODULOS</label>";
             modulos.forEach(item => {
-                html+=`<div><label>${item.curso}</label></div>`
+                html += `<div><label>${item.curso}</label></div>`
             });
             divModulos.innerHTML = html;
         } else {
@@ -370,10 +371,10 @@ async function verDetalle(_idGrupoInHouse) {
                 {
                     title: "Estudiante",
                     data: "estudiante",
-                    render:data=>data.trimStart()
+                    render: data => data.trimStart()
                 }
             ],
-            order:[[2,'asc']]
+            order: [[2, 'asc']]
         });
         $(tablePagosDetalle).DataTable({
             bDestroy: true,
@@ -381,7 +382,7 @@ async function verDetalle(_idGrupoInHouse) {
             columns: [
                 {
                     title: "",
-                    data: "imagenComprobane",
+                    data: "imagenComprobante",
                     render: data => `<a class='btn-option-table text-primary' target='_blank' href='${_route}${data}?v=${(new Date()).getTime()}'><i class='bi-receipt'></i></a>`
                 },
                 {
@@ -390,15 +391,21 @@ async function verDetalle(_idGrupoInHouse) {
                     render: data => data.substring(0, 10)
                 },
                 {
-                    title: "Cuenta",
+                    title: "Cuenta/Tarjeta",
                     data: "numero",
                     render: (data, type, row) => {
-                        return `${data} - ${row.banco}`
+                        return !!data ? `${data} - ${row.banco}` : row.tarjetaMarca
                     }
                 },
-                { title: "#Documento", data: "numeroComprobante" },
+                {
+                    title: "#Documento",
+                    data: "numeroComprobante",
+                    render: (data, type, row) => {
+                        return data || row.tarjetaAutorizacion
+                    }
+                },
                 { title: "Tipo", data: "formaPago" },
-                {title:"Valor",data:"valor"}
+                { title: "Valor", data: "valor" }
 
             ],
             order: [[2, 'asc']]

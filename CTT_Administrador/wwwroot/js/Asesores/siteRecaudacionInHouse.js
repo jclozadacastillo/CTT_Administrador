@@ -1,10 +1,10 @@
-﻿const baseUrl = `${_route}Asesores/Recaudacion/`;
+﻿const baseUrl = `${_route}Asesores/RecaudacionInHouse/`;
 const modalDetalleMatricula = new bootstrap.Modal(modalDetalle, {
     keyboard: false,
     backdrop: "static"
 });
 let deuda = 0.0;
-let idMatricula = 0;
+let idGrupoInHouse = 0;
 window.addEventListener("load", async function () {
     await comboFormasPagos();
     await comboCuentas();
@@ -34,7 +34,7 @@ async function listar() {
             columns: [
                 {
                     title: "<i class='bi-gear'></i>",
-                    data: "idMatricula",
+                    data: "idGrupoInHouse",
                     class: "text-center w-btn",
                     render: (data, type, row) => {
                         return `<button class='btn-option-table text-info' title='detalle de matricula' onclick='verDetalle(${data},true)'><i class='bi-file-earmark-text-fill'></i></button>`
@@ -42,14 +42,13 @@ async function listar() {
                 },
                 {
                     title: "Fecha",
-                    data: "idMatricula",
+                    data: "idGrupoInHouse",
                     class: 'w-fecha',
                     render: (data, type, row) => row.fechaRegistro
                 },
-                { title: "Documento", data: "documentoIdentidad", class: "w-cedula" },
-                { title: "Estudiante", data: "estudiante", class: "text-nowrap" },
+                { title: "Documento", data: "documento", class: "w-cedula" },
+                { title: "Cliente", data: "cliente", class: "text-nowrap" },
                 { title: "Curso/Diplomado", data: "curso", class: "w-50" },
-                { title: "Paralelo", data: "paralelo", class: "w-fecha" },
                 {
                     title: "Deuda",
                     class: "text-end",
@@ -155,73 +154,88 @@ function handleBancos() {
     activarValidadores(idCuenta.closest("div"));
 }
 
-async function verDetalle(_idMatricula, verModal) {
+async function verDetalle(_idGrupoInHouse, verModal) {
     try {
         limpiarForm(frmDatos);
         datosTarjeta.hidden = true;
         activarValidadores(frmDatos);
-        if ($.fn.DataTable.isDataTable('#tablePagos')) {
-            $('#tablePagos').DataTable().destroy();
-        }
-        const url = `${baseUrl}detalleMatricula/${_idMatricula}`;
+        const url = `${baseUrl}detalleMatriculas/${_idGrupoInHouse}`;
         const res = (await axios.get(url)).data;
-        const matricula = res.matricula;
+        const info = res.info;
+        const listaParticipantes = res.alumnos;
         const modulos = res.modulos;
         const pagos = res.pagos;
-        idMatricula = matricula.idMatricula;
-        modalDetalleLabel.innerText = `MATRICULA #${matricula.idMatricula.toString().padStart(6, "0")}`;
-        deudaDetalleMatricula.innerHTML = `<b class='text-${matricula.deuda > 0 ? 'danger' : 'success'}'>$${matricula.deuda.toFixed(2)}</b>`;
-        deuda = parseFloat(matricula.deuda.toFixed(2));
-        documentoIdentidadDetalleMatricula.innerHTML = matricula.documentoIdentidad;
-        estudianteDetalleMatricula.innerHTML = matricula.estudiante;
-        cursoDetalleMatricula.innerHTML = matricula.curso;
-        tipoCursoDetalleMatricula.innerHTML = matricula.tipoCurso;
-        deuda > 0 ? divPagos.removeAttribute("hidden") : divPagos.hidden = true;
-        if (matricula.esDiplomado == 1) {
-            let html = "";
-            detalleMatriculaModulos.removeAttribute("hidden");
-            html = `<div class='col-sm-12'><label class='fs-sm mt-3 fw-bold'>MÓDULOS</label></div>
-                    <div class='table-responsive'>
-                    <table class='fs-sm table table-striped w-100'>
-                    <thead class='bg-primary text-white'>
-                        <tr>
-                            <th>FECHA MATRICULA</th>
-                            <th>MÓDULO</th>
-                        </tr>
-                    </thead>
-                    `;
+        modalDetalleLabel.innerText = `MATRICULA IN-HOUSE #${info.idGrupoInHouse.toString().padStart(6, "0")}`;
+        const valorSinDescuento = info.valorSinDescuento;
+        const valorConDescuento = parseInt(((info.valorSinDescuento) - ((info.valorSinDescuento * (info.porcentaje)) / 100)).toFixed(2));
+        deuda = valorConDescuento - (info.valorPagado>0? info.valorPagado:0);
+        deudaDetalleMatricula.innerHTML = `<b class='text-${deuda > 0 ? 'danger' : 'success'}'>$${deuda.toFixed(2)}</b>`;
+        documentoIdentidadDetalleMatricula.innerHTML = info.documento;
+        estudianteDetalleMatricula.innerHTML = info.nombre;
+        cursoDetalleMatricula.innerHTML = info.curso;
+        tipoCursoDetalleMatricula.innerHTML = info.tipoCurso;
+        idGrupoInHouse = _idGrupoInHouse;
+        if (info.esDiplomado == 1) {
+            divModulos.innerHTML = "";
+            let html = "<label class='fw-bold'>MODULOS</label>";
             modulos.forEach(item => {
-                html += `<tr>
-                            <td>${item.fechaRegistro.replaceAll("T", " ").substring(0, item.fechaRegistro.length - 3)}</td>
-                            <td>${item.curso}</td>
-                        </tr>`
+                html += `<div><label>${item.curso}</label></div>`
             });
-            detalleMatriculaModulos.innerHTML = html + "</div></table>";
+            divModulos.innerHTML = html;
         } else {
-            detalleMatriculaModulos.innerHTML = "";
-            detalleMatriculaModulos.hidden = true;
+            divModulos.innerHTML = "";
         }
-        html = "";
-        pagos.forEach(item => {
-            const banco = !!item.banco ? `${item.numero} - ${item.banco}` : item.tarjetaMarca;
-            html += `<tr>
-                        <td class='w-btn text-center'>
-                            <a class='btn-option-table text-primary' target='_blank' href='${_route}${item.imagenComprobante}?v=${(new Date()).getTime()}'><i class='bi-receipt'></i></a>
-                        </td>
-                        <td>${item.fechaPago.substring(0, 10)}</td>
-                        <td>${banco}</td>
-                        <td>${item.numeroComprobante || item.tarjetaAutorizacion}</td>
-                        <td>${item.formaPago}</td>
-                        <td class='text-end'>${item.valor.toFixed(2)}</td>
-                    </tr>`
-        });
-        detallePagosMatricula.innerHTML = html;
-        $(tablePagos).DataTable({
+        $(tableParticipantesDetalle).DataTable({
             bDestroy: true,
-            columnDefs: [
-                { targets: [0], orderable: false }
+            data: listaParticipantes,
+            columns: [
+                {
+                    title: "Matricula#",
+                    data: "idMatricula",
+                    render: (data) => data.toString().padStart(6, "0")
+                },
+                { title: "Documento", data: "documentoIdentidad" },
+                {
+                    title: "Estudiante",
+                    data: "estudiante",
+                    render: data => data.trimStart()
+                }
             ],
-            order: [[1, "DESC"]],
+            order: [[2, 'asc']]
+        });
+        $(tablePagosDetalle).DataTable({
+            bDestroy: true,
+            data: pagos,
+            columns: [
+                {
+                    title: "",
+                    data: "imagenComprobante",
+                    render: data => `<a class='btn-option-table text-primary' target='_blank' href='${_route}${data}?v=${(new Date()).getTime()}'><i class='bi-receipt'></i></a>`
+                },
+                {
+                    title: "Fecha",
+                    data: "fechaPago",
+                    render: data => data.substring(0, 10)
+                },
+                {
+                    title: "Cuenta/Tarjeta",
+                    data: "numero",
+                    render: (data, type, row) => {
+                        return !!data ? `${data} - ${row.banco}` : row.tarjetaMarca
+                    }
+                },
+                {
+                    title: "#Documento",
+                    data: "numeroComprobante",
+                    render: (data, type, row) => {
+                        return data || row.tarjetaAutorizacion
+                    }
+                },
+                { title: "Tipo", data: "formaPago" },
+                { title: "Valor", data: "valor" }
+
+            ],
+            order: [[2, 'asc']]
         });
         handleValor();
         if (verModal) modalDetalleMatricula.show();
@@ -245,9 +259,9 @@ async function agregarPago() {
         loaderShow();
         const url = `${baseUrl}agregarPago`;
         const data = new FormData(frmDatos);
-        data.append("idMatricula", idMatricula);
+        data.append("idGrupoInHouse", idGrupoInHouse);
         await axios.post(url, data);
-        verDetalle(idMatricula, false);
+        verDetalle(idGrupoInHouse, false);
         toastSuccess("Pago agregado exitosamente");
         reloadDataTable();
     } catch (e) {

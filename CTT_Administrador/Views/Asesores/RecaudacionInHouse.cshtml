@@ -1,12 +1,12 @@
 ﻿@{
-    ViewData["Title"] = "Recaudación";
+    ViewData["Title"] = "Recaudación IN-HOUSE";
     Layout = "~/Views/Shared/_LayoutAsesor.cshtml";
 }
 
 <div class="container-fluid" id="content">
     <div class="row">
         <div class="col-auto me-0 pe-0 form-title">
-            <h4>Recaudación</h4>
+            <h4>Recaudación IN-HOUSE</h4>
         </div>
     </div>
     <hr>
@@ -41,6 +41,9 @@
                     </div>
                     <div class="col-sm-12" id="detalleMatriculaModulos">
                     </div>
+                    <div class="col-sm-12 fs-sm" id="divModulos">
+                    </div>
+                    <hr class="mt-2" />              
                     <div class="col-12 col-md-12" id="divPagos">
                         <form class="row" id="frmDatos">
                             <div class="col-sm-9">
@@ -108,30 +111,21 @@
                             </div>
                         </form>
                     </div>
-                    <div class="col-sm-12 fs-sm mt-4">
+                    <hr class="mt-2" />
+                    <div class="col-sm-12 fs-sm mt-2">
                         <label class="fw-bold">DETALLE DE PAGOS</label>
-                    </div>
-                    <div class="col-sm-12">
-                        <div class="table-responsive">
-                            <table class="fs-sm table table-striped w-100" id="tablePagos">
-                                <thead class="bg-primary text-white">
-                                    <tr>
-                                        <th class="w-btn"></th>
-                                        <th>FECHA</th>
-                                        <th>CUENTA</th>
-                                        <th>#DOCUMENTO</th>
-                                        <th>TIPO</th>
-                                        <th>VALOR</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="detallePagosMatricula">
-                                </tbody>
-                            </table>
+                        <div class="table-responsive p-1">
+                            <table class="table table-sm w-100 table-custom-asesores" id="tablePagosDetalle"></table>
                         </div>
-
+                    </div>
+                    <hr class="mt-2" />
+                    <div class="col-sm-12 fs-sm">
+                        <label class="fw-bold">DETALLE DE PARTICIPANTES</label>
+                        <div class="table-responsive p-1">
+                            <table class="table table-sm w-100 table-custom-asesores" id="tableParticipantesDetalle"></table>
+                        </div>
                     </div>
                 </div>
-
             </div>
             <div class="modal-footer py-2">
                 <button type="button" class="btn btn-secondary btn-sm" data-cerrar
@@ -142,4 +136,5 @@
         </div>
     </div>
 </div>
-<script defer src="~/js/asesores/siteRecaudacion.js?v=@DateTime.Now.Ticks"></script>
+<script defer src="~/js/asesores/siteRecaudacionInHouse.js?v=@DateTime.Now.Ticks"></script>
+

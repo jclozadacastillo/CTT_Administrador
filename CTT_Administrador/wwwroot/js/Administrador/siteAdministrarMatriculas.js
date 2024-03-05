@@ -186,6 +186,14 @@ async function listar() {
                     }
                 },
                 {
+                    title: "Legalizado",
+                    class: "text-center",
+                    data: "legalizado",
+                    render: (data, type, row) => {
+                        return row.deuda == 0 || legalizado == 1 ? "<b class='badge bg-success text-white'>SI</b>" : "<b class='badge bg-danger text-white'>NO</b>";
+                    }
+                },
+                {
                     title: "Estado",
                     data: "idMatricula",
                     class: "text-center",

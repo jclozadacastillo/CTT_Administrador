@@ -133,6 +133,14 @@ async function listar() {
                     class: "w-100"
                 },
                 { title: "Paralelo", data: "paralelo", class: "text-center" },
+                {
+                    title: "Legalizado",
+                    class:"text-center",
+                    data: "legalizado",
+                    render: (data, type, row) => {
+                        return row.deuda == 0 || legalizado == 1 ? "<b class='badge bg-success text-white'>SI</b>" : "<b class='badge bg-danger text-white'>NO</b>";
+                    }
+                }
             ],
             columnDefs: [
                 { targets: [0, 1], orderable: false }

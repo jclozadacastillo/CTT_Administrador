@@ -55,7 +55,7 @@ namespace CTT_Administrador.Controllers.Administrador
             {
                 string sql = @"
                                 select distinct(t.idTipoCurso),t.tipoCurso
-                                from gruposcursos 
+                                from gruposcursos g
                                 inner join cursos c on c.idCurso = g.idCurso
                                 inner join periodos p on p.idPeriodo = g.idPeriodo
                                 inner join modalidades m on m.idModalidad = g.idModalidad
@@ -136,14 +136,15 @@ namespace CTT_Administrador.Controllers.Administrador
             try
             {
                 string sql = @"
-                                select distinct(a.paralelo)
-                                from asignacionesinstructorescalificaciones a
+                                select distinct(ma.paralelo)
+                                from calificaciones a
+                                inner join matriculas ma on ma.idMatricula=a.idMatricula
                                 inner join gruposcursos g on g.idGrupoCurso=a.idGrupoCurso
                                 inner join cursos_mallas m on m.idCurso = g.idCurso
                                 inner join cursos c on c.idCurso = m.idCursoAsociado
                                 where a.idGrupoCurso = @idGrupoCurso and a.idCurso=@idCurso
-                                and a.activo=1
-                                order by a.paralelo
+                                and c.activo=1
+                                order by ma.paralelo
                 ";
                 var paralelos = new List<dynamic>() { new { paralelo = "TODOS" } };
                 paralelos.AddRange(await dapper.QueryAsync(sql, new { idGrupoCurso, idCurso }));
@@ -199,14 +200,14 @@ namespace CTT_Administrador.Controllers.Administrador
                                 (CASE WHEN e.segundoApellido IS NULL THEN '' ELSE e.segundoApellido END),' ',e.primerNombre,' ',
                                 (CASE WHEN e.segundoNombre IS NULL THEN '' ELSE e.segundoNombre END)) as estudiante,
                                 datediff(fechaLimiteNotas,current_timestamp()) as tiempoLimite,
-                                datediff(fechaLimiteNotasAtraso,current_timestamp()) as tiempoLimiteAtraso,a.paralelo
+                                datediff(fechaLimiteNotasAtraso,current_timestamp()) as tiempoLimiteAtraso,m.paralelo,m.legalizado,m.deuda
                                 from matriculas m
                                 inner join estudiantes e on e.idEstudiante = m.idEstudiante
                                 inner join calificaciones c on c.idMatricula = m.idMatricula
-                                inner join asignacionesinstructorescalificaciones a on a.idGrupoCurso = c.idGrupoCurso
-                                and m.paralelo = a.paralelo and a.idCurso = c.idCurso
-                                where m.idGrupoCurso = @idGrupoCurso and a.activo=1 and c.idCurso=@idCurso {paralelos}
-                                order by a.paralelo,e.primerApellido,e.primerNombre
+                                left join asignacionesinstructorescalificaciones a on a.idGrupoCurso = c.idGrupoCurso
+                                and m.paralelo = a.paralelo and c.idCurso = c.idCurso
+                                where m.idGrupoCurso = @idGrupoCurso and c.idCurso=@idCurso {paralelos}
+                                order by m.paralelo,e.primerApellido,e.primerNombre
                 ";
                 var listaCalificaciones = await dapper.QueryAsync(sql, new { idGrupoCurso, idCurso, paralelo });
                 sql = @"SELECT * FROM cursos WHERE idCurso=@idCurso";
@@ -243,7 +244,7 @@ namespace CTT_Administrador.Controllers.Administrador
                                 (CASE WHEN e.segundoApellido IS NULL THEN '' ELSE e.segundoApellido END),' ',e.primerNombre,' ',
                                 (CASE WHEN e.segundoNombre IS NULL THEN '' ELSE e.segundoNombre END)) as estudiante,
                                 0 as tiempoLimite,
-                                0 as tiempoLimiteAtraso,m.paralelo
+                                0 as tiempoLimiteAtraso,m.paralelo,m.legalizado,m.deuda
                                 from matriculas m
                                 inner join estudiantes e on e.idEstudiante = m.idEstudiante
                                 inner join calificaciones c on c.idMatricula = m.idMatricula

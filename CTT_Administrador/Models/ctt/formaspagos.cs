@@ -20,5 +20,8 @@ public partial class formaspagos
     public sbyte? activo { get; set; }
 
     [InverseProperty("idFormaPagoNavigation")]
+    public virtual ICollection<pagosinhouse> pagosinhouse { get; set; } = new List<pagosinhouse>();
+
+    [InverseProperty("idFormaPagoNavigation")]
     public virtual ICollection<pagosmatriculas> pagosmatriculas { get; set; } = new List<pagosmatriculas>();
 }

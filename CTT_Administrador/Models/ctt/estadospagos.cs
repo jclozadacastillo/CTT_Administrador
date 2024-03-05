@@ -15,4 +15,7 @@ public partial class estadospagos
     public string? estado { get; set; }
 
     public sbyte? activo { get; set; }
+
+    [InverseProperty("idEstadoNavigation")]
+    public virtual ICollection<pagosinhouse> pagosinhouse { get; set; } = new List<pagosinhouse>();
 }

@@ -31,4 +31,7 @@ public partial class gruposinhouse
 
     [InverseProperty("idGrupoInHouseNavigation")]
     public virtual ICollection<gruposinhousemodulos> gruposinhousemodulos { get; set; } = new List<gruposinhousemodulos>();
+
+    [InverseProperty("idGrupoInHouseNavigation")]
+    public virtual ICollection<pagosinhouse> pagosinhouse { get; set; } = new List<pagosinhouse>();
 }

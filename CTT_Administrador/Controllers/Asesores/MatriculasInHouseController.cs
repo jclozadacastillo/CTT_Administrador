@@ -334,34 +334,45 @@ namespace CTT_Administrador.Controllers.Asesores
             try
             {
                 string sql = @"SELECT m.idMatricula,e.documentoIdentidad,
-                            REPLACE(concat(e.primerApellido,' ',
+                            LTRIM(REPLACE(concat(e.primerApellido,' ',
                             CASE WHEN e.segundoApellido IS NULL THEN '' ELSE e.segundoApellido END,' ',
                             e.primerNombre,' ',
                             CASE WHEN e.segundoNombre  IS NULL THEN '' ELSE e.segundoNombre  END
-                            ),'  ',' ')AS estudiante
-                            FROM matriculas m 
-                            INNER JOIN estudiantes e ON e.idEstudiante = m.idEstudiante 
+                            ),'  ',' '))AS estudiante
+                            FROM matriculas m
+                            INNER JOIN estudiantes e ON e.idEstudiante = m.idEstudiante
                             WHERE idGrupoInHouse=@idGrupoInHouse;
                             ";
                 var alumnos = await _dapper.QueryAsync(sql, new { idGrupoInHouse });
                 sql = @"SELECT curso  FROM gruposinhousemodulos gm
-                        INNER JOIN cursos c ON c.idCurso = gm.idCurso 
+                        INNER JOIN cursos c ON c.idCurso = gm.idCurso
                         WHERE idGrupoInHouse = @idGrupoInHouse";
                 var modulos = await _dapper.QueryAsync(sql, new { idGrupoInHouse });
                 sql = @"SELECT gi.idGrupoInHouse,c.documento,c.nombre,
-                        cu.curso,t.tipoCurso,gi.porcentaje,gi.valorSinDescuento 
-                        FROM gruposinhouse gi 
-                        INNER JOIN gruposcursos g ON g.idGrupoCurso = gi.idGrupoCurso 
-                        INNER JOIN clientesfacturas c ON c.idCliente = gi.idCliente 
-                        INNER JOIN cursos cu ON cu.idCurso = g.idCurso 
-                        INNER JOIN tiposcursos t ON t.idTipoCurso = cu.idTipoCurso 
+                        cu.curso,t.tipoCurso,gi.porcentaje,gi.valorSinDescuento,esDiplomado
+                        FROM gruposinhouse gi
+                        INNER JOIN gruposcursos g ON g.idGrupoCurso = gi.idGrupoCurso
+                        INNER JOIN clientesfacturas c ON c.idCliente = gi.idCliente
+                        INNER JOIN cursos cu ON cu.idCurso = g.idCurso
+                        INNER JOIN tiposcursos t ON t.idTipoCurso = cu.idTipoCurso
                         WHERE gi.idGrupoInHouse = @idGrupoInHouse";
                 var info = await _dapper.QueryFirstOrDefaultAsync(sql, new { idGrupoInHouse });
-                return Ok(new {alumnos,modulos,info});
+                sql = @"SELECT idPago,fechaPago,
+                        b.banco,c.numero,t.tipo,valor,
+                        p.imagenComprobante,p.numeroComprobante,fr.formaPago
+                        FROM pagosinhouse p
+                        INNER JOIN formaspagos f ON f.idFormaPago = p.idFormaPago
+                        INNER JOIN cuentasbancos c ON c.idCuenta = p.idCuenta
+                        INNER JOIN bancos b ON b.idBanco =c.idBanco
+                        INNER JOIN tiposcuentasbancos t ON t.idTipoCuentaBanco = c.idTipoCuentaBanco
+                        INNER JOIN formaspagos fr ON fr.idFormaPago = p.idFormaPago 
+                        WHERE idGrupoInHouse = @idGrupoInHouse
+                        ORDER BY p.idPago desc";
+                var pagos = await _dapper.QueryAsync(sql, new { idGrupoInHouse });
+                return Ok(new { alumnos, modulos, info,pagos });
             }
             catch (Exception ex)
             {
-
                 return Problem(ex.Message);
             }
         }

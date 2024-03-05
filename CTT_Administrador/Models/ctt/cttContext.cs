@@ -61,6 +61,8 @@ public partial class cttContext : DbContext
 
     public virtual DbSet<modalidades> modalidades { get; set; }
 
+    public virtual DbSet<pagosinhouse> pagosinhouse { get; set; }
+
     public virtual DbSet<pagosmatriculas> pagosmatriculas { get; set; }
 
     public virtual DbSet<periodos> periodos { get; set; }
@@ -302,6 +304,19 @@ public partial class cttContext : DbContext
             entity.HasKey(e => e.idModalidad).HasName("PRIMARY");
 
             entity.Property(e => e.activa).HasDefaultValueSql("'1'");
+        });
+
+        modelBuilder.Entity<pagosinhouse>(entity =>
+        {
+            entity.HasKey(e => e.idPago).HasName("PRIMARY");
+
+            entity.HasOne(d => d.idCuentaNavigation).WithMany(p => p.pagosinhouse).HasConstraintName("pagosinhouse_ibfk_4");
+
+            entity.HasOne(d => d.idEstadoNavigation).WithMany(p => p.pagosinhouse).HasConstraintName("pagosinhouse_ibfk_1");
+
+            entity.HasOne(d => d.idFormaPagoNavigation).WithMany(p => p.pagosinhouse).HasConstraintName("pagosinhouse_ibfk_3");
+
+            entity.HasOne(d => d.idGrupoInHouseNavigation).WithMany(p => p.pagosinhouse).HasConstraintName("pagosinhouse_ibfk_2");
         });
 
         modelBuilder.Entity<pagosmatriculas>(entity =>

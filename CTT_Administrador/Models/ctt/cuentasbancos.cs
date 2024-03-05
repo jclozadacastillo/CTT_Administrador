@@ -37,5 +37,8 @@ public partial class cuentasbancos
     public virtual tiposcuentasbancos? idTipoCuentaBancoNavigation { get; set; }
 
     [InverseProperty("idCuentaNavigation")]
+    public virtual ICollection<pagosinhouse> pagosinhouse { get; set; } = new List<pagosinhouse>();
+
+    [InverseProperty("idCuentaNavigation")]
     public virtual ICollection<pagosmatriculas> pagosmatriculas { get; set; } = new List<pagosmatriculas>();
 }

@@ -335,54 +335,74 @@ async function verDetalle(_idGrupoInHouse) {
     try {
         const url = `${baseUrl}detalleMatriculas/${_idGrupoInHouse}`;
         const res = (await axios.get(url)).data;
-        console.log(res);
-        //const matricula = res.matricula;
-        //const modulos = res.modulos;
-        //const pagos = res.pagos;
-        //modalDetalleLabel.innerText = `MATRICULA #${matricula.idGrupoInHouse.toString().padStart(6, "0")}`;
-        //deudaDetalleMatricula.innerHTML = `<b class='text-${matricula.deuda > 0 ? 'danger' : 'success'}'>$${matricula.deuda.toFixed(2)}</b>`;
-        //documentoIdentidadDetalleMatricula.innerHTML = matricula.documentoIdentidad;
-        //estudianteDetalleMatricula.innerHTML = matricula.estudiante;
-        //cursoDetalleMatricula.innerHTML = matricula.curso;
-        //tipoCursoDetalleMatricula.innerHTML = matricula.tipoCurso;
-        //if (matricula.esDiplomado == 1) {
-        //    let html = "";
-        //    detalleMatriculaModulos.removeAttribute("hidden");
-        //    html = `<div class='col-sm-12'><label class='fs-sm mt-3 fw-bold'>MÓDULOS</label></div>
-        //            <div class='table-responsive'>
-        //            <table class='fs-sm table table-striped w-100'>
-        //            <thead class='bg-primary text-white'>
-        //                <tr>
-        //                    <th>FECHA MATRICULA</th>
-        //                    <th>MÓDULO</th>
-        //                </tr>
-        //            </thead>
-        //            `;
-        //    modulos.forEach(item => {
-        //        html += `<tr>
-        //                    <td>${item.fechaRegistro.replaceAll("T", " ").substring(0, item.fechaRegistro.length - 3)}</td>
-        //                    <td>${item.curso}</td>
-        //                </tr>`
-        //    });
-        //    detalleMatriculaModulos.innerHTML = html + "</div></table>";
-        //} else {
-        //    detalleMatriculaModulos.innerHTML = "";
-        //    detalleMatriculaModulos.hidden = true;
-        //}
-        //html = "";
-        //pagos.forEach(item => {
-        //    html += `<tr>
-        //                <td class='w-btn'>
-        //                    <a class='btn-option-table text-primary' target='_blank' href='${_route}${item.imagenComprobante}?v=${(new Date()).getTime()}'><i class='bi-receipt'></i></a>
-        //                </td>
-        //                <td>${item.fechaPago.substring(0, 10)}</td>
-        //                <td>${item.numero} - ${item.banco}</td>
-        //                <td>${item.numeroComprobante}</td>
-        //                <td>${item.formaPago}</td>
-        //                <td class='text-end'>${item.valor.toFixed(2)}</td>
-        //            </tr>`
-        //});
-        //detallePagosMatricula.innerHTML = html;
+        const info = res.info;
+        const listaParticipantes = res.alumnos;
+        const modulos = res.modulos;
+        const pagos = res.pagos;
+        modalDetalleLabel.innerText = `MATRICULA IN-HOUSE #${info.idGrupoInHouse.toString().padStart(6, "0")}`;
+        const valorSinDescuento = info.valorSinDescuento;
+        const valorConDescuento = parseInt(((info.valorSinDescuento) - (info.valorSinDescuento * info.porcentaje)).toFixed(2));
+        deudaDetalleMatricula.innerHTML = `<b class='text-${valorConDescuento > 0 ? 'danger' : 'success'}'>$${valorConDescuento.toFixed(2)}</b>`;
+        documentoIdentidadDetalleMatricula.innerHTML = info.documento;
+        estudianteDetalleMatricula.innerHTML = info.nombre;
+        cursoDetalleMatricula.innerHTML = info.curso;
+        tipoCursoDetalleMatricula.innerHTML = info.tipoCurso;
+        if (info.esDiplomado != 1) {
+            divModulos.innerHTML = "";
+            let html = "<label class='fw-bold'>MODULOS</label>";
+            modulos.forEach(item => {
+                html+=`<div><label>${item.curso}</label></div>`
+            });
+            divModulos.innerHTML = html;
+        } else {
+            divModulos.innerHTML = "";
+        }
+        $(tableParticipantesDetalle).DataTable({
+            bDestroy: true,
+            data: listaParticipantes,
+            columns: [
+                {
+                    title: "Matricula#",
+                    data: "idMatricula",
+                    render: (data) => data.toString().padStart(6, "0")
+                },
+                { title: "Documento", data: "documentoIdentidad" },
+                {
+                    title: "Estudiante",
+                    data: "estudiante",
+                    render:data=>data.trimStart()
+                }
+            ],
+            order:[[2,'asc']]
+        });
+        $(tablePagosDetalle).DataTable({
+            bDestroy: true,
+            data: pagos,
+            columns: [
+                {
+                    title: "",
+                    data: "imagenComprobane",
+                    render: data => `<a class='btn-option-table text-primary' target='_blank' href='${_route}${data}?v=${(new Date()).getTime()}'><i class='bi-receipt'></i></a>`
+                },
+                {
+                    title: "Fecha",
+                    data: "fechaPago",
+                    render: data => data.substring(0, 10)
+                },
+                {
+                    title: "Cuenta",
+                    data: "numero",
+                    render: (data, type, row) => {
+                        return `${data} - ${row.banco}`
+                    }
+                },
+                { title: "#Documento", data: "numeroComprobante" },
+                { title: "Tipo", data: "formaPago" },
+                {title:"Valor",data:"valor"}
+
+            ],
+            order: [[2, 'asc']]
+        });
         modalDetalleMatricula.show();
     } catch (e) {
         handleError(e);

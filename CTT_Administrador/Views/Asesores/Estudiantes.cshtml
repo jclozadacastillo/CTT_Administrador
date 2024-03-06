@@ -70,6 +70,24 @@
                                 <input type="text" class="form-control form-control-sm" id="segundoApellido" name="segundoApellido"
                                        maxlength="40" data-validate="no-validate">
                             </div>
+                            <div class="col-sm-6">
+                                <label class="fs-sm">Provincia</label>
+                                <select class="form-select form-select-sm" id="idProvincia" name="idProvincia" onchange="handleCiudades()">
+                                    <option value="">Seleccione</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    * Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="fs-sm">Ciudad</label>
+                                <select class="form-select form-select-sm" id="idCiudad" name="idCiudad">
+                                    <option value="">Seleccione una porvincia</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    * Campo requerido
+                                </div>
+                            </div>
                             <div class="col-sm-12">
                                 <label class="fs-sm">Dirección</label>
                                 <textarea class="form-control form-control-sm" id="direccion" name="direccion" data-validate="no-validate" maxlength="100"></textarea>

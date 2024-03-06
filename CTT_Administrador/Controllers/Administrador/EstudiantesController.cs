@@ -1,21 +1,21 @@
-﻿using CTT_Administrador.Auth.Administrador;
-using CTT_Administrador.Auth.Asesor;
-using CTT_Administrador.Models.ctt;
+﻿using CTT_Administrador.Models.ctt;
 using CTT_Administrador.Utilities;
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace CTT_Administrador.Controllers.Administrador
 {
-
     public class EstudiantesController : Controller
     {
         private readonly cttContext _context;
+        private readonly IDbConnection _dapper;
 
         public EstudiantesController(cttContext context)
         {
             _context = context;
+            _dapper = _context.Database.GetDbConnection();
         }
 
         [HttpPost]
@@ -28,8 +28,10 @@ namespace CTT_Administrador.Controllers.Administrador
                             CASE WHEN segundoApellido IS NULL THEN '' ELSE segundoApellido END,' ',
                             primerNombre,' ',
                             CASE WHEN segundoNombre IS NULL THEN '' ELSE segundoNombre END),'  ',' ') as estudiante,
-                            activo, celular,email
-                            FROM estudiantes
+                            e.activo, celular,email,ciudad,provincia
+                            FROM estudiantes e
+                            INNER JOIN ciudades c on c.idCiudad=e.idCiudad
+                            INNER JOIN provincias p on p.idProvincia=c.idProvincia
                                 ";
                 return Ok(await Tools.DataTableMySql(new Tools.DataTableParams
                 {
@@ -37,6 +39,32 @@ namespace CTT_Administrador.Controllers.Administrador
                     dapperConnection = _context.Database.GetDbConnection(),
                     dataTableModel = _params
                 }));
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> listaCiudades()
+        {
+            try
+            {
+                return Ok(await _context.ciudades.AsNoTracking().Where(x => x.activo == 1).ToListAsync());
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> listaProvincias()
+        {
+            try
+            {
+                return Ok(await _context.provincias.AsNoTracking().Where(x => x.activo == 1).ToListAsync());
             }
             catch (Exception ex)
             {
@@ -62,7 +90,11 @@ namespace CTT_Administrador.Controllers.Administrador
         {
             try
             {
-                return Ok(await _context.estudiantes.FindAsync(idEstudiante));
+                string sql = @"SELECT e.*,idProvincia
+                               FROM estudiantes e
+                               LEFT JOIN ciudades c ON c.idCiudad=e.idCiudad
+                               WHERE e.idEstudiante=@idEstudiante;";
+                return Ok(await _dapper.QueryFirstOrDefaultAsync(sql, new { idEstudiante }));
             }
             catch (Exception ex)
             {
@@ -78,7 +110,7 @@ namespace CTT_Administrador.Controllers.Administrador
                 if (_context.estudiantes.Where(x => x.documentoIdentidad == _data.documentoIdentidad && _data.idEstudiante != x.idEstudiante).Count() > 0) throw new Exception("Lo sentimos esa documento de identidad ya se encuentra registrado");
                 if (_data.idEstudiante > 0)
                 {
-                    var anterior=await _context.estudiantes.AsNoTracking().Where(x=>x.idEstudiante== _data.idEstudiante).FirstOrDefaultAsync();
+                    var anterior = await _context.estudiantes.AsNoTracking().Where(x => x.idEstudiante == _data.idEstudiante).FirstOrDefaultAsync();
                     _data.activo = anterior.activo;
                     _data.clave = anterior.clave;
                     _context.estudiantes.Update(_data);

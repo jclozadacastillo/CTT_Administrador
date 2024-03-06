@@ -29,6 +29,8 @@ public partial class cttContext : DbContext
 
     public virtual DbSet<centrosuniandes> centrosuniandes { get; set; }
 
+    public virtual DbSet<ciudades> ciudades { get; set; }
+
     public virtual DbSet<clientesfacturas> clientesfacturas { get; set; }
 
     public virtual DbSet<convenios> convenios { get; set; }
@@ -65,7 +67,11 @@ public partial class cttContext : DbContext
 
     public virtual DbSet<pagosmatriculas> pagosmatriculas { get; set; }
 
+    public virtual DbSet<paises> paises { get; set; }
+
     public virtual DbSet<periodos> periodos { get; set; }
+
+    public virtual DbSet<provincias> provincias { get; set; }
 
     public virtual DbSet<roles> roles { get; set; }
 
@@ -159,6 +165,15 @@ public partial class cttContext : DbContext
         modelBuilder.Entity<centrosuniandes>(entity =>
         {
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
+        });
+
+        modelBuilder.Entity<ciudades>(entity =>
+        {
+            entity.HasKey(e => e.idCiudad).HasName("PRIMARY");
+
+            entity.Property(e => e.activo).HasDefaultValueSql("'1'");
+
+            entity.HasOne(d => d.idProvinciaNavigation).WithMany(p => p.ciudades).HasConstraintName("ciudades_ibfk_1");
         });
 
         modelBuilder.Entity<clientesfacturas>(entity =>
@@ -332,11 +347,27 @@ public partial class cttContext : DbContext
             entity.HasOne(d => d.idMatriculaNavigation).WithMany(p => p.pagosmatriculas).HasConstraintName("pagosmatriculas_ibfk_1");
         });
 
+        modelBuilder.Entity<paises>(entity =>
+        {
+            entity.HasKey(e => e.idPais).HasName("PRIMARY");
+
+            entity.Property(e => e.activo).HasDefaultValueSql("'1'");
+        });
+
         modelBuilder.Entity<periodos>(entity =>
         {
             entity.HasKey(e => e.idPeriodo).HasName("PRIMARY");
 
             entity.Property(e => e.activo).HasDefaultValueSql("'1'");
+        });
+
+        modelBuilder.Entity<provincias>(entity =>
+        {
+            entity.HasKey(e => e.idProvincia).HasName("PRIMARY");
+
+            entity.Property(e => e.activo).HasDefaultValueSql("'1'");
+
+            entity.HasOne(d => d.idPaisNavigation).WithMany(p => p.provincias).HasConstraintName("provincias_ibfk_1");
         });
 
         modelBuilder.Entity<roles>(entity =>

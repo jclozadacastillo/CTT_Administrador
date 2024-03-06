@@ -3,7 +3,6 @@
     Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
 }
 
-
 <div class="container-fluid" id="content" hidden>
     <div class="row">
         <div class="col-auto me-0 pe-0 form-title">
@@ -72,6 +71,24 @@
                                 <input type="text" class="form-control form-control-sm" id="segundoApellido" name="segundoApellido"
                                        maxlength="40">
                             </div>
+                            <div class="col-sm-6">
+                                <label class="fs-sm">Provincia</label>
+                                <select class="form-select form-select-sm" id="idProvincia" name="idProvincia" onchange="handleCiudades()">
+                                    <option value="">Seleccione</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    * Campo requerido
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="fs-sm">Ciudad</label>
+                                <select class="form-select form-select-sm" id="idCiudad" name="idCiudad">
+                                    <option value="">Seleccione una porvincia</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    * Campo requerido
+                                </div>
+                            </div>
                             <div class="col-sm-12">
                                 <label class="fs-sm">Dirección</label>
                                 <textarea class="form-control form-control-sm" id="direccion" name="direccion" data-validate="no-validate" maxlength="100"></textarea>
@@ -121,4 +138,3 @@
 </div>
 
 <script defer src="~/js/administrador/siteEstudiantes.js?v=@DateTime.Now.Ticks"></script>
-

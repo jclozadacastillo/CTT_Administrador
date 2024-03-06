@@ -6,15 +6,61 @@ const modal = new bootstrap.Modal(modalDatos, {
 let idEstudiante = 0;
 let activo = 1;
 const mayusculas = true;
+let ciudades = [];
+let provincias = [];
 (async function () {
     if (mayusculas) frmDatos.classList.add("to-uppercase");
     activarValidadores(frmDatos);
     loader.hidden = false;
+    $(idProvincia).select2({
+        dropdownParent: modalDatos
+    });
+    $(idCiudad).select2({
+        dropdownParent: modalDatos
+    });
     await comboTiposDocumentos();
+    await listaProvincias();
+    await listaCiudades();
     await listar();
     loader.hidden = true;
     content.hidden = false;
 })();
+
+async function listaProvincias() {
+    try {
+        const url = `${baseUrl}listaProvincias`;
+        provincias = (await axios.get(url)).data;
+        let html = "<option value=''>Seleccione</option>";
+        provincias.forEach(item => {
+            html += `<option value='${item.idProvincia}'>${item.provincia}</option>`
+        });
+        idProvincia.innerHTML = html;
+    } catch (e) {
+        handleError(e);
+    }
+}
+
+async function listaCiudades() {
+    try {
+        const url = `${baseUrl}listaCiudades`;
+        ciudades = (await axios.get(url)).data;
+
+    } catch (e) {
+        handleError(e);
+    }
+}
+
+function handleCiudades() {
+    if (!idProvincia.value) {
+        idCiudad.innerHTML = "<option value=''>Seleccione una provincia</option>";
+        return;
+    }
+    let html = "<option value=''>Seleccione</option>";
+    ciudades.filter(x => x.idProvincia == idProvincia.value).forEach(item => {
+        html += `<option value='${item.idCiudad}'>${item.ciudad}</option>`
+    });
+    idCiudad.innerHTML = html;
+}
 
 async function comboTiposDocumentos() {
     try {
@@ -36,10 +82,10 @@ async function listar() {
         await $(tableDatos).DataTable({
             bDestroy: true,
             serverSide: true,
-            processing:false,
+            processing: false,
             ajax: async function (_data, resolve) {
                 try {
-                    const res = (await axios.post(url, _data,{
+                    const res = (await axios.post(url, _data, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -100,13 +146,15 @@ async function listar() {
                     }
                 },
                 { title: "Documento", data: "documentoIdentidad", class: "w-cedula" },
-                { title: "Estudiante", data: "estudiante",class:"text-nowrap" },
+                { title: "Estudiante", data: "estudiante", class: "text-nowrap" },
+                { title: "Provincia", data: "provincia", class: "text-nowrap" },
+                { title: "Ciudad", data: "ciudad", class: "text-nowrap" },
                 {
                     title: "Celular",
                     data: "celular",
-                    class:"text-nowrap",
+                    class: "text-nowrap",
                     render: (data) => {
-                        return data||"<small class='text-muted'>SIN REGISTRO</small>"
+                        return data || "<small class='text-muted'>SIN REGISTRO</small>"
                     }
                 },
                 {
@@ -128,7 +176,7 @@ async function listar() {
     }
 }
 function reloadDataTable() {
-    setTimeout(function(){$(tableDatos).DataTable().ajax.reload();}, 100);
+    setTimeout(function () { $(tableDatos).DataTable().ajax.reload(); }, 100);
 }
 function nuevo() {
     idEstudiante = 0;
@@ -169,6 +217,12 @@ async function editar(_idEstudiante) {
         idEstudiante = res.idEstudiante;
         activo = res.activo == 1 || res.activo == true ? 1 : 0;
         cargarFormularioInForm(frmDatos, res);
+        if (!!res.idCiudad) {
+            $(idProvincia).val(res.idProvincia).trigger("change");
+            setTimeout(() => {
+                $(idCiudad).val(res.idCiudad).trigger("change");
+            }, 109);
+        }
         handleidTipoDocumento();
         modal.show();
     } catch (e) {

@@ -1,8 +1,10 @@
 ﻿using CTT_Administrador.Auth;
 using CTT_Administrador.Auth.Administrador;
 using CTT_Administrador.Models.ctt;
+using DocumentFormat.OpenXml.Vml;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 
 namespace CTT_Administrador.Controllers.Administrador
 {
@@ -123,8 +125,8 @@ namespace CTT_Administrador.Controllers.Administrador
         {
             if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
             return View();
-        }       
-        
+        }
+
         public IActionResult ListadoPorCurso()
         {
             if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
@@ -134,6 +136,23 @@ namespace CTT_Administrador.Controllers.Administrador
         {
             if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
             return View();
+        } 
+
+        public IActionResult reporteDiseno()
+        {
+            return View();
+        }
+
+        public IActionResult pdfDiseno()
+        {
+            return new ViewAsPdf("reporteDiseno")
+            {
+                //FileName = "reporte.pdf",
+                PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                CustomSwitches = "--disable-smart-shrinking",
+                PageMargins = { Top = 3, Right = 3, Bottom = 3, Left = 3 }
+            };
         }
 
         [HttpPost]
@@ -165,5 +184,7 @@ namespace CTT_Administrador.Controllers.Administrador
             await _auth.logoutAsync();
             return Ok();
         }
+
+
     }
 }

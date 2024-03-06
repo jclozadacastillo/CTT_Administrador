@@ -54,4 +54,6 @@ public partial class estudiantes
 
     [Column(TypeName = "datetime")]
     public DateTime? fechaConfirmacion { get; set; }
+
+    public int? idCiudad { get; set; }
 }

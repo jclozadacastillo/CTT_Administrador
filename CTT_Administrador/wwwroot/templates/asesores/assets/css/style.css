@@ -1631,6 +1631,15 @@ select {
     padding: 0 !important;
 }
 
+.main-container:has(.portada.bg-contadores) {
+    background: url(../../../../lib/utilities/toast/img/bg-contadores.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    padding: 0 !important;
+}
+
 
 .main-container:has(.portada-docente) {
     background-image: linear-gradient(to bottom, rgba(var(--primary-hover-rgb), 0.91), rgba(var(--primary-hover-rgb), 0.91)), url('../../../../lib/utilities/toast/img/login_docente.jpg');
@@ -1651,6 +1660,17 @@ select {
     background-attachment: fixed;
     padding: 0 !important;
 }
+
+    .bg-login.bg-contadores {
+        /*    background: rgba(var(--primary-rgb), .91) !important;
+    background: url(../../../../lib/utilities/toast/img/bg-admin.jpg);*/
+        background-image: linear-gradient(to bottom, rgba(var(--primary-rgb), 0.91), rgba(var(--primary-rgb), 0.91)), url('../../../../lib/utilities/toast/img/bg-contadores.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        padding: 0 !important;
+    }
 
 .bg-login-docente {
     /*    background: rgba(var(--primary-rgb), .91) !important;
@@ -2068,4 +2088,29 @@ table.table-custom-asesores tbody tr:hover {
 .btn-sm{
     font-size:13px !important;
     padding:4px 9px !important;
+}
+
+.notification-circle{
+    margin-left:10px;
+    text-align:center;
+    color:white;
+    border-radius:50%;
+    padding:2px 3px 3px 2px;
+    font-size:10px;
+    line-height:10px;
+    font-weight:700;
+    min-width:16px;
+}
+
+.notification-circle i{
+    color:white !important;
+    width:0 !important;
+    padding:0 !important;
+    margin:0 !important;
+    line-height:11px !important; 
+    font-size:10px !important; 
+}
+
+table thead tr th{
+    vertical-align:middle;
 }

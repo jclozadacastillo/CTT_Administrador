@@ -459,6 +459,11 @@ async function verDetalle(_idMatricula) {
         html = "";
         pagos.forEach(item => {
             const banco = !!item.banco ? `${item.numero} - ${item.banco}` : item.tarjetaMarca;
+            const colorEstado = {
+                "0": "text-info",
+                "1": "text-success",
+                "-1": "text-danger"
+            };
             html += `<tr>
                         <td class='w-btn text-center'>
                             <a class='btn-option-table text-primary' target='_blank' href='${_route}${item.imagenComprobante}?v=${(new Date()).getTime()}'><i class='bi-receipt'></i></a>
@@ -468,6 +473,12 @@ async function verDetalle(_idMatricula) {
                         <td>${item.numeroComprobante || item.tarjetaAutorizacion}</td>
                         <td>${item.formaPago}</td>
                         <td class='text-end'>${item.valor.toFixed(2)}</td>
+                        <td class='fw-bold ${colorEstado[item.idEstado]}'>
+                        ${item.estado}
+                        </td>
+                        <td>
+                        ${item.observaciones || "Sin observaciones"}
+                        </td>
                     </tr>`
         });
         detallePagosMatricula.innerHTML = html;

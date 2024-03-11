@@ -1,17 +1,18 @@
 ﻿using CTT_Administrador.Auth;
-using CTT_Administrador.Auth.Asesor;
+using CTT_Administrador.Auth.Contador;
 using CTT_Administrador.Models.ctt;
+using CTT_Administrador.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace CTT_Administrador.Controllers.Asesores
+namespace CTT_Administrador.Controllers.Contadores
 {
-    public class AsesoresController : Controller
+    public class ContadoresController : Controller
     {
-        private readonly IAuthorizeAsesorTools _auth;
+        private readonly IAuthorizeContadorTools _auth;
         private readonly cttContext _context;
 
-        public AsesoresController(IAuthorizeAsesorTools auth, cttContext context)
+        public ContadoresController(IAuthorizeContadorTools auth, cttContext context)
         {
             _auth = auth;
             _context = context;
@@ -19,49 +20,25 @@ namespace CTT_Administrador.Controllers.Asesores
 
         public IActionResult Login()
         {
-            if (_auth.validateToken()) return RedirectToAction("Index", "Asesores");
+            if (_auth.validateToken()) return RedirectToAction("Index", "Contadores");
             return View();
         }
 
         public IActionResult Index()
         {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Asesores");
+            if (!_auth.validateToken()) return RedirectToAction("Login", "Contadores");
             return View();
         }
 
-        public IActionResult Estudiantes()
+        public IActionResult ValidarPagos()
         {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Asesores");
+            if (!_auth.validateToken()) return RedirectToAction("Login", "Contadores");
             return View();
-        }
-
-        public IActionResult Clientes()
+        }        
+        
+        public IActionResult PagosValidados()
         {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Asesores");
-            return View();
-        }
-
-        public IActionResult MatriculasIndividuales()
-        {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Asesores");
-            return View();
-        }
-
-        //public IActionResult MatriculasInHouse()
-        //{
-        //    if (!_auth.validateToken()) return RedirectToAction("Login", "Asesores");
-        //    return View();
-        //}
-
-        public IActionResult Recaudacion()
-        {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Asesores");
-            return View();
-        }
-
-        public IActionResult RecaudacionInHouse()
-        {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Asesores");
+            if (!_auth.validateToken()) return RedirectToAction("Login", "Contadores");
             return View();
         }
 
@@ -77,12 +54,12 @@ namespace CTT_Administrador.Controllers.Asesores
                 if (user.clave != _data.clave) throw new Exception("La contraseña ingresada no es correcta");
                 var asesor = await (from rol in _context.roles
                                     join ru in _context.rolesusuarios on rol.idRol equals ru.idRol
-                                    where ru.idUsuario == user.idUsuario && rol.rol == "asesor" && ru.activo == 1
+                                    where ru.idUsuario == user.idUsuario && rol.rol == "contador" && ru.activo == 1
                                     select new
                                     {
                                         rol.rol
                                     }).CountAsync();
-                if (asesor == 0) throw new Exception("El usuario no tiene permisos para acceder al sistema de asesores");
+                if (asesor == 0) throw new Exception("El usuario no tiene permisos para acceder al sistema de contabilidad");
                 _data.nombre = user.nombre;
                 _data.usuario = user.usuario;
                 string token = _auth.login(_data);
@@ -100,6 +77,22 @@ namespace CTT_Administrador.Controllers.Asesores
         {
             await _auth.logoutAsync();
             return Ok();
+        }
+
+        [AuthorizeContador]
+        public async Task<IActionResult> validacionesPendientes()
+        {
+            try
+            {
+                var total = await (from p in _context.pagosmatriculas
+                                   where p.idEstado == 0
+                                   select p.idPagoMatricula).CountAsync();
+                return Ok(total);
+            }
+            catch (Exception ex)
+            {
+                return Tools.handleError(ex);
+            }
         }
     }
 }

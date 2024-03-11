@@ -136,6 +136,11 @@ namespace CTT_Administrador.Controllers.Administrador
         {
             if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
             return View();
+        }         
+        public IActionResult MatriculasInHouse()
+        {
+            if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
+            return View();
         } 
 
         public IActionResult reporteDiseno()

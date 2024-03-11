@@ -1,4 +1,4 @@
-﻿using CTT_Administrador.Auth.Asesor;
+﻿using CTT_Administrador.Auth.Administrador;
 using CTT_Administrador.Models.ctt;
 using CTT_Administrador.Utilities;
 using Dapper;
@@ -13,15 +13,15 @@ using System.Data;
 
 namespace CTT_Administrador.Controllers.Asesores
 {
-    [AuthorizeAsesor]
-    [Route("Asesores/{controller}/{action}")]
+    [AuthorizeAdministrador]
+    [Route("Administrador/{controller}/{action}")]
     public class MatriculasInHouseController : Controller
     {
         private readonly cttContext _context;
         private readonly IDbConnection _dapper;
-        private readonly IAuthorizeAsesorTools _auth;
+        private readonly IAuthorizeAdministradorTools _auth;
 
-        public MatriculasInHouseController(cttContext context, IAuthorizeAsesorTools auth)
+        public MatriculasInHouseController(cttContext context, IAuthorizeAdministradorTools auth)
         {
             _context = context;
             _dapper = _context.Database.GetDbConnection();
@@ -85,7 +85,17 @@ namespace CTT_Administrador.Controllers.Asesores
                 return Tools.handleError(ex);
             }
         }
-
+        public async Task<IActionResult> listarCiudades()
+        {
+            try
+            {
+                return Ok(await _context.ciudades.ToListAsync());
+            }
+            catch (Exception ex)
+            {
+                return Tools.handleError(ex);
+            }
+        }
         public async Task<IActionResult> listarTiposDescuentos()
         {
             try

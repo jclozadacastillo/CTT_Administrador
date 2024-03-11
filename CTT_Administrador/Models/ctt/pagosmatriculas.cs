@@ -52,6 +52,12 @@ public partial class pagosmatriculas
 
     public int? idEstado { get; set; }
 
+    [StringLength(10)]
+    public string? usuarioValidacion { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? fechaValidacion { get; set; }
+
     [ForeignKey("idCliente")]
     [InverseProperty("pagosmatriculas")]
     public virtual clientesfacturas? idClienteNavigation { get; set; }

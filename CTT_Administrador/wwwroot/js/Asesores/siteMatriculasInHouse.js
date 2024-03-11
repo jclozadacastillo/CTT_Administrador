@@ -1,4 +1,4 @@
-﻿const baseUrl = `${_route}Asesores/MatriculasInHouse/`;
+﻿const baseUrl = `${_route}Administrador/MatriculasInHouse/`;
 const idTipoCursoSession = sessionStorage.getItem("idTipoCurso");
 const idPeriodoSession = sessionStorage.getItem("idPeriodo");
 const modal = new bootstrap.Modal(modalDatos, {
@@ -14,6 +14,7 @@ let modulosLista = [];
 let modulosSeleccionados = "";
 let idGrupoInHouse = 0;
 let listaParticipantes = [];
+let listaCiudades = [];
 const btnTemplate = `<button type="button" class="btn btn-sm btn-primary btn-new mt-lg-4 mt-2" title="Nuevo registro de matricula" onclick="nuevo()">
                 <i class="bi-plus"></i> Nueva Matricula
             </button>`;
@@ -26,11 +27,21 @@ window.addEventListener("load", async function () {
         dropdownParent: modalDatos
     })
     await listarPeriodos();
+    await listarCiudades();
     await listarTiposDescuentos();
     await listarTiposCursos();
     loaderHide();
 });
 
+async function listarCiudades() {
+    try {
+        const url = `${baseUrl}listarCiudades`;
+        listaCiudades = (await axios.get(url)).data;
+        handlePreload();
+    } catch (e) {
+        handleError(e);
+    }
+}
 async function listarPeriodos() {
     try {
         const url = `${baseUrl}listarPeriodos`;
@@ -109,7 +120,7 @@ async function listar() {
                     data: "idGrupoInHouse",
                     class: "text-center w-btn",
                     render: (data, type, row) => {
-                        return `<button class='btn-option-table text-info' title='detalle de matricula' onclick='verDetalle(${data})'><i class='bi-file-earmark-text-fill'></i></button>`
+                        return `<button class='btn-option-table text-primary' title='detalle de matricula' onclick='verDetalle(${data})'><i class='bi-file-earmark-text-fill'></i></button>`
                     }
                 },
                 {
@@ -270,6 +281,10 @@ archivoParticipantes.addEventListener("change", async function () {
         const url = `${baseUrl}leerExcel`;
         const data = new FormData(frmDatos);
         listaParticipantes = (await axios.post(url, data)).data;
+        listaParticipantes = listaParticipantes.map(x => {
+            x.idCiudad = listaCiudades.find(y => y.ciudad.replaceAll(" ", "").toLowerCase() == x.ciudad.replaceAll(" ", "").toLowerCase())?.idCiudad;
+            return x;
+        });
         llenarTablaParticipantes();
     } catch (e) {
         handleError(e);
@@ -288,7 +303,14 @@ function llenarTablaParticipantes() {
                 { title: "Segundo Apellido", data: "segundoApellido" },
                 { title: "Primer Nombre", data: "primerNombre" },
                 { title: "Segundo Nombre", data: "segundoNombre" },
-                { title: "Paralelo", data: "paralelo" }
+                { title: "Paralelo", data: "paralelo" },
+                {
+                    title: "Ciudad",
+                    data: "ciudad",
+                    render: (data,type,row) => {
+                        return !!row.idCiudad?data:"CAMPO VACIÓ O INVÁLIDO";
+                    }
+                }
             ]
         })
     } catch (e) {

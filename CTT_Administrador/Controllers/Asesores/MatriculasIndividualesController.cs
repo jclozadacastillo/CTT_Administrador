@@ -295,7 +295,7 @@ namespace CTT_Administrador.Controllers.Asesores
                 await _dapper.ExecuteAsync(sql, _data);
 
                 _pago.idMatricula = _data.idMatricula;
-                _pago.idEstado = 1;
+                _pago.idEstado = 0;
                 _pago.idCliente = _data.idCliente;
                 _context.pagosmatriculas.Add(_pago);
                 await _context.SaveChangesAsync();
@@ -309,12 +309,6 @@ namespace CTT_Administrador.Controllers.Asesores
                     _context.pagosmatriculas.Update(_pago);
                     await _context.SaveChangesAsync();
                 }
-
-                sql = @"SELECT sum(deuda) FROM Matriculas WHERE idMatricula=@idMatricula";
-                sql = await _dapper.ExecuteScalarAsync<decimal>(sql, _data) == 0 ?
-                @"UPDATE Matriculas SET legalizado=1 WHERE idMatricula=@idMatricula" :
-                @"UPDATE Matriculas SET legalizado=0 WHERE idMatricula=@idMatricula";
-                await _dapper.ExecuteAsync(sql, _data);
                 return Ok();
             }
             catch (Exception ex)
@@ -351,13 +345,15 @@ namespace CTT_Administrador.Controllers.Asesores
                 var modulos = await _dapper.QueryAsync(sql, new { idMatricula });
                 sql = @"SELECT idPagoMatricula,fechaPago,
                         b.banco,c.numero,t.tipo,valor,
-                        p.imagenComprobante,p.numeroComprobante,fr.formaPago,tarjetaAutorizacion,tarjetaMarca
+                        p.imagenComprobante,p.numeroComprobante,fr.formaPago,tarjetaAutorizacion,tarjetaMarca,
+                        e.estado,p.idEstado,p.observaciones
                         FROM pagosmatriculas p
                         INNER JOIN formaspagos f ON f.idFormaPago = p.idFormaPago
                         LEFT JOIN cuentasbancos c ON c.idCuenta = p.idCuenta
                         LEFT JOIN bancos b ON b.idBanco =c.idBanco
                         LEFT JOIN tiposcuentasbancos t ON t.idTipoCuentaBanco = c.idTipoCuentaBanco
-                        INNER JOIN formaspagos fr ON fr.idFormaPago = p.idFormaPago 
+                        INNER JOIN formaspagos fr ON fr.idFormaPago = p.idFormaPago
+                        INNER JOIN estadospagos e ON e.idEstadoPago=p.idEstado
                         WHERE idMatricula = @idMatricula
                         ORDER BY p.idPagoMatricula desc";
                 var pagos = await _dapper.QueryAsync(sql, new { idMatricula });

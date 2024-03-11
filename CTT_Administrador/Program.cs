@@ -1,6 +1,7 @@
 using CTT_Administrador.Auth;
 using CTT_Administrador.Auth.Administrador;
 using CTT_Administrador.Auth.Asesor;
+using CTT_Administrador.Auth.Contador;
 using CTT_Administrador.Auth.Docente;
 using CTT_Administrador.Auth.Estudiante;
 using CTT_Administrador.Models.ctt;
@@ -33,6 +34,7 @@ builder.Services.TryAddScoped<IAuthorizeAdministradorTools, AuthorizeAdministrad
 builder.Services.TryAddScoped<IAuthorizeDocenteTools, AuthorizeDocenteTools>();
 builder.Services.TryAddScoped<IAuthorizeEstudianteTools, AuthorizeEstudianteTools>();
 builder.Services.TryAddScoped<IAuthorizeAsesorTools, AuthorizeAsesorTools>();
+builder.Services.TryAddScoped<IAuthorizeContadorTools, AuthorizeContadorTools>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -52,6 +54,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Asesores}/{action=Index}/{id?}");
+    pattern: "{controller=Contadores}/{action=Index}/{id?}");
 RotativaConfiguration.Setup(app.Environment.WebRootPath);
 app.Run();

@@ -1996,3 +1996,20 @@ tr td.empty{
 tr:has(td.empty):last-child {
     border-bottom: none;
 }
+
+.btn-option-table {
+    border: none;
+    background: none;
+    box-shadow: none;
+    width: auto;
+    height: auto;
+    padding: 0;
+}
+
+    .btn-option-table i {
+        font-size: 19px
+    }
+
+    .btn-option-table:hover {
+        filter: brightness(1.5);
+    }

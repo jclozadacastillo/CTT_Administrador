@@ -1,5 +1,5 @@
-﻿@using CTT_Administrador.Auth.Asesor;
-@inject IAuthorizeAsesorTools _auth;
+﻿@using CTT_Administrador.Auth.Contador;
+@inject IAuthorizeContadorTools _auth;
 @{
     var _v = $"?v={DateTime.Now.Ticks}";
 }
@@ -8,7 +8,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>CTT DE LOS ANDES: Asesor Comercial @ViewData["Title"]</title>
+    <title>CTT DE LOS ANDES: Contabilidad @ViewData["Title"]</title>
     <meta content="ctt,uniandes,andes,language,center" name="description">
     <meta content="ctt,uniandes,andes,language,center" name="keywords">
     <!-- Favicons -->
@@ -33,14 +33,14 @@
     <script defer src="~/lib/utilities/select2.js@_v"></script>
     <script defer src="~/lib/utilities/axios/axios.min.js"></script>
     <script defer src="~/lib/utilities/forms.js@_v"></script>
-    <script defer src="~/js/Asesores/siteLayoutAsesores.js@_v"></script>
+    <script defer src="~/js/Contadores/siteLayoutContadores.js@_v"></script>
 </head>
 <body>
     <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center bg-primary">
         <div class="d-flex align-items-center justify-content-between">
             <i class="bi bi-list toggle-sidebar-btn text-white"></i>
-            <a href="~/Asesores" class="logo d-flex align-items-center ms-2">
+            <a href="~/Contadores" class="logo d-flex align-items-center ms-2">
                 <img src="~/lib/utilities/toast/img/logo-blanco910.png" alt="">
             </a>
         </div>
@@ -65,7 +65,7 @@
                                 <img src="~/templates/asesores/assets/img/user-icon.jpg" width="64" class="rounded-circle" />
                             </div>
                             <h6 style="font-size:14px">@_auth.getName()</h6>
-                            <span>Asesor Comercial</span>
+                            <span>Contador</span>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
@@ -118,35 +118,15 @@
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
             <li>
-                <a class="nav-link" href="~/Asesores/Estudiantes" data-menu>
-                    <i class="bi bi-person-badge"></i><span>Estudiantes</span>
+                <a class="nav-link" href="~/Contadores/ValidarPagos" data-menu>
+                    <i class="bi bi-clipboard-check"></i><span>Validación de pagos</span><span class="notification-circle bg-danger" id="totalPendientesCounter">0</span>
                 </a>
             </li>
             <li>
-                <a class="nav-link" href="~/Asesores/Clientes" data-menu>
-                    <i class="bi bi-person-vcard-fill"></i><span>Clientes</span>
+                <a class="nav-link" href="~/Contadores/PagosValidados" data-menu>
+                    <i class="bi bi-check2"></i><span>Pagos validados</span>
                 </a>
             </li>
-            <li>
-                <a class="nav-link" href="~/Asesores/MatriculasIndividuales" data-menu>
-                    <i class="bi bi-person-fill"></i><span>Matriculas Individuales</span>
-                </a>
-            </li>
-            <li>
-                <a class="nav-link" href="~/Asesores/Recaudacion" data-menu>
-                    <i class="bi bi-coin"></i><span>Recaudación Individual</span>
-                </a>
-            </li>
-           @* <li>
-                <a class="nav-link" href="~/Asesores/MatriculasInHouse" data-menu>
-                    <i class="bi bi-people-fill"></i><span>Matriculas (IN-HOUSE)</span>
-                </a>
-            </li>
-            <li>
-                <a class="nav-link" href="~/Asesores/RecaudacionInHouse" data-menu>
-                    <i class="bi bi-cash-stack"></i><span>Recaudación IN-HOUSE</span>
-                </a>
-            </li>*@
         </ul>
     </aside>
     <main id="main" class="main">

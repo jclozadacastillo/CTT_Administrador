@@ -1623,7 +1623,7 @@ select {
 }
 
 .main-container:has(.portada) {
-    background: url(../../../../lib/utilities/toast/img/bg-admin.jpg);
+    background: url(../../../../lib/utilities/toast/img/bg-asesor.jpg);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -1653,7 +1653,7 @@ select {
 .bg-login {
     /*    background: rgba(var(--primary-rgb), .91) !important;
     background: url(../../../../lib/utilities/toast/img/bg-admin.jpg);*/
-    background-image: linear-gradient(to bottom, rgba(var(--primary-rgb), 0.91), rgba(var(--primary-rgb), 0.91)), url('../../../../lib/utilities/toast/img/bg-admin.jpg');
+    background-image: linear-gradient(to bottom, rgba(var(--primary-rgb), 0.91), rgba(var(--primary-rgb), 0.91)), url('../../../../lib/utilities/toast/img/bg-asesor.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

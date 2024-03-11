@@ -1,4 +1,4 @@
-﻿using CTT_Administrador.Auth.Asesor;
+﻿using CTT_Administrador.Auth.Contador;
 using CTT_Administrador.Models.ctt;
 using CTT_Administrador.Utilities;
 using Dapper;
@@ -8,15 +8,15 @@ using System.Data;
 
 namespace CTT_Administrador.Controllers.Contadores
 {
-    [AuthorizeAsesor]
+    [AuthorizeContador]
     [Route("Contadores/{controller}/{action}")]
     public class ValidarPagosController : Controller
     {
         private readonly cttContext _context;
         private readonly IDbConnection _dapper;
-        private readonly IAuthorizeAsesorTools _auth;
+        private readonly IAuthorizeContadorTools _auth;
 
-        public ValidarPagosController(cttContext context, IAuthorizeAsesorTools auth)
+        public ValidarPagosController(cttContext context, IAuthorizeContadorTools auth)
         {
             _context = context;
             _dapper = _context.Database.GetDbConnection();

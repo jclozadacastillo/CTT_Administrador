@@ -27,11 +27,11 @@ namespace CTT_Administrador.Controllers.Estudiantes
             return View();
         }
 
-        public IActionResult Registro()
-        {
-            if (_auth.validateToken()) return RedirectToAction("Index", "Estudiantes");
-            return View();
-        }
+        //public IActionResult Registro()
+        //{
+        //    if (_auth.validateToken()) return RedirectToAction("Index", "Estudiantes");
+        //    return View();
+        //}
 
         public IActionResult Index()
         {
@@ -39,11 +39,11 @@ namespace CTT_Administrador.Controllers.Estudiantes
             return View();
         }
 
-        public IActionResult Matriculas()
-        {
-            if (!_auth.validateToken()) return RedirectToAction("Login", "Estudiantes");
-            return View();
-        }
+        //public IActionResult Matriculas()
+        //{
+        //    if (!_auth.validateToken()) return RedirectToAction("Login", "Estudiantes");
+        //    return View();
+        //}
 
         public IActionResult Calificaciones()
         {

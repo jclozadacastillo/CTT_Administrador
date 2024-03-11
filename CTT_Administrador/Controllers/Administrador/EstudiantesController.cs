@@ -118,6 +118,7 @@ namespace CTT_Administrador.Controllers.Administrador
                 else
                 {
                     _data.activo = 1;
+                    _data.confirmado = 1;
                     _data.clave = _data.documentoIdentidad;
                     _context.estudiantes.Add(_data);
                 }

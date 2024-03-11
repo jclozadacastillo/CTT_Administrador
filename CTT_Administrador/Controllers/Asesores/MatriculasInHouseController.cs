@@ -52,7 +52,7 @@ namespace CTT_Administrador.Controllers.Asesores
             }
             catch (Exception ex)
             {
-                return Problem(ex.Message);
+                return Tools.handleError(ex);
             }
         }
 
@@ -85,6 +85,7 @@ namespace CTT_Administrador.Controllers.Asesores
                 return Tools.handleError(ex);
             }
         }
+
         public async Task<IActionResult> listarCiudades()
         {
             try
@@ -96,6 +97,7 @@ namespace CTT_Administrador.Controllers.Asesores
                 return Tools.handleError(ex);
             }
         }
+
         public async Task<IActionResult> listarTiposDescuentos()
         {
             try
@@ -291,6 +293,7 @@ namespace CTT_Administrador.Controllers.Asesores
                 sql = $@"SELECT * FROM cursos
                         WHERE idCurso in({modulos})";
                 var listaModulos = await _dapper.QueryAsync<cursos>(sql);
+                listaEstudiantesGuardar = listaEstudiantesGuardar?.Select(x => { x.activo = 1; x.clave = x.documentoIdentidad; x.confirmado = 1; return x; }).ToList();
                 _context.estudiantes.AddRange(listaEstudiantesGuardar);
                 var descuento = await _context.tiposdescuentos.AsNoTracking().Where(x => x.idTipoDescuento == idTipoDescuento).FirstOrDefaultAsync();
                 var dataGrupo = new gruposinhouse();
@@ -377,11 +380,11 @@ namespace CTT_Administrador.Controllers.Asesores
                         LEFT JOIN cuentasbancos c ON c.idCuenta = p.idCuenta
                         LEFT JOIN bancos b ON b.idBanco =c.idBanco
                         LEFT JOIN tiposcuentasbancos t ON t.idTipoCuentaBanco = c.idTipoCuentaBanco
-                        INNER JOIN formaspagos fr ON fr.idFormaPago = p.idFormaPago 
+                        INNER JOIN formaspagos fr ON fr.idFormaPago = p.idFormaPago
                         WHERE idGrupoInHouse = @idGrupoInHouse
                         ORDER BY p.idPago desc";
                 var pagos = await _dapper.QueryAsync(sql, new { idGrupoInHouse });
-                return Ok(new { alumnos, modulos, info,pagos });
+                return Ok(new { alumnos, modulos, info, pagos });
             }
             catch (Exception ex)
             {

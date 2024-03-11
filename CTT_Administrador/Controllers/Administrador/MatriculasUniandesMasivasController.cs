@@ -268,7 +268,7 @@ namespace CTT_Administrador.Controllers.Administrador
                 var listaAlumnosMigracion = JsonConvert.DeserializeObject<List<alumnosMigracion>>(_alumnos.ToUpper());
                 var listaEstudiantes = JsonConvert.DeserializeObject<List<estudiantes>>(_alumnos.ToUpper());
                 var listaClientes = JsonConvert.DeserializeObject<List<clientesfacturas>>(_alumnos.ToUpper());
-
+                listaEstudiantes = listaEstudiantes?.Select(x => { x.activo = 1; x.clave = x.documentoIdentidad;x.confirmado = 1;return x;}).ToList();
                 string sql = $@"
                                SELECT documentoIdentidad
                                FROM estudiantes

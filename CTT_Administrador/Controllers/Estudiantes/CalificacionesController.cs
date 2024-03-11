@@ -31,8 +31,7 @@ namespace CTT_Administrador.Controllers.Estudiantes
                                 INNER JOIN cursos cu ON cu.idCurso = g.idCurso
                                 INNER JOIN modalidades mo ON g.idModalidad = mo.idModalidad
                                 INNER JOIN tiposcursos t ON t.idTipoCurso = cu.idTipoCurso
-                                WHERE m.legalizado = 1
-                                AND m.idEstudiante = @idEstudiante
+                                WHERE m.idEstudiante = @idEstudiante
                                 ORDER BY idMatricula DESC;";
                 return Ok(await _dapper.QueryAsync(sql, new { idEstudiante = _auth.getUser() }));
             }

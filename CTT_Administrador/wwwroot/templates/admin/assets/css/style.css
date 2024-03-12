@@ -2015,7 +2015,7 @@ tr:has(td.empty):last-child {
     }
 
 .table-datos-estudiante {
-    font-size:14px !important;
+    font-size:13px !important;
     margin-top:10px;
 }
 
@@ -2028,7 +2028,7 @@ tr:has(td.empty):last-child {
         background-color: #02A788 !important;
         color: white !important;
         padding: 7px 19px 7px 19px;
-        font-size: 14px;
+        font-size: 13px;
     }
         .accordion-custom .accordion-button.collapsed:hover {
             filter: brightness(1.09) !important;

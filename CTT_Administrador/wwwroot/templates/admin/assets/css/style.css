@@ -2007,9 +2007,44 @@ tr:has(td.empty):last-child {
 }
 
     .btn-option-table i {
-        font-size: 19px
+        font-size: 16px
     }
 
     .btn-option-table:hover {
-        filter: brightness(1.5);
+        filter: brightness(1.27);
     }
+
+.table-datos-estudiante {
+    font-size:14px !important;
+    margin-top:10px;
+}
+
+.accordion-custom {
+    background-color: #02A788 !important;
+    /*border: 2px solid #02A788 !important;*/
+}
+
+    .accordion-custom .accordion-button {
+        background-color: #02A788 !important;
+        color: white !important;
+        padding: 7px 19px 7px 19px;
+        font-size: 14px;
+    }
+        .accordion-custom .accordion-button.collapsed:hover {
+            filter: brightness(1.09) !important;
+        }
+
+        .accordion-custom .accordion-button:not(.collapsed) {
+            filter: brightness(1.09) !important;
+        }
+
+        .accordion-custom .accordion-button::after {
+            --bs-accordion-btn-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23FFFF'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+            --bs-accordion-btn-icon-width: 0.91rem !important;
+            --bs-accordion-btn-active-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23FFFF'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+        }
+
+.table-datos-estudiante.table-bordered-custom tr td:not(.no-border) {
+    border-bottom: 1px solid rgba(107, 117, 125,0.19);
+    font-size:13px;
+}

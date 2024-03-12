@@ -4,6 +4,8 @@ using CTT_Administrador.Utilities;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
+using Rotativa.AspNetCore;
 using System.Data;
 
 namespace CTT_Administrador.Controllers.Administrador
@@ -19,6 +21,55 @@ namespace CTT_Administrador.Controllers.Administrador
         {
             _context = context;
             _dapper = _context.Database.GetDbConnection();
+        }
+
+        public IActionResult pdfCertificadoMatricula()
+        {
+            return View();
+        }
+
+        [HttpGet("{idMatricula}")]
+        public async Task<IActionResult> certificadoMatricula(int idMatricula)
+        {
+            var datos = await datosMatriculaCertificado(idMatricula);
+            return new ViewAsPdf("pdfCertificadoMatricula",datos)
+            {
+                //FileName = "reporte.pdf",
+                PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                CustomSwitches = "--disable-smart-shrinking",
+                PageMargins = { Top = 3, Right = 3, Bottom = 3, Left = 3 }
+            };
+        }
+
+
+        private async Task<dynamic?> datosMatriculaCertificado(int idMatricula)
+        {
+            try
+            {
+                string sql = @"SELECT m.idMatricula,m.fechaRegistro,
+                                p.detalle,g.fechaInicioCurso,g.fechaFinCurso,
+                                c.curso,horasCurso,
+                                e.documentoIdentidad,
+                                REPLACE(concat(e.primerApellido,' ',
+                                CASE WHEN e.segundoApellido IS NULL THEN '' ELSE e.segundoApellido END,' ',
+                                e.primerNombre,' ',
+                                CASE WHEN e.segundoNombre IS NULL THEN '' ELSE e.segundoNombre END
+                                ),'  ',' ') AS estudiante
+                                FROM matriculas m 
+                                INNER JOIN estudiantes e ON e.idEstudiante=m.idEstudiante 
+                                INNER JOIN gruposcursos g ON g.idGrupoCurso = m.idGrupoCurso 
+                                INNER JOIN periodos p ON p.idPeriodo = g.idPeriodo 
+                                INNER JOIN cursos c ON c.idCurso = g.idCurso 
+                                INNER JOIN tiposcursos t ON t.idTipoCurso = c.idTipoCurso 
+                                WHERE idMatricula = @idMatricula";
+                return await _dapper.QueryFirstOrDefaultAsync(sql, new { idMatricula });
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         [HttpPost]
@@ -67,7 +118,8 @@ namespace CTT_Administrador.Controllers.Administrador
                         INNER JOIN cursos c ON c.idCurso = g.idCurso
                         INNER JOIN periodos p ON p.idPeriodo = g.idPeriodo
                         INNER JOIN tiposcursos t ON t.idTipoCurso = c.idTipoCurso
-                        WHERE m.idEstudiante  = @idEstudiante";
+                        WHERE m.idEstudiante  = @idEstudiante
+                        ORDER BY idMatricula DESC";
                 var matriculas = await _dapper.QueryAsync(sql, new { idEstudiante });
                 sql = @"SELECT c.idMatricula,
                         cr.curso,nota1,nota2,

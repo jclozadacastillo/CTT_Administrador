@@ -119,7 +119,8 @@ async function verHistorial(_idEstudiante) {
                                <h6 class='ms-2 fw-bold text-white mt-2 badge bg-secondary bg-gradient'>${item.esDiplomado == 1 ? "MÓDULOS RECIBIDOS" : "CALIFICACIONES"}</h6>
                             </div>
                             <div class='col-sm-6 text-lg-end text-md-end text-sm-center'>
-                                <button class='btn btn-danger btn-sm'>CERTIFICADO DE MATRÍCULA<i class='bi-download ms-2'></i></button>
+                                <a href='${baseUrl}certificadoMatricula/${item.idMatricula}' 
+                                target="_blank" class='btn btn-danger btn-sm'>CERTIFICADO DE MATRÍCULA<i class='bi-download ms-2'></i></a>
                             </div>
                         </div>
                       `;

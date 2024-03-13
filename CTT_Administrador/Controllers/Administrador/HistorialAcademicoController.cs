@@ -38,7 +38,7 @@ namespace CTT_Administrador.Controllers.Administrador
                 PageSize = Rotativa.AspNetCore.Options.Size.A4,
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
                 CustomSwitches = "--disable-smart-shrinking",
-                PageMargins = { Top = 3, Right = 3, Bottom = 3, Left = 3 }
+                PageMargins = { Top = 0, Right = 0, Bottom = 0, Left = 0 }
             };
         }
 
@@ -55,13 +55,14 @@ namespace CTT_Administrador.Controllers.Administrador
                                 CASE WHEN e.segundoApellido IS NULL THEN '' ELSE e.segundoApellido END,' ',
                                 e.primerNombre,' ',
                                 CASE WHEN e.segundoNombre IS NULL THEN '' ELSE e.segundoNombre END
-                                ),'  ',' ') AS estudiante
+                                ),'  ',' ') AS estudiante,t.tipoCurso,modalidad
                                 FROM matriculas m 
                                 INNER JOIN estudiantes e ON e.idEstudiante=m.idEstudiante 
                                 INNER JOIN gruposcursos g ON g.idGrupoCurso = m.idGrupoCurso 
                                 INNER JOIN periodos p ON p.idPeriodo = g.idPeriodo 
                                 INNER JOIN cursos c ON c.idCurso = g.idCurso 
                                 INNER JOIN tiposcursos t ON t.idTipoCurso = c.idTipoCurso 
+                                INNER JOIN modalidades mo on mo.idModalidad=g.idModalidad
                                 WHERE idMatricula = @idMatricula";
                 return await _dapper.QueryFirstOrDefaultAsync(sql, new { idMatricula });
             }

@@ -2,7 +2,6 @@
 using CTT_Administrador.Models.ctt;
 using CTT_Administrador.Utilities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTT_Administrador.Controllers.Asesores

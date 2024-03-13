@@ -2,15 +2,15 @@
 using CTT_Administrador.Models.ctt;
 using CTT_Administrador.Utilities;
 using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
+using QRCoder;
 using Rotativa.AspNetCore;
 using System.Data;
 
 namespace CTT_Administrador.Controllers.Administrador
 {
-    [AuthorizeAdministrador]
     [Route("{controller}/{action}")]
     public class HistorialAcademicoController : Controller
     {
@@ -29,10 +29,20 @@ namespace CTT_Administrador.Controllers.Administrador
         }
 
         [HttpGet("{idMatricula}")]
+        public async Task<IActionResult> validarCertificado(int idMatricula)
+        {
+            var datos = await datosMatriculaCertificado(idMatricula);
+            return View(datos);
+        }
+
+        [AuthorizeAdministrador]
+        [HttpGet("{idMatricula}")]
         public async Task<IActionResult> certificadoMatricula(int idMatricula)
         {
             var datos = await datosMatriculaCertificado(idMatricula);
-            return new ViewAsPdf("pdfCertificadoMatricula",datos)
+            datos.qrCode = getQr(idMatricula);
+            datos.host = Tools.rootPath;
+            return new ViewAsPdf("pdfCertificadoMatricula", datos)
             {
                 //FileName = "reporte.pdf",
                 PageSize = Rotativa.AspNetCore.Options.Size.A4,
@@ -42,7 +52,7 @@ namespace CTT_Administrador.Controllers.Administrador
             };
         }
 
-
+        [AllowAnonymous]
         private async Task<dynamic?> datosMatriculaCertificado(int idMatricula)
         {
             try
@@ -56,23 +66,23 @@ namespace CTT_Administrador.Controllers.Administrador
                                 e.primerNombre,' ',
                                 CASE WHEN e.segundoNombre IS NULL THEN '' ELSE e.segundoNombre END
                                 ),'  ',' ') AS estudiante,t.tipoCurso,modalidad
-                                FROM matriculas m 
-                                INNER JOIN estudiantes e ON e.idEstudiante=m.idEstudiante 
-                                INNER JOIN gruposcursos g ON g.idGrupoCurso = m.idGrupoCurso 
-                                INNER JOIN periodos p ON p.idPeriodo = g.idPeriodo 
-                                INNER JOIN cursos c ON c.idCurso = g.idCurso 
-                                INNER JOIN tiposcursos t ON t.idTipoCurso = c.idTipoCurso 
+                                FROM matriculas m
+                                INNER JOIN estudiantes e ON e.idEstudiante=m.idEstudiante
+                                INNER JOIN gruposcursos g ON g.idGrupoCurso = m.idGrupoCurso
+                                INNER JOIN periodos p ON p.idPeriodo = g.idPeriodo
+                                INNER JOIN cursos c ON c.idCurso = g.idCurso
+                                INNER JOIN tiposcursos t ON t.idTipoCurso = c.idTipoCurso
                                 INNER JOIN modalidades mo on mo.idModalidad=g.idModalidad
                                 WHERE idMatricula = @idMatricula";
                 return await _dapper.QueryFirstOrDefaultAsync(sql, new { idMatricula });
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpPost]
         public async Task<IActionResult> listar([FromBody] Tools.DataTableModel _params)
         {
@@ -105,6 +115,7 @@ namespace CTT_Administrador.Controllers.Administrador
             }
         }
 
+        [AuthorizeAdministrador]
         [HttpGet("{idEstudiante}")]
         public async Task<IActionResult> historialAcademico(int idEstudiante)
         {
@@ -139,6 +150,27 @@ namespace CTT_Administrador.Controllers.Administrador
             catch (Exception ex)
             {
                 return Tools.handleError(ex);
+            }
+        }
+
+        [AuthorizeAdministrador]
+        private string getQr(int idMatricula)
+        {
+            try
+            {
+                var host = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+                host = host.ToLower().Contains("localhost") ? host : $"{host}/appCec";
+                string url = $"{host}/historialAcademico/validarCertificado/{idMatricula}";
+                QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(url, QRCodeGenerator.ECCLevel.Q);
+                var qrCode = new PngByteQRCode(qrCodeData);
+                var m = Convert.ToInt32(730 / qrCodeData.ModuleMatrix.Count());
+                return Convert.ToBase64String(qrCode.GetGraphic(m));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
             }
         }
     }

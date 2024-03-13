@@ -39,9 +39,11 @@
         .link {
             text-decoration: none;
         }
-        .fw-bold{
-            font-weight:500;
+
+        .fw-bold {
+            font-weight: 500;
         }
+
         table {
             border-collapse: collapse;
         }
@@ -93,7 +95,8 @@
         .ms-3 {
             margin-left: 20px;
         }
-        .bg-primary{
+
+        .bg-primary {
             background-color: #03498F;
         }
 
@@ -101,87 +104,95 @@
             color: #03498F;
         }
 
-        .line-right{
-            right:0;
-            position:absolute;
-            width:12px;
-            height:1123px;
+        .line-right {
+            right: 0;
+            position: absolute;
+            width: 12px;
+            height: 1123px;
             background-color: #03498F;
         }
 
-        .header{
-            position:absolute;
-            top:-82px;
-            height:69px;
-            width:640px;
+        .header {
+            position: absolute;
+            top: -82px;
+            height: 69px;
+            width: 640px;
             background-color: #03498F;
-            margin-top:100px;
-            border-bottom-right-radius:64px;
+            margin-top: 100px;
+            border-bottom-right-radius: 64px;
         }
-        .main{
-            position:absolute;
-            top:145px;
-            left:0;
-            width:795px;
+
+        .main {
+            position: absolute;
+            top: 145px;
+            left: 0;
+            width: 795px;
         }
-        .underline{
+
+        .underline {
             text-decoration: underline;
         }
-        table{
-            border-collapse:collapse;
+
+        table {
+            border-collapse: collapse;
         }
-        .mx-auto{
-            margin-left:auto;
-            margin-right:auto;
+
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
         }
-        .mb-lg{
+
+        .mb-lg {
             margin-bottom: 82px;
         }
 
         .mb-md {
             margin-bottom: 82px;
         }
-        .parrafo{
-            width:560px;
-            font-size:13px;
+
+        .parrafo {
+            width: 560px;
+            font-size: 13px;
         }
-        .justify{
+
+        .justify {
             text-align: justify;
             hyphens: auto;
             -webkit-hyphens: auto;
             word-spacing: -0.05em;
-            line-height:16px;
-        }
-        .line-white{
-            width:1px;
-            height:15px;
-            background-color:white;
-            position:absolute;
-            margin-top:3px;
-            margin-left:-22px;
-        }
-        
-        .watermark-logos{
-            top:361px;
-            position:absolute;
-            width:795px;
-            text-align:center;
-            z-index:-1;
-            opacity:0.19;
+            line-height: 16px;
         }
 
-        .watermark-fingerprint{
-            position:fixed;
-            z-index:-1;
+        .line-white {
+            width: 1px;
+            height: 15px;
+            background-color: white;
+            position: absolute;
+            margin-top: 3px;
+            margin-left: -22px;
+        }
+
+        .watermark-logos {
+            top: 361px;
+            position: absolute;
+            width: 795px;
+            text-align: center;
+            z-index: -1;
             opacity: 0.19;
-            left:-200px;
-            bottom:-800px;
         }
 
-        .footer-start{
-            position:absolute;
-            bottom:0;
-            left:19px;
+        .watermark-fingerprint {
+            position: fixed;
+            z-index: -1;
+            opacity: 0.19;
+            left: -200px;
+            bottom: -800px;
+        }
+
+        .footer-start {
+            position: absolute;
+            bottom: 0;
+            left: 19px;
         }
 
         .footer-end {
@@ -189,18 +200,24 @@
             bottom: 0;
             right: 30px;
         }
+
+        .qr-code {
+            position: absolute;
+            bottom: -10px;
+            right: 50px;
+        }
     </style>
 </head>
 <body>
-@*     <div class="w-100 text-end">
-        <img src="~/lib/utilities/toast/img/logo-azul.png" width="127" />
+    @*     <div class="w-100 text-end">
+    <img src="~/lib/utilities/toast/img/logo-azul.png" width="127" />
     </div> *@
     <div class="line-right"></div>
     <div class="header">
         <table style="height:100%;">
             <tr>
-                <td style="padding-left:28px;"><img src="~/lib/utilities/toast/img/logo-blanco-uniandes.png" width="164" /></td>
-                <td style="padding-left:19px"><img src="~/lib/utilities/toast/img/logo-blanco.png" width="109" /></td>
+                <td style="padding-left:28px;"><img src="@($"{_datos.host}/lib/utilities/toast/img/logo-blanco-uniandes.png?v={DateTime.Now.Ticks}")" width="164" /></td>
+                <td style="padding-left:19px"><img src="@($"{_datos.host}/lib/utilities/toast/img/logo-blanco.png?v={DateTime.Now.Ticks}")" width="109" /></td>
                 <td style="padding-left:37px;">
                     <span style="color:white;line-height:3px">
                         <div class="line-white"></div>
@@ -212,21 +229,21 @@
         </table>
     </div>
     <div class="watermark-logos">
-        <img src="~/lib/utilities/toast/img/logo-gris-uniandes.png" width="640"/>
-        <img src="~/lib/utilities/toast/img/logo-gris.png" width="500"/>
+        <img src="@($"{_datos.host}/lib/utilities/toast/img/logo-gris-uniandes.png?v={DateTime.Now.Ticks}")" width="640" />
+        <img src="@($"{_datos.host}/lib/utilities/toast/img/logo-gris.png?v={DateTime.Now.Ticks}")" width="500" />
     </div>
     <div class="main">
         <table class="mx-auto mb-lg">
             <tr>
                 <td class="text-primary" style="padding-bottom:0px;border-bottom:2px solid #03498F;font-size:20px;letter-spacing:-1px;font-weight:500">CERTIFICADO DE MATRICULA</td>
             </tr>
-        </table> 
+        </table>
         <div class="parrafo mx-auto mb-md">
             @capitalizar(DateTime.Now.ToLongDateString())
         </div>
         <div class="parrafo mx-auto justify">
-            En Calidad de Coordinadora Nacional de Educación Continua del Centro de Transferencia y Desarrollo de Tecnología CTT DE LOS ANDES institución adscrita al Universidad UNIANDES, 
-            Certifico que el Sr (a) <b>@_datos.estudiante</b> con C.C. <b>@_datos.documentoIdentidad</b>, 
+            En Calidad de Coordinadora Nacional de Educación Continua del Centro de Transferencia y Desarrollo de Tecnología CTT DE LOS ANDES institución adscrita al Universidad UNIANDES,
+            Certifico que el Sr (a) <b>@_datos.estudiante</b> con C.C. <b>@_datos.documentoIdentidad</b>,
             se encuentra legalmente matriculada en el <b>@_datos.tipoCurso @(_datos.curso.ToString().Replace("DIPLOMADO", "").Replace("  ", " "))</b> el mismo
             que se desarrollará desde el <b>@(_datos.fechaInicioCurso.ToLongDateString())</b>  hasta el <b>@(_datos.fechaFinCurso.ToLongDateString())</b>, con una duración total de <b>@_datos.horasCurso</b> horas académicas en la modalidad <b>@_datos.modalidad</b>.
         </div>
@@ -279,7 +296,10 @@
         </table>
     </div>
     <div class="watermark-fingerprint">
-        <img src="~/lib/utilities/toast/img/ondas.png" />
+        <img src="@($"{_datos.host}/lib/utilities/toast/img/ondas.png?v={DateTime.Now.Ticks}")" />
+    </div>
+    <div class="qr-code">
+        <img src="data:image/bmp;base64,@_datos.qrCode" alt="QR" style="width: 109px;" />
     </div>
 </body>
 </html>

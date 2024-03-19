@@ -126,7 +126,7 @@ namespace CTT_Administrador.Controllers.Asesores
                 sql = @"SELECT * FROM estudiantes WHERE idEstudiante=@idEstudiante";
                 var estudiante = await _dapper.QueryFirstOrDefaultAsync<estudiantes>(sql, _data);
                 _pago.idMatricula = _data.idMatricula;
-                _pago.idEstado = 1;
+                _pago.idEstado = 0;
                 _pago.idCliente = _data.idCliente;
                 _context.pagosmatriculas.Add(_pago);
                 await _context.SaveChangesAsync();

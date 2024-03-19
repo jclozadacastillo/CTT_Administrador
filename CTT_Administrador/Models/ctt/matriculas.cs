@@ -45,6 +45,9 @@ public partial class matriculas
 
     public int? idGrupoInHouse { get; set; }
 
+    [Precision(10)]
+    public decimal? porcentajeDescuento { get; set; }
+
     [InverseProperty("idMatriculaNavigation")]
     public virtual ICollection<pagosmatriculas> pagosmatriculas { get; set; } = new List<pagosmatriculas>();
 }

@@ -150,6 +150,32 @@ namespace CTT_Administrador.Controllers.Administrador
             {
                 dapper.Dispose();
             }
+        }        
+        [AuthorizeAdministrador]
+        [HttpPost]
+        public async Task<IActionResult> comboModulos(int idGrupoCurso)
+        {
+            var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
+            try
+            {
+                string sql = @"
+                            SELECT c.idCurso,c.curso 
+                            FROM gruposcursos g 
+                            INNER JOIN cursos_mallas cm ON cm.idCurso = g.idCurso 
+                            INNER JOIN cursos c ON cm.idCursoAsociado = c.idCurso 
+                            WHERE g.idGrupoCurso = @idGrupoCurso
+                            ORDER BY numeroModulo;
+                ";
+                return Ok(await dapper.QueryAsync(sql, new { idGrupoCurso }));
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+            finally
+            {
+                dapper.Dispose();
+            }
         }
 
         public class centros
@@ -259,7 +285,7 @@ namespace CTT_Administrador.Controllers.Administrador
 
         [AuthorizeAdministrador]
         [HttpPost]
-        public async Task<IActionResult> generarMatriculas(string _alumnos, matriculas _data, string _alumnosCedulas)
+        public async Task<IActionResult> generarMatriculas(string _alumnos, matriculas _data, string _alumnosCedulas,int idCurso)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
@@ -276,6 +302,7 @@ namespace CTT_Administrador.Controllers.Administrador
                               ";
                 var existentesEstudiantes = await dapper.QueryAsync<string>(sql);
                 listaEstudiantes = listaEstudiantes.Where(x => !(existentesEstudiantes.ToList().Contains(x.documentoIdentidad))).ToList();
+                listaEstudiantes = listaEstudiantes.Select(x => { x.idCiudad = 37;return x; }).ToList();
                 if (listaEstudiantes.Count > 0)
                 {
                     _context.estudiantes.AddRange(listaEstudiantes);
@@ -327,31 +354,25 @@ namespace CTT_Administrador.Controllers.Administrador
                 await dapper.QueryMultipleAsync(sql);
                 dapper.Close();
                 dapper.Open();
-                sql = @"
-                        insert into calificaciones (idMatricula,idGrupoCurso,idCurso)
-                        select
-                        idMatricula,g.idGrupoCurso,cm.idCursoAsociado
-                        from matriculas m
-                        inner join gruposcursos g on g.idGrupoCurso = m.idGrupoCurso
-                        inner join estudiantes e on e.idEstudiante = m.idEstudiante
-                        inner join cursos c on c.idCurso=g.idCurso
-                        inner join tiposcursos t on t.idTipoCurso = c.idTipoCurso
-                        inner join cursos_mallas cm on cm.idCurso = g.idCurso
-                        where c.activo = 1
-                        and cm.idCursoAsociado in(
-                        select c2.idCurso from cursos c2 where activo=1
+                sql = $@"
+                        INSERT INTO calificaciones
+                        SELECT m.idMatricula,g.idGrupoCurso,
+                        cm.idCursoAsociado,0 AS nota1,0 AS nota2,0 AS nota3,0 AS promedioFinal,0 AS faltas,
+                        0 AS pierdeFaltas,0 AS aprobado,0 AS esExcento,NULL AS observacion,0 AS nota4,0 as nota5,
+                        NULL AS justificacionObservacion,0 AS justificaFaltas,0 AS suspendido, current_timestamp() AS fechaRegistro,@paralelo
+                        FROM estudiantes e 
+                        INNER JOIN matriculas m ON e.idEstudiante = m.idEstudiante AND m.idGrupoCurso = @idGrupoCurso
+                        INNER JOIN gruposcursos g ON g.idGrupoCurso = m.idGrupoCurso 
+                        INNER JOIN cursos_mallas cm ON cm.idCurso = g.idCurso 
+                        WHERE documentoIdentidad in({_alumnosCedulas}) AND cm.idCursoAsociado = @idCurso 
+                        AND m.idMatricula NOT in(SELECT c2.idMatricula FROM
+                        calificaciones c2 
+                        WHERE c2.idMatricula=m.idMatricula
+                        AND c2.idGrupoCurso=m.idGrupoCurso
+                        AND c2.idCurso=cm.idCursoAsociado 
                         )
-                        and concat(cast(m.idMatricula as char),'_',
-                        cast(m.idGrupoCurso as char),'_',cast(cm.idCursoAsociado as char))
-                        not in(
-                        select concat(cast(idMatricula as char),'_',
-                        cast(idGrupoCurso as char),'_',cast(idCurso as char))
-                        from calificaciones ca where ca.idMatricula=m.idMatricula
-                        ) and m.idGrupoCurso = @idGrupoCurso
-                        and m.usuarioRegistro=@usuario
-                        and m.paralelo=@paralelo
                     ";
-                await dapper.ExecuteAsync(sql, new { _data.idGrupoCurso, usuario, _data.paralelo });
+                await dapper.ExecuteAsync(sql, new { _data.idGrupoCurso, usuario, _data.paralelo,idCurso });
                 dapper.Close();
 
                 //Creditos
@@ -392,7 +413,7 @@ namespace CTT_Administrador.Controllers.Administrador
 
                 //}
                 //dapper.Close();
-                return generarPdfReporte(_data, _alumnosCedulas, usuario);
+                return generarPdfReporte(_data, _alumnosCedulas, usuario,idCurso);
             }
             catch (Exception ex)
             {
@@ -405,7 +426,7 @@ namespace CTT_Administrador.Controllers.Administrador
         }
 
         [AuthorizeAdministrador]
-        public IActionResult generarPdfReporte(matriculas _data, string _alumnosCedulas, string usuario)
+        public IActionResult generarPdfReporte(matriculas _data, string _alumnosCedulas, string usuario,int idCurso)
         {
             var dapper = new MySqlConnection(ConfigurationHelper.config.GetConnectionString("ctt"));
             try
@@ -422,13 +443,14 @@ namespace CTT_Administrador.Controllers.Administrador
                 var datosCurso = dapper.QueryFirstOrDefault(sql, _data);
                 sql = $@"SELECT e.documentoIdentidad,e.primerApellido,
                          e.segundoApellido,e.primerNombre,e.segundoNombre,
-                         m.idCarrera,m.idCentro,m.fechaRegistro,m.usuarioRegistro
+                         m.idCarrera,m.idCentro,m.fechaRegistro,@usuario as usuarioRegistro
                          FROM estudiantes e
                          LEFT JOIN matriculas m on e.idEstudiante=m.idEstudiante AND m.idGrupoCurso=@idGrupoCurso
-                         AND usuarioRegistro=@usuario AND  m.paralelo=@paralelo
+                         LEFT JOIN calificaciones c on c.idMatricula=m.idMatricula AND c.paralelo=@paralelo
+                         AND c.idCurso=@idCurso
                          WHERE e.documentoIdentidad in({_alumnosCedulas})
                         ";
-                var listaMatriculados = dapper.Query(sql, new { _data.idGrupoCurso, usuario, _data.paralelo });
+                var listaMatriculados = dapper.Query(sql, new { _data.idGrupoCurso, usuario, _data.paralelo,idCurso });
                 var data = new { datosCurso, listaMatriculados, path = _path, error = "" };
                 return new ViewAsPdf("pdfReporte", data)
                 {

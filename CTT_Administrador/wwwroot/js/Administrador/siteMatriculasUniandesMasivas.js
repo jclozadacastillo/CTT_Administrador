@@ -6,6 +6,7 @@ const modalEspere = new bootstrap.Modal(espere, {
 let listaEstudiantes = [];
 (async function () {
     $(idGrupoCurso).select2();
+    $(idCurso).select2();
     activarValidadores(frmDatos)
     llenarTabla();
     loader.hidden = false;
@@ -73,6 +74,23 @@ async function comboCursos() {
             html += `<option value='${item.idGrupoCurso}'>${item.curso}</option>`
         });
         idGrupoCurso.innerHTML = html;
+    } catch (e) {
+        handleError(e);
+    }
+}
+
+async function comboModulos() {
+    try {
+        idCurso.innerHTML = `<option value="">Seleccione un ${idTipoCurso.options[idTipoCurso.selectedIndex].text}</option>`;
+        if (idGrupoCurso.value == "") return;
+        const url = `${baseUrl}comboModulos`;
+        const data = new FormData(frmDatos);
+        const res = (await axios.post(url, data)).data;
+        let html = "<option value=''>Seleccione</option>";
+        res.forEach(item => {
+            html += `<option value='${item.idCurso}'>${item.curso}</option>`
+        });
+        idCurso.innerHTML = html;
     } catch (e) {
         handleError(e);
     }
@@ -159,7 +177,6 @@ async function generarMatriculas() {
             x.codigo_carrera = x.codigo_carrera || "";
             return x;
         });
-        console.log(listaEstudiantes);
         data.append("_alumnos", JSON.stringify(listaEstudiantes));
         data.append("_alumnosCedulas", await generarSubconsulta());
         const res = await axios({

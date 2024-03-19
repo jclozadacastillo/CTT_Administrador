@@ -148,6 +148,12 @@ namespace CTT_Administrador.Controllers.Administrador
             return View();
         }
 
+        public IActionResult Clientes()
+        {
+            if (!_auth.inRol("admin")) return RedirectToAction("Login", "Administrador");
+            return View();
+        }
+
         public IActionResult reporteDiseno()
         {
             return View();

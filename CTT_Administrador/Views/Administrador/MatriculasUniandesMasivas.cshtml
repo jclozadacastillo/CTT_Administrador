@@ -35,8 +35,14 @@
 
             <div class="col-sm-5">
                 <label class="fs-sm">Curso</label>
-                <select class="form-select form-select-sm" id="idGrupoCurso" name="idGrupoCurso">
+                <select class="form-select form-select-sm" id="idGrupoCurso" name="idGrupoCurso" onchange="comboModulos()">
                     <option value="">Seleccione un tipo de curso</option>
+                </select>
+            </div>
+            <div class="col-sm-5">
+                <label class="fs-sm">Módulo</label>
+                <select class="form-select form-select-sm" id="idCurso" name="idCurso">
+                    <option value="">Seleccione un curso</option>
                 </select>
             </div>
             <div class="col-sm-2">
@@ -78,7 +84,6 @@
     </div>
 </div>
 
-
 <div class="modal fade" id="espere" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content" style="min-width:330px">
@@ -102,4 +107,3 @@
 </div>
 
 <script defer src="~/js/administrador/siteMatriculasUniandesMasivas.js?v=@DateTime.Now.Ticks"></script>
-

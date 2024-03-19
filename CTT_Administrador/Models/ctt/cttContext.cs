@@ -11,12 +11,6 @@ public partial class cttContext : DbContext
     {
     }
 
-    public virtual DbSet<__efmigrationshistory> __efmigrationshistory { get; set; }
-
-    public virtual DbSet<api_logs> api_logs { get; set; }
-
-    public virtual DbSet<api_usuarios> api_usuarios { get; set; }
-
     public virtual DbSet<asignacionesinstructorescalificaciones> asignacionesinstructorescalificaciones { get; set; }
 
     public virtual DbSet<bancos> bancos { get; set; }
@@ -91,27 +85,6 @@ public partial class cttContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<__efmigrationshistory>(entity =>
-        {
-            entity.HasKey(e => e.MigrationId).HasName("PRIMARY");
-        });
-
-        modelBuilder.Entity<api_logs>(entity =>
-        {
-            entity.HasKey(e => e.idLog).HasName("PRIMARY");
-
-            entity.Property(e => e.error).HasDefaultValueSql("'0'");
-            entity.Property(e => e.fechaRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
-        });
-
-        modelBuilder.Entity<api_usuarios>(entity =>
-        {
-            entity.HasKey(e => e.idUsuario).HasName("PRIMARY");
-
-            entity.Property(e => e.activo).HasDefaultValueSql("'1'");
-            entity.Property(e => e.fechaRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
-        });
-
         modelBuilder.Entity<asignacionesinstructorescalificaciones>(entity =>
         {
             entity.HasKey(e => e.idAsignacion).HasName("PRIMARY");
@@ -308,10 +281,12 @@ public partial class cttContext : DbContext
         {
             entity.HasKey(e => e.idMatricula).HasName("PRIMARY");
 
+            entity.Property(e => e.deuda).HasDefaultValueSql("'0.00'");
             entity.Property(e => e.esUniandes).HasDefaultValueSql("'0'");
             entity.Property(e => e.fechaRegistro).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.inHouse).HasDefaultValueSql("'0'");
             entity.Property(e => e.legalizado).HasDefaultValueSql("'0'");
+            entity.Property(e => e.porcentajeDescuento).HasDefaultValueSql("'0.00'");
         });
 
         modelBuilder.Entity<modalidades>(entity =>

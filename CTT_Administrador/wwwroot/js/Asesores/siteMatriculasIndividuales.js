@@ -29,6 +29,7 @@ window.addEventListener("load", async function () {
     await comboFormasPagos();
     await comboCuentas();
     await comboTiposDocumentos();
+    await comboTiposDescuentos();
     loaderHide();
 });
 
@@ -57,6 +58,20 @@ async function listarTiposCursos() {
         });
         idTipoCurso.innerHTML = html;
         handlePreload();
+    } catch (e) {
+        handleError(e);
+    }
+}
+async function comboTiposDescuentos() {
+    try {
+        const url = `${baseUrl}comboTiposDescuentos`;
+        const res = (await axios.get(url)).data;
+        let html = "";
+
+        res.forEach(item => {
+            html += `<option value='${item.porcentaje}'>${item.nombreDescuento}</option>`;
+        });
+        porcentajeDescuento.innerHTML = html;
     } catch (e) {
         handleError(e);
     }
@@ -242,8 +257,9 @@ function calcularTotal() {
             valorPago += parseFloat(moduloObjeto.valor);
             modulosSeleccionados += modulosSeleccionados == "" ? `${moduloObjeto.idCurso}` : `,${moduloObjeto.idCurso}`;
         });
-        costo.innerHTML = `$${valorPago.toFixed(2)}`;
-        valor.value = valorPago.toFixed(2).replaceAll(".", ",");
+        valor.value = (valorPago - (valorPago * (parseInt(porcentajeDescuento.value) / 100))).toFixed(2).replaceAll(".", ",");
+        valorPago = parseFloat(valor.value.replaceAll(",", "."));
+        costo.innerHTML = `$${valor.value}`;
         valor.addEventListener("focusout", () => {
             const valorIngresado = parseFloat(parseFloat(valor.value.replaceAll(",", ".")).toFixed(2));
             if (valorIngresado > valorPago) {
@@ -386,7 +402,7 @@ async function generarMatricula() {
         }
         if (! await validarTodo(frmDatos)) throw new Error("Verifique los campos requeridos");
         if (idCurso.querySelectorAll("input:checked").length == 0) throw new Error("Debe seleccionar al menos un modulo");
-        if (parseFloat(valor.value.replaceAll(",", ".")) == 0) throw new Error("No se puede generar una matricula sin un pago inicial.");
+        //if (parseFloat(valor.value.replaceAll(",", ".")) == 0) throw new Error("No se puede generar una matricula sin un pago inicial.");
         if (parseFloat(parseFloat(valor.value.replaceAll(",", ".")).toFixed(2)) > parseFloat(valorPago.toFixed(2))) throw new Error("Su pago no puede ser mayor al valor a cancelar.");
         if (!await toastPreguntar(`
         <div class='text-center'><i class='fs-lg bi-exclamation-circle-fill text-info fs-2 text-center'></i></div>

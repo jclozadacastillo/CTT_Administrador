@@ -57,4 +57,7 @@ public partial class calificaciones
 
     [Column(TypeName = "datetime")]
     public DateTime? fechaRegistro { get; set; }
+
+    [StringLength(1)]
+    public string? paralelo { get; set; }
 }

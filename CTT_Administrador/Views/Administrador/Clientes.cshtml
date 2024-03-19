@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewData["Title"] = "Clientes";
+    Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+}
+
+<div class="container-fluid" id="content" hidden>
+    <div class="row">
+        <div class="col-auto me-0 pe-0 form-title">
+            <h4>Clientes Facturas</h4>
+        </div>
+        <div class="col-auto ">
+            <button class="btn btn-sm btn-success text-white btn-new" title="Nuevo registro" onclick="nuevo()">
+                <i class="bi-plus"></i> Agregar
+            </button>
+        </div>
+    </div>
+    <hr>
+    <div class="row mt-3">
+        <div class="col-sm-12">
+            <div class="table-responsive-sm">
+                <table class="table table-sm w-100 table-custom-asesores" id="tableDatos"></table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="modalDatos" tabindex="-1" aria-labelledby="modalDatosLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header py-2">
+                    <h1 class="modal-title text-white" id="modalDatosLabel">Modal title</h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmDatos">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label class="fs-sm">Tipo de documento</label>
+                                <select class="form-select form-select-sm" id="idTipoDocumento" name="idTipoDocumento" onchange="handleidTipoDocumento()">
+                                    <option value="">Espere...</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="fs-sm">Documento</label>
+                                <input type="text" class="form-control form-control-sm" data-validate="cedula" id="documento" name="documento"
+                                       maxlength="14">
+                                <div class="invalid-feedback">
+                                    * Campo requerido
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label class="fs-sm">Razón Social</label>
+                                <input type="text" class="form-control form-control-sm" id="nombre" name="nombre"
+                                       maxlength="100">
+                            </div>
+                            <div class="col-sm-12">
+                                <label class="fs-sm">Dirección</label>
+                                <textarea class="form-control form-control-sm" id="direccion" name="direccion" data-validate="no-validate" maxlength="100"></textarea>
+                            </div>
+                            <div class="col-sm-3">
+                                <label class="fs-sm">Celular</label>
+                                <input type="text" class="form-control form-control-sm text-end"
+                                       id="telefono" name="telefono"
+                                       maxlength="10" data-validate="no-validate">
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="fs-sm">Correo</label>
+                                <input type="text" class="form-control form-control-sm"
+                                       data-validate="email" id="email" name="email"
+                                       maxlength="100">
+                                <div class="invalid-feedback">
+                                    * Campo requerido
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer py-2">
+                    <button type="button" class="btn btn-secondary btn-sm" data-cerrar
+                            data-bs-dismiss="modal">
+                        Cerrar
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" data-guardar
+                            onclick="guardar()">
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script defer src="~/js/Asesores/siteClientes.js?v=@DateTime.Now.Ticks"></script>
+

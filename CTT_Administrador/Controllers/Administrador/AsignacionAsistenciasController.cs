@@ -168,7 +168,10 @@ namespace CTT_Administrador.Controllers.Administrador
             {
                 string sql = @"
                                 select c.*,e.documentoIdentidad,
-                                concat(e.primerApellido,' ',e.segundoApellido,' ',e.primerNombre,' ',e.segundoNombre) as estudiante,
+                                concat(e.primerApellido,' ',
+                                CASE WHEN e.segundoApellido IS NULL THEN '' ELSE e.segundoApellido END,' ',
+                                e.primerNombre,' ',
+                                CASE WHEN e.segundoNombre IS NULL THEN '' ELSE e.segundoNombre END) as estudiante,
                                 datediff(fechaLimiteNotas,current_timestamp()) as tiempoLimite,
                                 datediff(fechaLimiteNotasAtraso,current_timestamp()) as tiempoLimiteAtraso
                                 from matriculas m

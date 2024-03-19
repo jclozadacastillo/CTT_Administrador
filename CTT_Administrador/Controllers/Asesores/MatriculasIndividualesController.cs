@@ -1,5 +1,4 @@
-﻿using CTT_Administrador.Auth;
-using CTT_Administrador.Auth.Asesor;
+﻿using CTT_Administrador.Auth.Asesor;
 using CTT_Administrador.Models.ctt;
 using CTT_Administrador.Utilities;
 using Dapper;
@@ -207,6 +206,20 @@ namespace CTT_Administrador.Controllers.Asesores
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> comboTiposDescuentos()
+        {
+            try
+            {
+                string sql = @"SELECT * FROM tiposDescuentos WHERE activo=1 ORDER BY porcentaje";
+                return Ok(await _dapper.QueryAsync(sql));
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> datosCliente(string documento)
         {
@@ -251,11 +264,11 @@ namespace CTT_Administrador.Controllers.Asesores
                     sql = $@"
                         INSERT INTO matriculas
                         (idEstudiante, idCliente, idGrupoCurso, idTipoDescuento, paralelo,
-                        fechaRegistro, esUniandes, idCarrera, idCentro, usuarioRegistro,legalizado)
+                        fechaRegistro, esUniandes, idCarrera, idCentro, usuarioRegistro,legalizado,porcentajeDescuento)
                         select distinct(e.idEstudiante),
                         @idCliente,
                         @idGrupoCurso,1 as idTipoDescuento,@paralelo,
-                        current_timestamp(),1,null,null,@usuarioRegistro,0
+                        current_timestamp(),1,null,null,@usuarioRegistro,0,@porcentajeDescuento
                         from estudiantes e
                         where e.idEstudiante=@idEstudiante
                         and e.idEstudiante not in(select m.idEstudiante

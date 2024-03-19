@@ -81,6 +81,11 @@
                         <h6 class="fw-bold" style="font-size:18px">Pago Inicial</h6>
                         <label class="fs-6"><b>VALOR TOTAL A CANCELAR: </b><span style="font-size:22px" class="text-success" id="costo">0.0</span></label>
                         <div class="row">
+                            <div class="col-sm-5">
+                                <label class="fs-sm">Descuento</label>
+                                <select class="form-select" id="porcentajeDescuento" name="porcentajeDescuento" onchange="calcularTotal()">
+                                </select>
+                            </div>
                             <div class="col-sm-9">
                                 <label class="fs-sm">Forma de pago</label>
                                 <select class="form-select" id="idFormaPago" name="idFormaPago" onchange="handleBancos()">
